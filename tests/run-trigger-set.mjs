@@ -20,7 +20,7 @@ import { appendRows } from './lib/ledger.mjs';
 
 const NAME = 'career-profiler';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const { values: opt } = parseArgs({ options: {
+const { values: opt } = parseArgs({ allowNegative: true, options: {
   'dry-run': { type: 'boolean' }, runs: { type: 'string' }, split: { type: 'string', default: 'all' }, only: { type: 'string' },
   model: { type: 'string' }, 'max-cost-usd': { type: 'string', default: '10' }, 'budget-per-run': { type: 'string', default: '0.6' },
   'timeout-s': { type: 'string', default: '180' }, out: { type: 'string' }, json: { type: 'boolean' }, host: { type: 'string', default: 'claude' }, ledger: { type: 'boolean', default: true },
