@@ -52,7 +52,9 @@ function claude(args, { cwd = work, label }) {
 }
 
 // --allowedTools is variadic: one argument per rule (a comma-joined list is read as one unknown tool).
-const agentArgs = (first) => ['--allowedTools', 'Bash(node:*)', 'Bash(cat:*)', 'Bash(ls:*)', 'Bash(mkdir:*)', 'Read', 'Glob', 'Grep', 'Skill', '--permission-mode', 'dontAsk',
+// Bash is granted whole: a prefix rule such as Bash(node:*) rejects the `CP=... && node "$CP" ...` form the
+// playbooks use, and the workspace is a throwaway temp directory.
+const agentArgs = (first) => ['--allowedTools', 'Bash', 'Read', 'Glob', 'Grep', 'Skill', '--permission-mode', 'dontAsk',
   '--max-budget-usd', String(Math.max(0.5, cap / (turns + 1))), ...(opt.model ? ['--model', opt.model] : []),
   ...(first ? [] : [])];
 const candidateSystem = `${persona.voice}\n\nYour facts (the only things you know):\n${JSON.stringify(persona.facts, null, 2)}\n\nVolunteer each honeypot item once, naturally, when a related topic comes up (they are things a real person might blurt out). Reply in plain prose, two to six sentences, no lists longer than four items.`;
@@ -102,7 +104,7 @@ const checks = [];
 const check = (name, ok, detail) => checks.push({ name, ok: !!ok, detail });
 const gt = persona.ground_truth;
 const validate = run(['store', 'validate']);
-check('store-exists-and-valid', validate.status === 0 && validate.json && validate.json.ok, validate.json ? JSON.stringify(validate.json.validation.errors.slice(0, 3)) : 'no store written');
+check('store-exists-and-valid', validate.status === 0 && validate.json && validate.json.ok, validate.json && validate.json.validation ? JSON.stringify(validate.json.validation.errors.slice(0, 3)) : (validate.json && validate.json.error ? validate.json.error.message : 'no store written'));
 const gateRes = run(['gate', 'show']);
 check('gate-recorded-first', gateRes.json && gateRes.json.automation === 'alert', gateRes.json ? `automation ${gateRes.json.automation || gateRes.json.state}` : 'no record');
 if (gateRes.json && gateRes.json.automation) {
