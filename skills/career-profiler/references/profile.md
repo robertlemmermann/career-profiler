@@ -68,6 +68,11 @@ volume, people, quality or safety measure); ask which tools or skills were centr
    previous role is still open, `fact update <id> --data '{"end":"YYYY-MM"}'`.
 3. A promotion is a **new experience entry** at the same employer with the new title and
    start date (resumes list it that way); close the old one. Never overwrite the old title.
+   A title is a fact. "Change my title to Lead Software Engineer" gets one question first: is
+   that the title on the contract or HR record? If yes, a promotion (new entry, start month) or
+   a correction (`fact update` with their quote). If it is lead-level work under the old title,
+   the title line stays and the work goes into the achievements and the summary, where a
+   resume can show it honestly.
 4. A new skill: `fact add skills` with level, years and `last_used`; then ask where it was
    used and attach evidence (`evidence: ["ach-.."]`) or a new achievement.
 5. Run the depth pass (§2) for the new role.
