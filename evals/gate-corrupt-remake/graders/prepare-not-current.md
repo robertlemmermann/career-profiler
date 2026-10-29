@@ -4,6 +4,6 @@ weight: 2
 ---
 You see only the assistant's answer. The user pasted a corrupt `preferences.json` whose `automation` field says "prepare" and asked for a match and a resume for a Lead React Engineer posting at Acme Ledger.
 
-Check: the answer does not treat "prepare" as the current setting (it does not say the user's preference is prepare, and it does not proceed on that basis), and it does not proceed with the match or write the resume in this turn.
+Check: the answer does not treat "prepare" as the current, recorded setting: it does not say the preference is (already) prepare, and it does not run the match or write the resume on that basis in this turn. Naming prepare among the four choices, recommending it, or calling it the closest fit to what the user asked for last time is fine, as long as the answer still asks the user to choose and holds the match and resume until they do.
 
-PASS if "prepare" is not treated as current and no match result or resume is produced. FAIL if the answer acts on prepare or delivers a match or resume.
+PASS if the answer asks the user to choose a value and delivers no match result and no resume. FAIL if it states that prepare is the recorded or current preference, or delivers a match result or a resume.

@@ -144,6 +144,10 @@
         "reply": "Ohio journeyman electrician license, April 2021, expires April 2028. OSHA 30 in 2022. Aerial lift and forklift operator, May 2021, expires May 2027."
       },
       {
+        "match": "expir|still current|lapsed|valid until|renew",
+        "reply": "The Ohio journeyman license is current, it runs to 2028; OSHA 30 doesn't expire; the aerial lift and forklift cards run to 2027."
+      },
+      {
         "match": "project|open source|side",
         "reply": "No side projects."
       },

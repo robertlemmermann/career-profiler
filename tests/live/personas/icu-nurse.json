@@ -139,6 +139,10 @@
         "reply": "Wisconsin RN license from 2018, renews February 2027; CCRN from AACN, September 2022; ACLS and BLS from the American Heart Association, March 2024."
       },
       {
+        "match": "expir|still current|lapsed|valid until|renew",
+        "reply": "ACLS and BLS both expire in March 2026; the CCRN renews September 2027; the Wisconsin RN license renews February 2027. All current today."
+      },
+      {
         "match": "project|open source|side",
         "reply": "No projects."
       },

@@ -129,14 +129,19 @@ area('ledger', (p, n) => {
   rows.forEach((r, i) => {
     for (const k of ['at', 'git_sha', 'skill_version', 'runner', 'host', 'item', 'passed']) if (!(k in r)) p.push(`row ${i + 1}: missing ${k}`);
     if (!classes.has(r.failure_class ?? null)) p.push(`row ${i + 1}: bad failure_class ${r.failure_class}`);
-    if (!['plugin-eval', 'trigger-set', 'interview-sim'].includes(r.runner)) p.push(`row ${i + 1}: bad runner ${r.runner}`);
+    if (!['plugin-eval', 'trigger-set', 'interview-sim', 'triage'].includes(r.runner)) p.push(`row ${i + 1}: bad runner ${r.runner}`);
+    if (r.runner === 'triage' && (!r.refers_to || !r.failure_class)) p.push(`row ${i + 1}: triage row without refers_to or failure_class`);
   });
   const sha = (spawnSync('git', ['-C', ROOT, 'rev-parse', '--short=12', 'HEAD'], { encoding: 'utf8' }).stdout || '').trim();
+  const results = rows.filter((r) => r.runner !== 'triage');
+  const triaged = new Set(rows.filter((r) => r.runner === 'triage').map((r) => `${r.refers_to.runner}|${r.refers_to.item}|${r.refers_to.run}|${r.refers_to.at}`));
   const latest = new Map();
-  for (const r of rows) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
+  for (const r of results) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
   const current = [...latest.values()];
   const failing = current.filter((r) => r.passed === false);
-  n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row${sha ? `, HEAD ${sha}` : ''}`);
+  const unclassified = results.filter((r) => r.passed === false && !triaged.has(`${r.runner}|${r.item}|${r.run}|${r.at}`));
+  n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row, ${unclassified.length} failing row(s) not yet triaged${sha ? `, HEAD ${sha}` : ''}`);
+  if (opt.release && unclassified.length) p.push(`${unclassified.length} failing ledger row(s) have no triage row (node tests/ledger-triage.mjs)`);
   if (failing.length) n.push(`failing: ${failing.map((r) => r.item).join(', ')}`);
   if (opt.release) {
     const atHead = current.filter((r) => r.git_sha === sha);

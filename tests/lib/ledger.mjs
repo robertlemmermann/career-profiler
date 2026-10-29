@@ -37,9 +37,22 @@ export function readRows(file = LEDGER) {
   return fs.readFileSync(file, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l));
 }
 
+/** Result rows only (triage rows classify a result and are not results themselves). */
+export const isResult = (r) => r.runner !== 'triage';
+
 /** The newest run per (runner, host, item) for a sha: what the release rule looks at. */
 export function latestFor(sha, rows = readRows()) {
   const latest = new Map();
-  for (const r of rows.filter((x) => x.git_sha === sha)) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
+  for (const r of rows.filter((x) => isResult(x) && x.git_sha === sha)) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
   return [...latest.values()];
+}
+
+/** Triage rows: `{ runner: 'triage', refers_to: { runner, host, item, run, at }, failure_class, note }`, appended after a failing
+ * result row is classified by hand. Rows are never edited, so the classification is a row of its own. */
+export function classificationFor(row, rows = readRows()) {
+  return rows.filter((t) => t.runner === 'triage' && t.refers_to && t.refers_to.runner === row.runner && t.refers_to.item === row.item && t.refers_to.run === row.run && t.refers_to.at === row.at).pop() || null;
+}
+
+export function appendTriage(entries, opts) {
+  return appendRows(entries.map((e) => ({ runner: 'triage', host: e.row.host, item: e.row.item, run: e.row.run, passed: null, refers_to: { runner: e.row.runner, host: e.row.host, item: e.row.item, run: e.row.run, at: e.row.at }, failure_class: e.failure_class, note: e.note })), opts);
 }

@@ -17,8 +17,14 @@ never edited or deleted; a re-run after a fix is a new row with the same `item` 
 | `graders` / `checks` | per-grader or per-check results |
 | `cost_usd` | what the run cost when the host reports it |
 | `sim` | for interview-sim: `deterministic` or `model` |
-| `failure_class` | `null`, or one of `skill`, `grader`, `fixture`, `host-flake`, `model-drift`, set by hand after triage |
+| `failure_class` | `null`, or one of `skill`, `grader`, `fixture`, `host-flake`, `model-drift`; set on a `triage` row, never on the result row |
 | `note` | free text |
+
+A failing result row is classified by hand with `node tests/ledger-triage.mjs --match <regex>
+--class <class> --note "<why, and what was done>"`, which appends a row with `runner: "triage"`
+and `refers_to: { runner, host, item, run, at }` pointing at the result row. `node
+tests/ledger-triage.mjs` alone lists the failing rows that have no triage row yet; `selftest
+--release` fails while any remain.
 
 The release rule (`references/release.md` §3): the newest rows for the release sha pass every
 case, every query and every persona.

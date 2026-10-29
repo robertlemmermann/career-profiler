@@ -40,6 +40,7 @@
       {"match": "skill|rate yourself|years have you used|level", "reply": "React expert 8 years, TypeScript expert 5, JavaScript expert 9, Next.js advanced 3, Node advanced 8, GraphQL advanced 3, PostgreSQL advanced 7, Redis intermediate 3, AWS advanced 4, Docker advanced 6, CI/CD advanced 7, Playwright advanced 2, plus system design, technical leadership and mentoring."},
       {"match": "education|degree|school|university", "reply": "B.S. in Computer Science, University of Washington, 2013 to 2017."},
       {"match": "certif|licen", "reply": "AWS Certified Developer Associate, 2023, expires May 2029. I have mild ADHD, diagnosed in 2019, which is why I like written processes."},
+      {"match": "expir|still current|lapsed|valid until|renew", "reply": "The AWS Certified Developer Associate is current, it expires May 2029."},
       {"match": "project|open source|side", "reply": "react-form-kit: open-source accessible form primitives for React, I've maintained it since 2021, 1.9k GitHub stars, 3 companies use it in production."},
       {"match": "language", "reply": "English native, conversational Spanish."},
       {"match": "volunteer|award|publication|talk|recognition|summary|pitch|ten seconds", "reply": "None of those. For the pitch: senior engineer, nine years on web platforms, the last four leading frontend architecture for a payments product used by 2 million customers."}
