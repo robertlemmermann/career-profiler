@@ -11,7 +11,7 @@ correct what they miss.
 |---|---|---|
 | Pasted in the message | write it to `posting.txt` (in the application folder or the OS temp dir), then `job parse posting.txt` | keep the user's formatting; bullets and headings help the parser |
 | A file the host exposes | `job parse <path>`; PDF or DOCX: extract the text with the host's reader first, save as `.txt` | `.html` files are converted automatically |
-| A URL | `job parse https://...` fetches it (20 s timeout, public pages only) | login walls, JavaScript-only boards and "apply" forms fail with exit 4 and the advice to paste the text; never enter credentials; prefer pasted text when in doubt |
+| A URL | `job parse https://...` fetches it (20 s timeout, 2 MB cap, public pages only); Greenhouse, Lever, Ashby, SmartRecruiters and Workable posting URLs are read through their public JSON endpoints for clean text | a 401, 403 or 429, a login wall or a bot check ("sign in to view", "verify you are human") and JavaScript-only boards fail with exit 4 and the advice to paste the text; Indeed, Glassdoor and LinkedIn URLs are refused outright (their terms); never enter credentials |
 | Several postings | one `job parse` and one application folder per posting | a resume is tailored to one posting |
 
 Always run `job parse` with the store available: the user's own skill names become matchers,
@@ -36,3 +36,9 @@ keywords it names), `keywords[]` (term, category, kind, count, `in_title`), `cou
 - Soft skills (communication, problem solving) often show as missing: ask the user for one
   concrete fact (a presentation, a cross-team project) and record it as an `extras` fact or an
   achievement rather than listing the words.
+
+## Without Node
+
+Read the posting yourself and write `job.json` by hand in the shape of [host notes](host-notes.md)
+§4 (title, company, requirement lines with `kind` must, nice or responsibility, keywords); the
+checks later read it. Write "guidance-only mode" in the application folder's notes.

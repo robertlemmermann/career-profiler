@@ -1,0 +1,16 @@
+---
+name: router-plain-language
+description: "Plain-language requests are routed to the right mode without the user naming it."
+tags: [trigger, router]
+runs: 3
+max_turns: 8
+timeout_seconds: 300
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+expected_outcome: "The agent maps \"only alert me, never apply\" to the setup mode and records the preference."
+---
+
+From now on I only want you to alert me when something matching shows up on the boards I give you, and never apply to anything for me. Make that the rule.

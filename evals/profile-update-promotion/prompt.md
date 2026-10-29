@@ -13,5 +13,11 @@ allowed_tools:
 expected_outcome: "The agent loads career-profiler, explains it will add a new experience entry (Staff Engineer at Brightline Payments) and close the previous one, and asks for the exact start month, scope and any new achievements."
 ---
 
+My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
+
+```json
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+```
+
 Good news: I was promoted to Staff Engineer at Brightline Payments last month. Update my career
 profile so the next resume reflects it.

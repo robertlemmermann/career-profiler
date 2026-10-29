@@ -17,6 +17,8 @@ quantified achievements beats six roles with duties.
 
 ## 1. Before the first question
 
+0. Step 0 of SKILL.md: `node "$CP" gate --json` must be `ok`; otherwise run [setup](setup.md)
+   first and nothing else.
 1. Locate `$CP` (SKILL.md) and run `node "$CP" doctor --json`. Note the store path and
    whether it exists. Tell the user where their data will live in one sentence, and offer
    `--store <dir>` or `CAREER_PROFILER_HOME` if they want it elsewhere
@@ -44,7 +46,8 @@ Per turn:
 2. Turn the answer into facts. Show them back briefly ("I will record: ...") and ask for a
    yes or a correction when anything is inferred, rounded or ambiguous. Exact titles, dates
    and numbers always get a confirmation.
-3. Write with `fact add` (§6). Batch the facts of one answer in one `--data '[...]'` call.
+3. Stage with `fact stage`, show, then `fact commit <T-id> --confirm` (§6). Batch the facts of
+   one answer in one `--data '[...]'` call, with `--quote` holding their words.
 4. When the user says a section does not apply ("no certifications"), record it:
    `node "$CP" interview done certifications.none --json`, so the question is not repeated.
 5. Every few turns, `interview coverage` again and tell the user the score and what is left.
@@ -99,16 +102,20 @@ Sections: `identity`, `targets`, `summary` (singletons, written with `fact updat
 rules: [host notes](host-notes.md) §3 and `assets/schema/profile.schema.json`.
 
 ```bash
-node "$CP" fact add experience --data '{"employer":"Brightline Payments","title":"Senior Software Engineer","start":"2022-03","end":null,"location":"San Francisco, CA (remote)","type":"full-time","team_size":8,"scope":"Frontend architecture for the merchant dashboard","stack":["React","TypeScript"]}' --json
-node "$CP" fact add achievement --parent exp-01 --data '{"text":"Led the migration to React, cutting p95 page load from 4.1s to 1.6s.","metrics":[{"value":4.1,"unit":"s","label":"p95 before"},{"value":1.6,"unit":"s","label":"p95 after"}],"skills":["skill-react"]}' --json
-node "$CP" fact add skills --data '[{"name":"React","category":"frontend","level":"expert","years":8,"last_used":"2026"},{"name":"PostgreSQL","category":"database","level":"advanced","years":7}]' --json
+node "$CP" fact stage experience --data '{"employer":"Brightline Payments","title":"Senior Software Engineer","start":"2022-03","end":null,"location":"San Francisco, CA (remote)","type":"full-time","team_size":8,"scope":"Frontend architecture for the merchant dashboard","stack":["React","TypeScript"]}' --quote "senior software engineer at Brightline since March 2022, remote from SF" --json
+node "$CP" fact commit T-001 --confirm --json
+node "$CP" fact add achievement --parent exp-01 --data '{"text":"Led the migration to React, cutting p95 page load from 4.1s to 1.6s.","metrics":[{"value":4.1,"unit":"s","label":"p95 before"},{"value":1.6,"unit":"s","label":"p95 after"}],"skills":["skill-react"]}' --quote "we went from 4.1 to 1.6 seconds p95" --confirm --json
+node "$CP" fact add skills --data '[{"name":"React","category":"frontend","level":"expert","years":8,"last_used":"2026"},{"name":"PostgreSQL","category":"database","level":"advanced","years":7}]' --confirm --json
 ```
 
 ```powershell
-node $CP fact add skills --data '[{"name":"React","category":"frontend","level":"expert","years":8}]' --json
+node $CP fact add skills --data '[{"name":"React","category":"frontend","level":"expert","years":8}]' --confirm --json
 ```
 
-Rules: dates are `YYYY-MM` (or `YYYY`); `end: null` means present; `level` is beginner,
+Rules: `--confirm` or `--unconfirmed` is required (`--yes` is not confirmation); a duplicate
+employer-title-dates, skill name or certification is refused with the existing id (use `fact
+update`); a fact that holds never-asked data is stored at tier `never` and the command says so;
+dates are `YYYY-MM` (or `YYYY`); `end: null` means present; `level` is beginner,
 intermediate, advanced or expert; achievement `text` is one result sentence in the implied
 first person ("Led ...", not "I led" and not "Responsible for"); every number in the text
 also goes into `metrics[]`. A write that fails validation is a usage error (exit 2) and
@@ -123,7 +130,8 @@ wants to continue. Never paste the whole store unless asked.
 
 ## Manual fallback (guidance-only mode)
 
-Without Node 22: write "guidance-only mode" in your output. Keep `profile.json` by hand in
+Without Node 22: write "guidance-only mode" in your output. Check `preferences.json` first
+([setup](setup.md), Without Node). Keep `profile.json` by hand in
 the shape of `assets/schema/profile.schema.json`: a `schema` of `career-profile/1`, ids
 `exp-01`, `ach-01-01`, `skill-<slug>`, and a `provenance` `{ "source", "confirmed", "at" }`
 on every entry. Ask the questions from `assets/question-bank.json` in priority order. Keep

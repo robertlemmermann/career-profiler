@@ -21,7 +21,7 @@ test('help, version and usage errors', () => {
 
 test('output is ASCII-only JSON with --json and never includes the error on stdout without it', () => {
   const store = seededStore();
-  const r = cp(['fact', 'add', 'extras', '--data', JSON.stringify({ text: 'Café résumé — naïve' }), '--json'], { store });
+  const r = cp(['fact', 'add', 'extras', '--data', JSON.stringify({ text: 'Café résumé — naïve' }), '--confirm', '--json'], { store });
   assert.equal(r.status, 0);
   assert.ok(/^[\x00-\x7f]*$/.test(r.stdout), 'ascii only');
   assert.ok(r.stdout.includes('\\u00e9'));

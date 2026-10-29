@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { appendRows } from './lib/ledger.mjs';
 
 const NAME = 'career-profiler';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -26,6 +27,14 @@ fs.cpSync(path.join(repo, 'skills', NAME), target, { recursive: true });
 fs.cpSync(path.join(repo, 'evals'), path.join(target, 'evals'), { recursive: true });
 
 const out = has('--output-dir') ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'cp-eval-results-'));
+// Always capture the JSON result so the ledger can be written; honour an explicit --json <path>.
+const jsonIdx = args.findIndex((a) => a === '--json');
+const jsonPath = jsonIdx >= 0 && args[jsonIdx + 1] && !args[jsonIdx + 1].startsWith('--') ? args[jsonIdx + 1] : path.join(out || os.tmpdir(), `result-${Date.now()}.json`);
+if (jsonIdx < 0) args.push('--json', jsonPath);
+const noLedger = args.includes('--no-ledger');
+if (noLedger) args.splice(args.indexOf('--no-ledger'), 1);
+const judge = (() => { const i = args.indexOf('--judge-model'); return i >= 0 ? args[i + 1] : 'sonnet'; })();
+const model = (() => { const i = args.indexOf('--model'); return i >= 0 ? args[i + 1] : null; })();
 const evalArgs = ['plugin', 'eval', target, '--trust-plugin',
   ...(has('--ablation') ? [] : ['--ablation', 'none']),
   ...(has('--threshold') ? [] : ['--threshold', '1']),
@@ -43,3 +52,12 @@ const res = process.platform === 'win32'
   : spawnSync('claude', evalArgs, { stdio: 'inherit', env });
 if (res.error) process.stderr.write(`run-evals: could not start claude: ${res.error.message}\n`);
 process.exitCode = res.status ?? 1;
+if (!noLedger && fs.existsSync(jsonPath)) {
+  try {
+    const d = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    const rows = [];
+    for (const c of d.cases || []) (c.arms && c.arms.with ? c.arms.with : []).forEach((r, i) => rows.push({ runner: 'plugin-eval', host: 'claude', model, judge_model: judge, item: c.name, run: i + 1, score: r.score ?? null, passed: r.passed ?? (typeof r.score === 'number' ? r.score >= 1 : null), graders: (r.graders || []).map((g) => ({ name: g.name, passed: g.passed })), cost_usd: r.costUsd ?? null, failure_class: null, note: r.error || null }));
+    appendRows(rows);
+    process.stderr.write(`run-evals: ${rows.length} ledger row(s) appended\n`);
+  } catch (err) { process.stderr.write(`run-evals: ledger not written: ${err.message}\n`); }
+}

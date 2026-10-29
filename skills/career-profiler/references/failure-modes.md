@@ -20,6 +20,13 @@ What goes wrong when a model writes resumes, and what in this skill stops it.
 | FM-14 | Cover letter with placeholders or the wrong company name | `placeholder`, `company-missing` |
 | FM-15 | Finalizing a draft that fails | `finalize` refuses a `FAIL` |
 | FM-16 | Headless run pretends to interview | no human means report the gaps and stop |
+| FM-17 | Overclaiming: "led" cited to a fact that says "worked on"; "expert" above the recorded level | `exceeds` fails the line |
+| FM-18 | Expired licence or certification listed as current | `match` marks it `expired` with a question; the draft omits it; `expired-credential` fails the line |
+| FM-19 | Personal data in a document: date of birth, national id, street address, health, family, religion, a never-tier fact, an unreleased restricted fact | tiers, detectors and value checks in `check`, `finalize` and `export` (`pii-block`, `pii-never`); the never-asked list in the interview |
+| FM-20 | Automation the user did not choose: watching, drafting or preparing without a recorded preference, or submitting anything | the gate (`GATE_REQUIRED` from every data command), `submit: never` in the record, refusals in `watch` |
+| FM-21 | A corrupt or missing preference record silently reused, or a degraded store written to | `gate` quarantines and demands a fresh statement; the daily probe and `doctor --repair` log every repair; `repaired_but_unverified` until a fresh gate passes |
+| FM-22 | A profile value sent to a job board, or a board's terms broken | requests carry subscription terms only and are scanned; refused families and hosts; catalog rate limits |
+| FM-23 | Facts written on the model's say-so | `fact stage` then `fact commit --confirm`; `--yes` is never confirmation; `provenance.quote` |
 
 Known limits: the checker proves consistency with the store, not the truth of the store (a
 user can lie to the interview); the keyword heuristics miss requirements written as prose

@@ -24,6 +24,14 @@ exposes. Same rules in both.
 - Adapt to the profession from the answers (`interview coverage` reports `domains`); do not
   assume software. A nurse's "stack" is Epic, ventilators and CRRT; a sales manager's is
   Salesforce, quota and territory; an electrician's is panels, code sections and sites.
+- **Never ask for**: date of birth or age; national identity, passport, tax or social security
+  numbers; street address; marital or family status; religion or belief; health, disability or
+  medical history; ethnicity, nationality or citizenship as an attribute; a photo; bank or
+  payment details (`interview next` prints the list as `never_asked`). City and region are
+  enough for location. Work authorization and salary expectations are restricted facts: ask
+  only when the user raises them or a posting requires them, and record them as such. When the
+  user volunteers an item from the list, say in one sentence that it is kept at tier `never`
+  and used only to respect their constraints; the scripts quarantine it automatically.
 
 ## 2. Getting to facts
 
@@ -61,11 +69,16 @@ would they describe the change; what did it cost or save.
 
 ## 5. Confirming and writing
 
-Before each `fact add`: show the facts in one short list ("Recording: Senior Software
-Engineer at Brightline Payments, Mar 2022 to present, San Francisco (remote), full-time").
-Anything inferred or rounded gets an explicit "is that exact?". Then write, in one call, with
-`--json`, and read the returned ids back to yourself for later citations. Facts extracted
-from a document are written `--unconfirmed` and confirmed section by section.
+Two steps, enforced by the scripts: `fact stage <section> --data '[...]' --quote "<their
+words>"` stores the candidate facts under a `T-` id and prints them; show them to the user in
+one short list ("Recording: Senior Software Engineer at Brightline Payments, Mar 2022 to
+present, San Francisco (remote), full-time"); anything inferred or rounded gets an explicit "is
+that exact?"; on their yes, `fact commit T-001 --confirm`. `--confirm` is your assertion that
+they said yes in this conversation; `--yes` is not accepted. `fact add --confirm` is the
+one-shot form for a single fact the user just confirmed; facts extracted from a document are
+written `fact add --unconfirmed` and confirmed section by section with `fact confirm`. Keep up
+to 300 characters of the user's own words in `--quote`: it is the evidence the fact rests on.
+Read the returned ids back to yourself for later citations.
 
 ## 6. Stopping and resuming
 

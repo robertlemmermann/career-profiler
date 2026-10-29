@@ -17,6 +17,7 @@ the same flow and stops after the gap analysis.
 
 ## 1. Intake
 
+0. Step 0 of SKILL.md: `node "$CP" gate --json` must be `ok`; otherwise [setup](setup.md) first.
 1. The posting is required. Take it from the message (pasted text), a file (`--file`, an
    attachment the host exposes as a path) or a URL. No posting: ask for one and stop; offer
    `store export` if they only want a general resume. Details: [job intake](job-intake.md).
@@ -32,8 +33,10 @@ the same flow and stops after the gap analysis.
 ## 2. Match and gaps (also the `match` mode)
 
 `node "$CP" match job.json --out match.json --json` reports `fit` (0 to 1), coverage per
-keyword kind, `years` and `seniority` verdicts, every keyword with status `strong`, `partial`
-or `missing` and its evidence ids, and `gaps[]` with a question per missing term.
+keyword kind, `years` (total and per term) and `seniority` verdicts, every keyword with status
+`strong`, `partial`, `expired` or `missing` and its evidence ids, `gaps[]` with a question per
+missing or expired term (must-haves first, `ask_now` on the first five), and `declined[]` for
+terms the user already said no to.
 
 Tell the user the picture in plain words: fit, the strongest matches, what is missing, and
 whether seniority or years are a stretch. In `match` mode this is the deliverable: add a
@@ -41,14 +44,18 @@ recommendation (apply, apply with the gaps named in the cover letter, or skip) a
 
 ## 3. Targeted interview
 
-For each gap (must-have first), ask the question from `gaps[]`. Three outcomes:
+Ask the `ask_now` gaps (at most five per posting, three per turn, must-haves first); the rest
+are reported, not asked. Three outcomes:
 
 - The user has the experience: record it (`fact add skills` and an achievement or `extras`
   fact with evidence), confirm, then `match` again.
 - They have something adjacent: record what is true (a `partial` is fine) and plan to show it
   honestly ("exposure to", "worked alongside").
-- They do not: it stays out of the resume. The cover letter may address a key gap in one
-  honest sentence if the user wants.
+- They do not: it stays out of the resume. Record the no so it is not asked again for this
+  posting: `fact add extras --data '{"text":"No Kubernetes experience (asked for Acme Ledger)","tags":["gap","<decline_tag from gaps[]>"]}' --confirm`.
+  The cover letter may address a key gap in one honest sentence if the user wants.
+- An `expired` credential: ask whether it was renewed; update `expires` with the new date, or
+  leave it off the resume (the draft already omits it with a comment).
 
 Also ask once for anything the posting emphasises that the store lacks a number for, and
 whether a role should be de-emphasised or omitted (short stints, unrelated work). Stop
@@ -74,7 +81,11 @@ whole profile.
    - Length: one page for under ten years, two at most. Target 350 to 700 words.
 3. Rules that `resume check` enforces (§6): every claim line cites facts; numbers come from
    the cited facts; titles, employers, dates, institutions match the store; the skills section
-   only lists what the cited facts contain; a job keyword with no profile evidence is a fail.
+   only lists what the cited facts contain; a job keyword with no profile evidence is a fail; a
+   leadership or ownership verb, or "expert", needs a fact that records it (`exceeds`); an
+   expired credential is not listed as current; no never-tier fact and no personal data beyond
+   the chosen contact details (`pii-block`), and a restricted fact only with
+   `--include restricted:<field>` after the user said yes.
 
 ## 5. Write the cover letter
 
@@ -107,15 +118,19 @@ node "$CP" cover-letter finalize cover-letter.md --job job.json --formats md,txt
 ```
 
 `finalize` refuses a failing draft, strips the citations and writes `resume.final.md`,
-`resume.txt` (ATS-safe plain text), `resume.html` (print to PDF from a browser) and, when
-pandoc is installed, `resume.docx`. The cited draft and `resume.check.json` stay in the
+`resume.txt` (ATS-safe plain text), `resume.html` (print to PDF from a browser), `resume.json`
+(JSON Resume, with `json` in `--formats`) and, when pandoc is installed, `resume.docx`. A
+restricted fact the posting needs (work authorization, relocation, salary expectations for the
+letter) goes in only after the user's yes, with `--include restricted:<field>` on `check` and
+`finalize`; the include is logged in the changelog. The cited draft and `resume.check.json` stay in the
 application folder as the evidence for every line. Hand over: the folder path, the files, the
 fit and coverage numbers, the gaps that were declined, and one line on how to regenerate after
 a profile change (`app new` again, or edit and `check`).
 
 ## Manual fallback (guidance-only mode)
 
-Without Node 22, write "guidance-only mode" and do the same by hand: list the posting's
+Without Node 22, write "guidance-only mode", check `preferences.json` first ([setup](setup.md),
+Without Node) and do the same by hand: list the posting's
 must-have and nice-to-have terms; for each, find the supporting entry in `profile.json` (or
 ask); write the resume with `<!-- fact: id -->` on every line; then check each line yourself
 against the cited entry (numbers, title, employer, dates, listed skills) and remove what you

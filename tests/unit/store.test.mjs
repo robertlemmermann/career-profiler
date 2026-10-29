@@ -36,18 +36,18 @@ test('missing store is exit 3; corrupt store is exit 4', () => {
 
 test('fact add / update / confirm / remove with validation, backups and a chained changelog', () => {
   const store = seededStore();
-  let r = cp(['fact', 'add', 'experience', '--data', JSON.stringify({ employer: 'Globex', title: 'Staff Engineer', start: '2015-01', end: '2017-05' }), '--json'], { store });
+  let r = cp(['fact', 'add', 'experience', '--data', JSON.stringify({ employer: 'Globex', title: 'Staff Engineer', start: '2015-01', end: '2017-05' }), '--confirm', '--json'], { store });
   assert.equal(r.status, 0, r.stderr);
   assert.equal(r.json.added[0].id, 'exp-03');
   assert.equal(r.json.added[0].provenance.confirmed, true);
-  r = cp(['fact', 'add', 'achievement', '--parent', 'exp-03', '--data', JSON.stringify({ text: 'Shipped the thing, saving 30% of build time.', metrics: [{ value: 30, unit: '%', label: 'build time saved' }] }), '--json'], { store });
+  r = cp(['fact', 'add', 'achievement', '--parent', 'exp-03', '--data', JSON.stringify({ text: 'Shipped the thing, saving 30% of build time.', metrics: [{ value: 30, unit: '%', label: 'build time saved' }] }), '--confirm', '--json'], { store });
   assert.equal(r.status, 0, r.stderr);
   assert.equal(r.json.added[0].id, 'ach-03-01');
-  r = cp(['fact', 'add', 'achievement', '--data', '{"text":"orphan"}', '--json'], { store });
+  r = cp(['fact', 'add', 'achievement', '--data', '{"text":"orphan"}', '--confirm', '--json'], { store });
   assert.equal(r.status, 2, 'achievement without a parent is a usage error');
-  r = cp(['fact', 'add', 'skills', '--data', '{"name":"React"}', '--json'], { store });
+  r = cp(['fact', 'add', 'skills', '--data', '{"name":"React"}', '--confirm', '--json'], { store });
   assert.equal(r.status, 2, 'duplicate skill is a usage error');
-  r = cp(['fact', 'add', 'skills', '--data', '{"name":"Vue","level":"guru"}', '--json'], { store });
+  r = cp(['fact', 'add', 'skills', '--data', '{"name":"Vue","level":"guru"}', '--confirm', '--json'], { store });
   assert.equal(r.status, 2, 'invalid level never reaches disk');
   r = cp(['fact', 'add', 'skills', '--data', '{"name":"Vue","level":"intermediate"}', '--unconfirmed', '--json'], { store });
   assert.equal(r.json.added[0].id, 'skill-vue');
@@ -108,7 +108,7 @@ test('export renders every id; import replaces the profile; dry-run writes nothi
   for (const id of ['exp-01', 'ach-01-02', 'skill-react', 'edu-01', 'cert-01', 'proj-01']) assert.ok(r.json.content.includes(`[${id}]`), id);
   assert.ok(r.json.content.includes('(unconfirmed)'));
   const before = fs.readFileSync(path.join(store, 'profile.json'), 'utf8');
-  r = cp(['fact', 'add', 'extras', '--data', '{"text":"dry"}', '--dry-run', '--json'], { store });
+  r = cp(['fact', 'add', 'extras', '--data', '{"text":"dry"}', '--dry-run', '--confirm', '--json'], { store });
   assert.equal(r.status, 0);
   assert.equal(fs.readFileSync(path.join(store, 'profile.json'), 'utf8'), before);
   r = cp(['store', 'import', fixture('profiles', 'icu-nurse.json'), '--json'], { store });

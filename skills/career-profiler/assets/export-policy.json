@@ -1,0 +1,14 @@
+{
+  "schema": "career-export-policy/1",
+  "note": "Which tiers and contact fields each artifact may carry. restricted fields leave the store only on a confirmed --include restricted:<field> for one artifact; never fields leave the store under no flag.",
+  "profiles": {
+    "resume":       { "tiers": ["professional"], "contact": ["name", "email", "phone", "city", "region", "country", "links"], "restricted_on_request": ["work_authorization", "relocation"] },
+    "cover":        { "tiers": ["professional"], "contact": ["name", "email", "phone", "city", "region", "country"], "restricted_on_request": ["work_authorization", "relocation", "compensation"] },
+    "answers":      { "tiers": ["professional"], "contact": ["name", "email", "phone", "city", "region", "country"], "restricted_on_request": ["work_authorization", "relocation", "compensation"] },
+    "export":       { "tiers": ["professional"], "contact": ["name", "email", "phone", "city", "region", "country", "links"], "restricted_on_request": ["work_authorization", "relocation", "compensation", "id_number"] },
+    "board":        { "tiers": [], "contact": [], "fields": ["targets.roles", "targets.locations", "targets.industries", "skills.name"], "restricted_on_request": [] },
+    "notification": { "tiers": [], "contact": [], "fields": ["job.title", "job.company", "job.url", "fit"], "restricted_on_request": [] },
+    "log":          { "tiers": [], "contact": [], "fields": ["ids", "counts", "hashes", "exit codes"], "restricted_on_request": [] }
+  },
+  "never": ["date of birth", "age", "government id", "street address", "marital or family status", "religion", "health", "ethnicity or nationality", "photo", "bank details", "reference contact details", "credential id numbers unless requested"]
+}

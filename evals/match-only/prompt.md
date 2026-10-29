@@ -13,6 +13,12 @@ allowed_tools:
 expected_outcome: "The agent loads career-profiler and either produces a gap analysis from the profile or, lacking one, asks for the profile facts; it does not write a resume."
 ---
 
+My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
+
+```json
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+```
+
 Should I even apply to this? Be honest about what I am missing.
 
 ```

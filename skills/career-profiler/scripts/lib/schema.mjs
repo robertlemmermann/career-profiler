@@ -5,6 +5,11 @@
 import { PROFILE_SCHEMA, nowIso, generatedBy } from './core.mjs';
 
 export const PROVENANCE_SOURCES = ['interview', 'document', 'user', 'import'];
+export const TIERS = ['professional', 'restricted', 'never'];
+/** Singleton fields that are restricted by default (exported only on a confirmed --include). */
+export const RESTRICTED_FIELDS = Object.freeze({ identity: ['work_authorization', 'relocation'], targets: ['compensation'] });
+/** Entry fields that are restricted regardless of the entry's tier. */
+export const RESTRICTED_ENTRY_FIELDS = Object.freeze({ certifications: ['id_number'] });
 export const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
 export const EMPLOYMENT_TYPES = ['full-time', 'part-time', 'contract', 'freelance', 'internship', 'volunteer', 'self-employed', 'other'];
 export const LANGUAGE_LEVELS = ['basic', 'conversational', 'professional', 'fluent', 'native'];
@@ -51,7 +56,7 @@ export function emptyProfile({ name } = {}) {
   const now = nowIso();
   const p = {
     schema: PROFILE_SCHEMA,
-    meta: { created: now, updated: now, generated_by: generatedBy(), locale: 'en', sequence: 0 },
+    meta: { created: now, updated: now, generated_by: generatedBy(), locale: 'en', sequence: 0, store_version: 2 },
     identity: { name: name || '', headline: '', email: '', phone: '', location: {}, links: [] },
     targets: { roles: [], industries: [], seniority: '', locations: [] },
     summary: { pitch: '', strengths: [] },
@@ -61,6 +66,9 @@ export function emptyProfile({ name } = {}) {
 }
 
 export const defaultProvenance = (source = 'interview', extra = {}) => ({ source, confirmed: true, at: nowIso(), ...extra });
+
+/** The tier of an entry (default professional). */
+export const tierOf = (entry) => (entry && TIERS.includes(entry.tier) ? entry.tier : 'professional');
 
 // ---------------------------------------------------------------------------
 // Validation
@@ -85,7 +93,7 @@ export function validateProfile(p) {
   for (const [name, fields] of Object.entries(SINGLETONS)) {
     if (p[name] == null) { err(name, 'missing object'); continue; }
     if (!isObj(p[name])) { err(name, 'must be an object'); continue; }
-    for (const k of Object.keys(p[name])) if (!fields.includes(k) && k !== 'provenance') warn(`${name}.${k}`, 'unknown field (kept, but no playbook reads it)');
+    for (const k of Object.keys(p[name])) if (!fields.includes(k) && k !== 'provenance' && k !== 'tiers') warn(`${name}.${k}`, 'unknown field (kept, but no playbook reads it)');
   }
   if (p.identity && p.identity.links != null && !isArr(p.identity.links)) err('identity.links', 'must be an array of { label, url }');
   if (p.identity && p.identity.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.identity.email)) warn('identity.email', 'does not look like an email address');
@@ -100,6 +108,7 @@ export function validateProfile(p) {
     if (!PROVENANCE_SOURCES.includes(pr.source)) err(`${where}.provenance.source`, `must be one of ${PROVENANCE_SOURCES.join(', ')}`);
     if (typeof pr.confirmed !== 'boolean') err(`${where}.provenance.confirmed`, 'must be true or false');
     if (pr.at != null && !isStr(pr.at)) err(`${where}.provenance.at`, 'must be an ISO timestamp string');
+    if (pr.quote != null && (!isStr(pr.quote) || pr.quote.length > 300)) err(`${where}.provenance.quote`, 'must be a string of at most 300 characters');
   };
   const checkEntry = (entry, spec, where, prefix) => {
     if (!isObj(entry)) { err(where, 'must be an object'); return; }
@@ -109,7 +118,8 @@ export function validateProfile(p) {
       if (!entry.id.startsWith(`${prefix}-`)) warn(`${where}.id`, `id does not start with "${prefix}-"`);
     }
     for (const f of spec.required) if (!isNonEmptyStr(entry[f]) && !(isArr(entry[f]) && entry[f].length)) err(`${where}.${f}`, 'required');
-    const allowed = new Set(['id', 'provenance', ...spec.required, ...spec.fields]);
+    if (entry.tier != null && !TIERS.includes(entry.tier)) err(`${where}.tier`, `must be one of ${TIERS.join(', ')}`);
+    const allowed = new Set(['id', 'provenance', 'tier', ...spec.required, ...spec.fields]);
     for (const k of Object.keys(entry)) if (!allowed.has(k)) warn(`${where}.${k}`, 'unknown field (kept, but no playbook reads it)');
     for (const f of ['start', 'end', 'date', 'expires', 'added']) {
       if (entry[f] != null && entry[f] !== '' && !isPresent(entry[f]) && !isDate(entry[f])) err(`${where}.${f}`, `"${entry[f]}" is not YYYY, YYYY-MM or YYYY-MM-DD`);

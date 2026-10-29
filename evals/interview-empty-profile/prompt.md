@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent explains that nothing is stored yet and asks the first questions: name and contact, an existing resume, the most recent role."
+expected_outcome: "The agent asks for the automation preference before anything else (the gate), states that nothing is stored yet, and invents nothing."
 ---
 
 Use the career-profiler skill to build my career profile. I have never used it before. This

@@ -9,7 +9,14 @@ import path from 'node:path';
 import { CHECK_SCHEMA, nowIso, generatedBy, sha256, uniq, exists, writeFileAtomic, readText } from './core.mjs';
 import { indexProfile } from './schema.mjs';
 import { buildMatchers, findTerms } from './taxonomy.mjs';
-import { buildEvidenceIndex, entryText } from './match.mjs';
+import { buildEvidenceIndex, entryText, isExpired } from './match.mjs';
+import { scanText } from './pii.mjs';
+import { tierOf } from './schema.mjs';
+
+const LEAD_CLAIM = /\b(?:led|lead|leading|managed|managing|manage|directed|directing|headed|heading|owned|owning|oversaw|overseeing|supervised|supervising|ran|running|spearheaded|founded|architected|established)\b/i;
+const LEAD_EVIDENCE = /\b(?:led|lead|leading|managed|managing|manage|directed|headed|owned|own(?:ing)?|oversaw|supervis\w*|ran|charge|spearheaded|founded|architected|established|tech lead|team lead|mentor\w*|precept\w*|coordinat\w*|responsible for|roadmap|designed)\b/i;
+const LEVEL_CLAIM = /\b(?:expert|expertise|mastery|master of|deep expertise|advanced)\b\s+(?:in|with|of|at)?\s*([A-Z][\w+#.]*(?:\s[A-Z][\w+#.]*){0,2})/g;
+const LEVEL_RANK = { beginner: 1, intermediate: 2, advanced: 3, expert: 4 };
 
 export const MARKER_RE = /<!--\s*facts?\s*:\s*([^>]*?)\s*-->/gi;
 const ANY_COMMENT_RE = /<!--[\s\S]*?-->/g;
@@ -132,7 +139,7 @@ const sectionOf = (heading) => {
  * Check a resume draft. Returns the report: `{ verdict, findings[], coverage, stats }`.
  * `job` (career-job/1) and `match` (career-match/1) are optional but needed for keyword checks.
  */
-export function checkResume(text, profile, { job = null, match = null, kind = 'resume' } = {}) {
+export function checkResume(text, profile, { job = null, match = null, kind = 'resume', include = [] } = {}) {
   const index = indexProfile(profile);
   const matchers = buildMatchers(profile);
   const evidence = buildEvidenceIndex(profile, matchers);
@@ -219,7 +226,8 @@ export function checkResume(text, profile, { job = null, match = null, kind = 'r
 
     // Numbers must be supported by the cited facts.
     const supported = supportedNumbers(hits);
-    const claimNumbers = isDateLine(plain) ? new Set() : numbersIn(plain.replace(/\b(19|20)\d{2}\b/g, (y) => (supported.has(Number(y)) ? '' : y)));
+    // Full dates (2029-05, 2024-03-01) count by their year only; a supported year disappears before extraction.
+    const claimNumbers = isDateLine(plain) ? new Set() : numbersIn(plain.replace(/\b((?:19|20)\d{2})-\d{2}(?:-\d{2})?\b/g, '$1').replace(/\b(19|20)\d{2}\b/g, (y) => (supported.has(Number(y)) ? '' : y)));
     for (const n of claimNumbers) if (!supported.has(n)) add('fail', 'number-unsupported', L.n, `the number ${n} is not in the cited facts (${ids.join(', ')}); numbers come from the store, not from memory`);
 
     // Skills lines: each listed item must be in the cited facts.
@@ -245,6 +253,35 @@ export function checkResume(text, profile, { job = null, match = null, kind = 'r
       }
     }
   }
+
+  // Claims that exceed their facts: leadership verbs without leadership in the cited facts; expertise above the recorded level.
+  for (const L of lines) {
+    const t = L.text.trim();
+    if (!t || /^#/.test(t) || /^<!--/.test(t)) continue;
+    const plain = stripComments(t).trim();
+    const ids = parseMarkers(t);
+    if (!ids.length || !plain) continue;
+    const hits = ids.map((cid) => (PSEUDO.has(cid) ? { id: cid, kind: cid, entry: { ...(profile[cid] || {}) }, parent: null } : index.get(cid) && { id: cid, ...index.get(cid) })).filter(Boolean);
+    if (!hits.length) continue;
+    const verb = LEAD_CLAIM.exec(plain);
+    if (verb && !/^###/.test(plain)) {
+      const evidenceText = hits.map((h) => `${entryText(h.kind, h.entry)} ${h.parent ? `${h.parent.scope || ''} ${(h.parent.responsibilities || []).join(' ')} ${h.parent.title || ''} ${h.parent.reports || ''}` : ''} ${h.entry.title || ''} ${(h.entry.responsibilities || []).join(' ')}`).join('\n');
+      if (!LEAD_EVIDENCE.test(evidenceText) && !hits.some((h) => h.kind === 'summary')) add('fail', 'exceeds', L.n, `"${verb[0]}" claims leadership or ownership that the cited facts (${ids.join(', ')}) do not record; use the fact's own verb or ask the user and record the scope first`);
+    }
+    for (const m of plain.matchAll(LEVEL_CLAIM)) {
+      const name = m[1];
+      const skill = (profile.skills || []).find((s) => s.name && name && (s.name.toLowerCase() === name.toLowerCase() || findTerms(name, matchers).some((x) => findTerms(s.name, matchers).some((y) => y.term === x.term))));
+      if (skill && skill.level && (LEVEL_RANK[skill.level] || 0) < 3) add('fail', 'exceeds', L.n, `"${m[0].trim()}" is above the recorded level of ${skill.name} (${skill.level}, ${skill.id}); say what the fact supports`);
+    }
+    for (const h of hits) {
+      if (h.kind === 'certifications' && isExpired(h.entry) && !/\b(?:expired|lapsed|renewal|renewing|formerly)\b/i.test(plain)) add('fail', 'expired-credential', L.n, `${h.entry.name} (${h.id}) expired ${h.entry.expires}; do not list it as current (ask whether it was renewed)`);
+      if (tierOf(h.entry) === 'never') add('fail', 'pii-never', L.n, `${h.id} is a never-tier fact and cannot appear in any document`);
+    }
+  }
+
+  // PII: detectors and the exact values of never-tier facts and unexported restricted fields.
+  const pii = scanText(stripComments(text), { profileName: kind === 'resume' ? 'resume' : 'cover', profile, include });
+  for (const h of pii.hits) add(h.severity === 'block' ? 'fail' : 'finding', h.severity === 'block' ? 'pii-block' : 'pii-review', h.line, `${h.label} (${h.detector}${h.sample ? `, ${h.sample}` : ''})${h.severity === 'block' ? '; remove it, or for a restricted field ask the user and pass --include restricted:<field>' : '; keep only if the user wants it in this market'}`);
 
   // Structure and ATS.
   const plainText = stripComments(text);
@@ -295,8 +332,8 @@ export function checkResume(text, profile, { job = null, match = null, kind = 'r
     schema: CHECK_SCHEMA, kind, checked_at: nowIso(), generated_by: generatedBy(),
     document_sha256: sha256(text), profile_sequence: profile.meta && profile.meta.sequence,
     job: job ? { title: job.title, company: job.company, text_sha256: job.text_sha256 } : null,
-    verdict, counts: { fail: fails, finding: findings.length - fails, words, cited_facts: citedIds.size },
-    findings, coverage, cited_ids: [...citedIds].sort(),
+    verdict, counts: { fail: fails, finding: findings.length - fails, words, cited_facts: citedIds.size, pii_blocks: pii.blocks, pii_reviews: pii.reviews },
+    include, findings, coverage, cited_ids: [...citedIds].sort(),
   };
 }
 
@@ -319,12 +356,20 @@ function relevance(entry, kind, matchers, jobTerms) {
 }
 
 /** A resume skeleton: every structural fact placed and cited, achievements listed in relevance order. */
-export function draftResume(profile, { job = null, match = null } = {}) {
+const REGULATED = /\b(?:nurse|rn|lpn|clinical|medical|physician|therapist|pharmac|paramedic|electrician|plumber|hvac|welder|cdl|driver|pilot|teacher|attorney|lawyer|accountant|cpa|engineer\b.*\b(?:licensed|pe)\b|security guard)\b/i;
+/** credentials-first when the role is regulated (licences decide the screen), else standard. */
+export function layoutFor(profile, job) {
+  const text = `${job && job.title ? job.title : ''} ${((profile.targets && profile.targets.roles) || []).join(' ')} ${(profile.experience || []).map((e) => e.title).join(' ')}`;
+  return (profile.certifications || []).length && REGULATED.test(text) ? 'credentials-first' : 'standard';
+}
+
+export function draftResume(profile, { job = null, match = null, layout = null } = {}) {
   const id = profile.identity || {};
+  const chosen = layout || layoutFor(profile, job);
   const matchers = buildMatchers(profile);
   const jobTerms = new Map((job ? job.keywords : []).filter((k) => k.kind !== 'context').map((k) => [k.term, k]));
   const supported = new Set((match ? match.keywords : []).filter((k) => k.status !== 'missing').map((k) => k.term));
-  const confirmed = (e) => e.provenance && e.provenance.confirmed === true;
+  const confirmed = (e) => e.provenance && e.provenance.confirmed === true && tierOf(e) !== 'never';
   const out = [];
   out.push(`# ${id.name || 'NAME'}`);
   const contact = [joinLoc(id.location), id.email, id.phone, ...(id.links || []).map((l) => (l && l.url) || '')].filter(Boolean).join(' · ');
@@ -334,6 +379,17 @@ export function draftResume(profile, { job = null, match = null } = {}) {
   out.push('## Summary', '');
   const summaryIds = ['summary', ...(profile.experience || []).filter(confirmed).slice(0, 2).map((e) => e.id)];
   out.push(`${(profile.summary && profile.summary.pitch) || 'TODO: two or three sentences that answer the posting, built only from facts below.'} <!-- fact: ${summaryIds.join(', ')} -->`, '');
+  const certsBlock = () => {
+    const certs = (profile.certifications || []).filter(confirmed);
+    if (!certs.length) return;
+    out.push('## Certifications and licenses', '');
+    for (const c of certs) {
+      if (isExpired(c)) { out.push(`<!-- ${c.name} (${c.id}) expired ${c.expires}: left out; ask whether it was renewed -->`); continue; }
+      out.push(`- ${c.name}${c.issuer ? `, ${c.issuer}` : ''}${c.date ? `, ${String(c.date).slice(0, 4)}` : ''}${c.expires ? ` (valid through ${fmtMonth(c.expires)})` : ''} <!-- fact: ${c.id} -->`);
+    }
+    out.push('');
+  };
+  if (chosen === 'credentials-first') certsBlock();
   // Skills grouped by category, job-relevant first.
   const skills = (profile.skills || []).filter(confirmed);
   if (skills.length) {
@@ -366,12 +422,7 @@ export function draftResume(profile, { job = null, match = null } = {}) {
     for (const d of edu) out.push(`- ${[d.degree, d.field].filter(Boolean).join(' in ')}${d.degree || d.field ? ', ' : ''}${d.institution}${d.end ? `, ${String(d.end).slice(0, 4)}` : ''}${d.honors ? ` (${d.honors})` : ''} <!-- fact: ${d.id} -->`);
     out.push('');
   }
-  const certs = (profile.certifications || []).filter(confirmed);
-  if (certs.length) {
-    out.push('## Certifications', '');
-    for (const c of certs) out.push(`- ${c.name}${c.issuer ? `, ${c.issuer}` : ''}${c.date ? `, ${String(c.date).slice(0, 4)}` : ''} <!-- fact: ${c.id} -->`);
-    out.push('');
-  }
+  if (chosen !== 'credentials-first') certsBlock();
   const projects = (profile.projects || []).filter(confirmed).map((p) => ({ p, r: relevance(p, 'projects', matchers, jobTerms) })).filter((x) => x.r > 0 || !job);
   if (projects.length) {
     out.push('## Projects', '');
@@ -438,13 +489,34 @@ function mdToHtml(md, title) {
   return `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><title>${esc(title)}</title>\n<style>\nbody{font-family:Georgia,"Times New Roman",serif;font-size:11pt;line-height:1.35;color:#111;max-width:7.5in;margin:0.6in auto;padding:0 0.25in}\nh1{font-size:20pt;margin:0 0 2pt}h2{font-size:12pt;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #999;margin:14pt 0 4pt;padding-bottom:2pt}h3{font-size:11pt;margin:8pt 0 0}\np{margin:2pt 0}ul{margin:2pt 0 4pt 1.1em;padding:0}li{margin:1pt 0}a{color:inherit;text-decoration:none}\n@media print{body{margin:0;max-width:none}@page{margin:0.6in}}\n</style></head><body>\n${body.join('\n')}\n</body></html>\n`;
 }
 
+/** JSON Resume (https://jsonresume.org/schema) built from the profile and the cited draft's chosen ids. */
+export function jsonResume(profile, draftText, { include = [] } = {}) {
+  const id = profile.identity || {};
+  const ids = new Set(parseMarkers(draftText.replace(/\n/g, ' ')));
+  const want = (e) => ids.has(e.id) && tierOf(e) !== 'never';
+  const loc = id.location && typeof id.location === 'object' ? id.location : {};
+  const profiles = (id.links || []).filter((l) => l && l.url).map((l) => ({ network: l.label || new URL(l.url).hostname.replace(/^www\./, ''), url: l.url }));
+  const toYM = (d) => (d && !/present/i.test(d) ? String(d) : undefined);
+  return {
+    $schema: 'https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json',
+    basics: { name: id.name || '', label: id.headline || '', email: id.email || '', phone: id.phone || '', summary: (profile.summary && profile.summary.pitch) || '', location: { city: loc.city || '', region: loc.region || '', countryCode: loc.country || '' }, profiles },
+    work: (profile.experience || []).filter(want).map((e) => ({ name: e.employer, position: e.title, location: e.location || '', startDate: toYM(e.start), endDate: toYM(e.end), summary: e.scope || '', highlights: (e.achievements || []).filter(want).map((a) => a.text) })),
+    education: (profile.education || []).filter(want).map((d) => ({ institution: d.institution, studyType: d.degree || '', area: d.field || '', startDate: toYM(d.start), endDate: toYM(d.end) })),
+    certificates: (profile.certifications || []).filter(want).map((c) => ({ name: c.name, issuer: c.issuer || '', date: toYM(c.date) })),
+    skills: (profile.skills || []).filter(want).map((s) => ({ name: s.name, level: s.level || '', keywords: s.aliases || [] })),
+    projects: (profile.projects || []).filter(want).map((p) => ({ name: p.name, description: p.summary || '', url: p.url || '', keywords: p.stack || [] })),
+    languages: (profile.languages || []).filter(want).map((l) => ({ language: l.name, fluency: l.level || '' })),
+    meta: { generated_by: generatedBy(), include },
+  };
+}
+
 export function pandocAvailable() {
   const r = spawnSync('pandoc', ['--version'], { encoding: 'utf8' });
   return r.status === 0 ? (r.stdout.split('\n')[0] || 'pandoc') : null;
 }
 
 /** Strip citations and write the deliverables next to the draft. Returns the files written. */
-export function finalize(draftPath, { formats = ['md', 'txt', 'html'], title, docx = false } = {}) {
+export function finalize(draftPath, { formats = ['md', 'txt', 'html'], title, docx = false, profile = null, include = [] } = {}) {
   const text = readText(draftPath);
   const plain = stripComments(text).replace(/\n{3,}/g, '\n\n').trim() + '\n';
   const base = draftPath.replace(/\.md$/i, '');
@@ -453,6 +525,7 @@ export function finalize(draftPath, { formats = ['md', 'txt', 'html'], title, do
   if (formats.includes('md')) { writeFileAtomic(`${base}.final.md`, plain); files.push(`${base}.final.md`); }
   if (formats.includes('txt')) { writeFileAtomic(`${base}.txt`, mdToText(plain)); files.push(`${base}.txt`); }
   if (formats.includes('html')) { writeFileAtomic(`${base}.html`, mdToHtml(plain, name)); files.push(`${base}.html`); }
+  if (formats.includes('json') && profile) { writeFileAtomic(`${base}.json`, `${JSON.stringify(jsonResume(profile, text, { include }), null, 2)}\n`); files.push(`${base}.json`); }
   let docxResult = null;
   if (docx || formats.includes('docx')) {
     if (pandocAvailable()) {

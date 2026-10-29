@@ -15,7 +15,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SKILL = path.join(ROOT, 'skills', NAME);
 const { values: opt } = parseArgs({ options: { only: { type: 'string' }, json: { type: 'boolean' } } });
 const SHIPPED_TOP = new Set(['SKILL.md', 'references', 'scripts', 'assets']);
-const LIMITS = { files: 60, fileBytes: 2 * 1024 * 1024, skillLines: 150, refLines: 300, descriptionChars: 1024, compatibilityChars: 500, evalFiles: 12 };
+const LIMITS = { files: 80, fileBytes: 2 * 1024 * 1024, skillLines: 160, refLines: 300, descriptionChars: 1024, compatibilityChars: 500, evalFiles: 12 };
+/** Playbooks that describe script steps must carry a "Without Node" (guidance-only) section. */
+const NEEDS_WITHOUT_NODE = ['profile.md', 'resume.md', 'storage.md', 'job-intake.md', 'setup.md', 'watch.md'];
 
 const read = (p) => fs.readFileSync(p, 'utf8');
 const exists = (p) => { try { fs.statSync(p); return true; } catch { return false; } };
@@ -78,6 +80,65 @@ area('footprint', (p, n) => {
   for (const token of ['$ARGUMENTS', '${CLAUDE_SKILL_DIR}', '!`']) if (skill.includes(token)) p.push(`SKILL.md uses the host substitution ${token}`);
 });
 
+area('playbooks', (p, n) => {
+  for (const r of NEEDS_WITHOUT_NODE) {
+    const f = path.join(SKILL, 'references', r);
+    if (!exists(f)) { p.push(`${r} missing`); continue; }
+    const text = read(f);
+    if (!/^## (?:Without Node|Manual fallback \(guidance-only mode\))/m.test(text)) p.push(`${r}: no "Without Node" section`);
+  }
+  const skill = read(path.join(SKILL, 'SKILL.md'));
+  for (const must of ['Step 0', 'gate record', 'never submits', 'GATE_REQUIRED']) if (!skill.includes(must)) p.push(`SKILL.md does not mention "${must}"`);
+  for (const [f, must] of [['interview.md', 'Never ask for'], ['watch.md', 'refused'], ['privacy.md', 'never'], ['setup.md', '--confirm']]) if (!read(path.join(SKILL, 'references', f)).includes(must)) p.push(`${f} does not mention "${must}"`);
+  for (const f of fs.readdirSync(path.join(SKILL, 'references')).filter((x) => x.endsWith('.md'))) {
+    const text = read(path.join(SKILL, 'references', f));
+    for (const m of text.matchAll(/```bash\n([\s\S]*?)```/g)) if (/\/tmp\/|\/home\/[a-z]+\//.test(m[1])) p.push(`${f}: a bash snippet hard-codes a local path`);
+  }
+  n.push(`${NEEDS_WITHOUT_NODE.length} playbooks with guidance-only sections`);
+});
+
+area('pii-honeypots', (p, n) => {
+  // Every persona plants PII; no fixture profile, eval prompt or README may carry a planted value at professional tier.
+  const personas = fs.readdirSync(path.join(ROOT, 'tests', 'live', 'personas')).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(read(path.join(ROOT, 'tests', 'live', 'personas', f))));
+  let planted = 0;
+  for (const per of personas) {
+    const hp = (per.facts && per.facts.honeypots) || {};
+    if (!Object.keys(hp).length) p.push(`${per.name}: no honeypots`);
+    if (!per.deterministic || !per.deterministic.answers || per.deterministic.answers.length < 8) p.push(`${per.name}: no deterministic answers`);
+    for (const v of per.ground_truth.never_in_professional || []) { planted += 1; if (!JSON.stringify(per.deterministic || {}).includes(v) && !JSON.stringify(hp).includes(v)) p.push(`${per.name}: honeypot "${v}" is never volunteered`); }
+  }
+  const det = JSON.parse(read(path.join(SKILL, 'assets', 'pii', 'detectors.json')));
+  for (const d of det.detectors) { try { new RegExp(d.pattern, d.flags || ''); } catch (err) { p.push(`detector ${d.id}: ${err.message}`); } }
+  const policy = JSON.parse(read(path.join(SKILL, 'assets', 'export-policy.json')));
+  for (const k of ['resume', 'cover', 'export', 'board', 'notification', 'log']) if (!policy.profiles[k]) p.push(`export policy lacks profile ${k}`);
+  for (const f of fs.readdirSync(path.join(ROOT, 'tests', 'fixtures', 'profiles'))) {
+    const prof = JSON.parse(read(path.join(ROOT, 'tests', 'fixtures', 'profiles', f)));
+    const text = JSON.stringify(prof);
+    for (const re of [/\b\d{3}-\d{2}-\d{4}\b/, /date of birth/i, /\d+ [A-Z][a-z]+ (?:Street|Avenue|Court)\b/]) if (re.test(text) && !text.includes('"tier":"never"') && !text.includes('"tier": "never"')) p.push(`${f}: planted PII outside tier never`);
+  }
+  n.push(`${personas.length} personas, ${planted} planted values, ${det.detectors.length} detectors`);
+});
+
+area('ledger', (p, n) => {
+  const f = path.join(ROOT, 'evals', 'ledger', 'ledger.jsonl');
+  if (!exists(path.join(ROOT, 'evals', 'ledger', 'README.md'))) p.push('evals/ledger/README.md missing');
+  if (!exists(f)) { n.push('no rows yet'); return; }
+  const rows = read(f).split(/\r?\n/).filter(Boolean).map((l, i) => { try { return JSON.parse(l); } catch { p.push(`row ${i + 1} is not JSON`); return null; } }).filter(Boolean);
+  const classes = new Set([null, 'skill', 'grader', 'fixture', 'host-flake', 'model-drift']);
+  rows.forEach((r, i) => {
+    for (const k of ['at', 'git_sha', 'skill_version', 'runner', 'host', 'item', 'passed']) if (!(k in r)) p.push(`row ${i + 1}: missing ${k}`);
+    if (!classes.has(r.failure_class ?? null)) p.push(`row ${i + 1}: bad failure_class ${r.failure_class}`);
+    if (!['plugin-eval', 'trigger-set', 'interview-sim'].includes(r.runner)) p.push(`row ${i + 1}: bad runner ${r.runner}`);
+  });
+  const sha = (spawnSync('git', ['-C', ROOT, 'rev-parse', '--short=12', 'HEAD'], { encoding: 'utf8' }).stdout || '').trim();
+  const latest = new Map();
+  for (const r of rows) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
+  const current = [...latest.values()];
+  const failing = current.filter((r) => r.passed === false);
+  n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row${sha ? `, HEAD ${sha}` : ''}`);
+  if (failing.length) n.push(`failing: ${failing.map((r) => r.item).join(', ')}`);
+});
+
 area('frontmatter', (p, n) => {
   const fm = frontmatter(read(path.join(SKILL, 'SKILL.md')));
   if (!fm) { p.push('no frontmatter'); return; }
@@ -123,10 +184,10 @@ area('evals', (p, n) => {
   if (set.skill !== NAME) p.push('trigger-set.json names another skill');
   const pos = set.queries.filter((q) => q.should_trigger).length;
   const neg = set.queries.length - pos;
-  if (pos < 8 || neg < 8) p.push(`trigger set has ${pos} positives and ${neg} negatives (need 8+ each)`);
+  if (pos < 12 || neg < 12) p.push(`trigger set has ${pos} positives and ${neg} negatives (need 12+ each)`);
   if (set.queries.some((q) => /TODO/.test(q.query))) p.push('trigger set contains TODO queries');
   const ids = new Set(); for (const q of set.queries) { if (ids.has(q.id)) p.push(`duplicate query id ${q.id}`); ids.add(q.id); }
-  const cases = fs.readdirSync(ev, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name);
+  const cases = fs.readdirSync(ev, { withFileTypes: true }).filter((e) => e.isDirectory() && e.name !== 'ledger').map((e) => e.name);
   for (const c of cases) {
     const dir = path.join(ev, c);
     const hasPrompt = exists(path.join(dir, 'prompt.md'));
@@ -159,7 +220,7 @@ area('evals', (p, n) => {
 
 area('readme', (p, n) => {
   const text = read(path.join(ROOT, 'README.md'));
-  for (const h of ['## 🧭 What it is', '## ✨ Features', '## 🚀 Install', '## 🎛️ Use', '## 📁 Where your data lives', '## 🧪 Testing the skill itself']) if (!text.includes(h)) p.push(`missing section ${h}`);
+  for (const h of ['## 🧭 What it is', '## ✨ Features', '## 🚀 Install', '## 🎛️ Use', '## 📁 Where your data lives', '## 🧪 Testing the skill itself', '## 🔒 Privacy', '## 📡 Job boards']) if (!text.includes(h)) p.push(`missing section ${h}`);
   for (const m of text.matchAll(/\]\(([^)#\s]+)(#[^)]*)?\)/g)) { const t = m[1]; if (/^[a-z]+:/.test(t)) continue; if (!exists(path.join(ROOT, t))) p.push(`broken link ${t}`); }
   if (/\/home\/|C:\\Users/.test(text)) p.push('absolute local path in README');
   n.push(`${text.split('\n').length} lines`);

@@ -31,12 +31,19 @@ export function cp(args, { store, cwd, input, env = {} } = {}) {
   return { status: r.status, stdout: r.stdout, stderr: r.stderr, json };
 }
 
-/** A store seeded with a fixture profile; returns the store directory. */
-export function seededStore(name = 'senior-swe') {
+/** A store seeded with a fixture profile, with the automation preference recorded; returns the store directory. */
+export function seededStore(name = 'senior-swe', { gate = true, automation = 'draft' } = {}) {
   const store = path.join(tmpDir(), 'store');
   const init = cp(['store', 'init', '--json'], { store });
   if (init.status !== 0) throw new Error(`store init failed: ${init.stderr}`);
+  if (gate) recordGate(store, automation);
   const imp = cp(['store', 'import', fixture('profiles', `${name}.json`), '--json'], { store });
   if (imp.status !== 0) throw new Error(`store import failed: ${imp.stderr}`);
   return store;
+}
+
+export function recordGate(store, automation = 'draft', statement = 'Draft things for me to review; never send anything on my behalf.') {
+  const r = cp(['gate', 'record', '--automation', automation, '--statement', statement, '--confirm', '--json'], { store });
+  if (r.status !== 0) throw new Error(`gate record failed: ${r.stderr} ${r.stdout}`);
+  return r.json;
 }

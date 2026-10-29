@@ -17,6 +17,12 @@ No shell is available, so use the guidance-only path of the career-profiler skil
 career profile and a posting. Tell me how well I match and what you need from me before you write
 the resume. Do not write the resume yet.
 
+My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
+
+```json
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+```
+
 My profile:
 
 ```json

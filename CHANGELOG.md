@@ -5,6 +5,63 @@ All notable changes to the `career-profiler` skill. The format follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). The top entry always equals
 `metadata.version` in [SKILL.md](skills/career-profiler/SKILL.md) and the Git tag `v<version>`.
 
+## [0.2.0] - 2026-10-29
+
+The merged plan: two independent plans were written against the owner's requirements, cross-
+referenced with 0.1.0, and the common denominator built (`plans` repository,
+`robertlemmermann_career-profiler/merged-plan.md`).
+
+### Added
+
+- **The automation-preference gate.** `preferences.json` (`career-preferences/1`: `automation`
+  off, alert, draft or prepare; `submit: never`; the user's verbatim statement; a hash) echoed
+  in the changelog and the manifest. `gate`, `gate record --confirm`, `gate options`, `gate
+  probe`. Every data command exits 1 `GATE_REQUIRED` until the record verifies; no bypass flag;
+  `--yes` is never confirmation. A corrupt record is quarantined with a `remake_reason` and must
+  be re-made from a fresh statement; manifest drift or a failed daily write probe makes the store
+  `degraded`.
+- **Self-fix.** `MANIFEST.json` with sha256 of every file and a store layout version (a newer
+  store is refused); `fsync` before every rename and a copy-and-verify fallback on Windows;
+  `doctor --repair` recreates directories and permissions, truncates a broken changelog chain
+  into `quarantine/`, rebuilds the manifest, logs each repair and reports
+  `repaired_but_unverified` until the gate passes again.
+- **Job sources.** `assets/sources/catalog.json` (Greenhouse, Lever, Ashby, SmartRecruiters,
+  Workable, Remotive, Arbeitnow, USAJobs, Adzuna, Hacker News, RSS, alert emails, files) and
+  `watch sources|add|list|remove|poll|run|inbox|schedule --show`. Polling needs no model;
+  listings are deduplicated, parsed, matched and put in `inbox/`; `draft` writes application
+  folders, `prepare` adds cited screening answers. Indeed, Glassdoor and LinkedIn are refused
+  (`REFUSED_TOS_AUTOMATION`) with the alternative. Catalog rate limits, `--dry-run` URLs, a
+  request that would carry a profile value is never sent.
+- **PII controls.** `tier` on every fact (professional, restricted, never) with defaults;
+  `assets/pii/detectors.json` (19 detectors) and `assets/export-policy.json`; `pii scan`; the
+  value of never-tier and unreleased restricted facts must not appear in any document; scans
+  inside `check`, `finalize`, `store export` and the watch request builder; `--include
+  restricted:<field>` per document, logged; masked `store show` and `fact list`; the never-asked
+  list in the interview; volunteered PII quarantined at tier `never`.
+- **Facts.** `provenance.quote`; `fact stage` and `fact commit --confirm`; `fact add` requires
+  `--confirm` or `--unconfirmed`; duplicate experience, skill and certification detection.
+- **Matching and verification.** Gap questions capped at five (`ask_now`), must-haves first;
+  declined gaps recorded as `extras` tagged `gap` and not asked again; expired credentials as
+  `expired` with a question; per-term years; `exceeds` (leadership or expertise above the cited
+  fact), `expired-credential`, `pii-block`, `pii-never`, `pii-review`; JSON Resume output;
+  credentials-first layout for regulated roles; login-wall and bot-check detection; public ATS
+  JSON endpoints for posting URLs; a 2 MB fetch cap.
+- **Playbooks.** `setup.md`, `watch.md`, `sources.md`, `privacy.md`, `release.md`; step 0 in
+  SKILL.md; "Without Node" sections in every script-driven playbook.
+- **Tests and evals.** 63 unit tests (gate, PII, watch, repair, ATS endpoints); an electrician
+  profile and posting; feed fixtures; selftest areas `playbooks`, `pii-honeypots`, `ledger`;
+  three personas with honeypot PII and deterministic answers; `interview-sim --sim
+  deterministic|model`; trigger set 12/12; `run-trigger-set --host claude|copilot|codex`;
+  eight new `claude plugin eval` cases (gate first, corrupt remake, refused auto-apply, a board
+  subscription, volunteered PII, never editing the store, storage questions, plain-language
+  routing); one llm grader per check; `evals/ledger/ledger.jsonl` appended by every runner;
+  `tests/manual-matrix.md`; a CI workflow on Linux, macOS and Windows with Node 22 and 24.
+
+### Changed
+
+- `threshold 1` and a Sonnet judge by default in `tests/run-evals.mjs`.
+- Node 22+ stated in `compatibility`; the version guard matches.
+
 ## [0.1.0] - 2026-10-29
 
 First release: a career fact store built by interview, and resumes plus cover letters tailored

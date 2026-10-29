@@ -20,6 +20,13 @@ export const JOB_SCHEMA = 'career-job/1';
 export const MATCH_SCHEMA = 'career-match/1';
 export const CHECK_SCHEMA = 'career-resume-check/1';
 export const STORE_FILE = 'profile.json';
+export const PREFS_FILE = 'preferences.json';
+export const MANIFEST_FILE = 'MANIFEST.json';
+export const PREFS_SCHEMA = 'career-preferences/1';
+export const MANIFEST_SCHEMA = 'career-manifest/1';
+/** Bump when the on-disk layout or the hashing of records changes; an older script refuses a newer store. */
+export const STORE_VERSION = 2;
+export const AUTOMATION_VALUES = ['off', 'alert', 'draft', 'prepare'];
 
 export const EXIT = Object.freeze({ OK: 0, FINDINGS: 1, USAGE: 2, ENV: 3, UNVERIFIABLE: 4 });
 
@@ -124,13 +131,31 @@ export function readJson(p) {
 }
 export function tryJson(text) { try { return JSON.parse(text); } catch { return undefined; } }
 
-/** Write atomically: temp file next to the target, then rename. */
+/** Write atomically: temp file next to the target, fsync, then rename (retried on Windows locks). */
 export function writeFileAtomic(file, content, { mode } = {}) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
-  fs.writeFileSync(tmp, content, mode != null ? { mode } : undefined);
-  fs.renameSync(tmp, file);
+  const fd = fs.openSync(tmp, 'w', mode != null ? mode : 0o666);
+  try { fs.writeFileSync(fd, content); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+  let lastErr = null;
+  for (let i = 0; i < 3; i++) {
+    try { fs.renameSync(tmp, file); lastErr = null; break; } catch (err) { lastErr = err; if (!IS_WINDOWS || !['EPERM', 'EBUSY', 'EACCES'].includes(err.code)) break; const until = Date.now() + 50 * (i + 1); while (Date.now() < until) { /* short wait for a lock to clear */ } }
+  }
+  if (lastErr) {
+    // Windows: a synced folder or an open handle can block the rename; fall back to copy-and-verify.
+    fs.copyFileSync(tmp, file);
+    const back = fs.readFileSync(file, 'utf8');
+    try { fs.unlinkSync(tmp); } catch {}
+    if (back !== String(content)) throw unverifiable('WRITE_FAILED', `could not write ${file}: ${lastErr.message}`);
+  }
 }
+
+/** Canonical JSON (sorted keys) for hashing records. */
+export function canonicalJson(value) {
+  const sort = (v) => (Array.isArray(v) ? v.map(sort) : v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, sort(v[k])])) : v);
+  return JSON.stringify(sort(value));
+}
+export const recordHash = (record) => sha256(canonicalJson({ ...record, hash: undefined }));
 export const writeJsonAtomic = (file, value, opts) => writeFileAtomic(file, `${asciiJson(value)}\n`, opts);
 
 /** Read stdin fully (used for `-` inputs). */

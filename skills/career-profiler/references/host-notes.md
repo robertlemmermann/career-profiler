@@ -29,15 +29,18 @@ option, invalid fact, a finalize of a failing draft), `3` environment (old Node,
 
 | Command | Result (`--json`) |
 |---|---|
-| `store init [--name N] [--force]` | `{ store, profile, name }` |
+| `gate [check]` · `gate options` · `gate show` · `gate probe` | `{ ok, state: ok\|missing\|corrupt\|degraded, remake_reason, detail, hint, record, options }`, exit 1 unless ok |
+| `gate record --automation off\|alert\|draft\|prepare --statement s --confirm` | `{ recorded, check }`; exit 2 without `--confirm`; exit 4 when the fresh record does not verify |
+| `store init [--name N] [--force]` | `{ store, profile, name, next }` |
 | `store path` | `{ store, resolved_from, exists, files }` |
 | `store show` | the whole profile document |
-| `store validate` | `{ ok, validation: { errors[], warnings[] }, changelog: { entries, ok, problems[] }, unconfirmed[] }`, exit 1 when not ok |
+| `store validate` | `{ ok, validation, changelog, manifest: { ok, drift[] }, gate: { state }, unconfirmed[] }`, exit 1 when not ok |
 | `store changelog` · `store backup` · `store accept` | entries; the backup write; the accept entry |
-| `store export [--format md\|json] [--out f]` | `{ format, content }` or `{ out }` |
+| `store show [--tier restricted]` · `store export [--format md\|json] [--out f] [--include restricted:<field>]` | masked view; `{ format, content, pii_reviews, include }` or `{ out }`; exit 2 on a PII block or a disallowed include |
 | `store import <profile.json>` | the write entry |
-| `store sync [--message m]` | `{ synced, committed, reason }` |
-| `fact add <section> --data '<json>' \| --file f [--parent id] [--source s] [--unconfirmed]` | `{ added[], write }`; `--data` may be one object or an array |
+| `store sync [--message m]` · `store sync init [--remote url]` | `{ synced, committed, reason }` · `{ initialized, remote }` |
+| `fact stage <section> --data '<json>' [--parent id] [--quote q]` · `fact staged` · `fact commit <T-id> --confirm` | `{ staged, next }` · `{ staged[] }` · `{ added[], never_tier[], write }` |
+| `fact add <section> --data '<json>' \| --file f --confirm \| --unconfirmed [--parent id] [--source s] [--quote q] [--tier t]` | `{ added[], never_tier[], write }`; `--data` may be one object or an array; exit 2 without `--confirm` or `--unconfirmed`, or on a duplicate |
 | `fact update <id> --data '<json>'` | `{ updated, write }`; `null` removes a field; singletons by name (`identity`) |
 | `fact remove <id>` · `fact confirm <id>... [--no]` | `{ removed }` · `{ facts[] }` |
 | `fact list [section]` · `fact get <id>` | `{ facts: [{ id, kind, confirmed, summary }], unconfirmed[] }` · `{ id, kind, parent, fact }` |
@@ -45,12 +48,16 @@ option, invalid fact, a finalize of a failing draft), `3` environment (old Node,
 | `interview next [--max n] [--focus id\|prefix]` | `{ score, resume_ready, remaining, questions[] }` |
 | `interview done <key>...` | `{ asked[] }` |
 | `job parse <file\|url\|-> [--title t] [--company c] [--out f]` | the `career-job/1` document |
-| `match <job.json> [--out f]` | the `career-match/1` document; exit 1 when a must-have keyword is missing |
-| `app new <job.json>` · `app list` | `{ dir, files[], fit, gaps[] }` · `{ applications[] }` |
-| `resume draft --job j [--match m] [--out f]` · `cover-letter draft ...` | `{ out, content }` |
-| `resume check <f.md> [--job j] [--match m] [--report r]` · `cover-letter check ...` | the `career-resume-check/1` report; exit 1 on `FAIL` |
-| `resume finalize <f.md> [--job j] [--formats md,txt,html,docx]` · `cover-letter finalize ...` | `{ files[], docx, words, verdict, findings[] }`; exit 2 for a failing draft |
-| `doctor` | `{ ok, store, profile, items: [{ name, status, detail }] }` |
+| `match <job.json> [--out f]` | the `career-match/1` document (`gaps[]` with `ask_now`, `declined[]`, `years.by_term[]`); exit 1 when a must-have keyword is missing |
+| `app new <job.json> [--layout standard\|credentials-first]` · `app list` | `{ dir, files[], layout, fit, gaps[] }` · `{ applications[] }` |
+| `resume draft --job j [--match m] [--out f] [--layout l]` · `cover-letter draft ...` | `{ out, content }` |
+| `resume check <f.md> [--job j] [--match m] [--report r] [--include restricted:<field>]` · `cover-letter check ...` | the `career-resume-check/1` report (`counts.pii_blocks`); exit 1 on `FAIL` |
+| `resume finalize <f.md> [--job j] [--formats md,txt,html,json,docx] [--include ...]` · `cover-letter finalize ...` | `{ files[], docx, words, verdict, findings[], include }`; exit 2 for a failing draft |
+| `pii scan <file\|-> [--profile p] [--include ...]` · `pii policy` | `{ hits: [{ detector, label, severity, line, sample }], blocks, reviews }`, exit 1 on a block |
+| `watch sources` · `watch add --source f [...]` · `watch list` · `watch remove <S-id>` | the catalog · `{ subscription, request, key_missing }` (exit 1 `REFUSED_TOS_AUTOMATION` for refused boards) · `{ automation, subscriptions[] }` |
+| `watch poll [--only id] [--force] [--dry-run] [--fixture f]` · `watch run` | the `career-watch-run/1` report (`inbox[]`, `drafted[]`, `skipped[]`, `errors[]`, `notification[]`); exit 1 when there are new matches |
+| `watch inbox [--ack id --note n]` · `watch schedule --show [--every h]` | `{ items[] }` · the scheduler snippets |
+| `doctor [--repair]` | `{ ok, store, gate, profile, repairs[], items: [{ name, status, detail }] }` |
 
 ## 3. Fact sections and fields
 
@@ -72,9 +79,10 @@ option, invalid fact, a finalize of a failing draft), `3` environment (old Node,
 | `extras` (fact, other) | text | tags[], notes |
 | `documents` | path | kind, added, notes |
 
-Dates: `YYYY`, `YYYY-MM` or `YYYY-MM-DD`. Ids: `exp-01`, `ach-01-02`, `skill-react`,
+Every entry may carry `tier: professional | restricted | never` (default professional); see
+[privacy](privacy.md). Dates: `YYYY`, `YYYY-MM` or `YYYY-MM-DD`. Ids: `exp-01`, `ach-01-02`, `skill-react`,
 `edu-01`, `cert-01`, `proj-01`, `pub-01`, `award-01`, `vol-01`, `lang-01`, `fact-01`,
-`doc-01`. Provenance: `{ source: interview|document|user|import, confirmed, at, note }`.
+`doc-01`. Provenance: `{ source: interview|document|user|import, confirmed, at, note, quote }`.
 
 ## 4. Documents the scripts write
 
@@ -93,6 +101,10 @@ Dates: `YYYY`, `YYYY-MM` or `YYYY-MM-DD`. Ids: `exp-01`, `ach-01-02`, `skill-rea
 | Code | Severity | Meaning |
 |---|---|---|
 | `uncited` | fail | a claim line without `<!-- fact: ... -->` |
+| `exceeds` | fail | a leadership or ownership verb, or an expertise level, that the cited facts do not record |
+| `expired-credential` | fail | an expired certification cited as current |
+| `pii-block` · `pii-never` | fail | personal data a detector blocks, the value of a never-tier or unreleased restricted fact, or a never-tier citation |
+| `pii-review` | finding | marital, family, religion or health terms, a second email or phone: decide with the user |
 | `unknown-fact` · `unconfirmed-fact` | fail | a cited id that does not exist, or is not confirmed |
 | `number-unsupported` | fail | a number in the line that none of the cited facts contains |
 | `title-mismatch` · `employer-mismatch` · `date-mismatch` | fail | a role header or date line that differs from the experience entry |

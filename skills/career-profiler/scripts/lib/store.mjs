@@ -12,11 +12,11 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-  STORE_FILE, PROFILE_SCHEMA, exists, isDir, readJson, writeJsonAtomic, writeFileAtomic, nowIso, sha256, asciiJson,
-  homeDir, envError, usageError, unverifiable, generatedBy, tryJson,
+  STORE_FILE, PREFS_FILE, MANIFEST_FILE, MANIFEST_SCHEMA, STORE_VERSION, PROFILE_SCHEMA, exists, isDir, readJson, writeJsonAtomic,
+  writeFileAtomic, nowIso, sha256, asciiJson, homeDir, envError, usageError, unverifiable, generatedBy, tryJson, skillVersion,
 } from './core.mjs';
 import {
-  SECTIONS, CHILDREN, SINGLETONS, emptyProfile, validateProfile, indexProfile, nextId, skillId, defaultProvenance,
+  SECTIONS, CHILDREN, SINGLETONS, RESTRICTED_FIELDS, RESTRICTED_ENTRY_FIELDS, tierOf, emptyProfile, validateProfile, indexProfile, nextId, skillId, defaultProvenance,
 } from './schema.mjs';
 
 export const DEFAULT_STORE_NAME = '.career-profiler';
@@ -41,11 +41,19 @@ const safeRead = (f) => { try { return fs.readFileSync(f, 'utf8'); } catch { ret
 export const storePaths = (dir) => ({
   dir,
   profile: path.join(dir, STORE_FILE),
+  preferences: path.join(dir, PREFS_FILE),
+  manifest: path.join(dir, MANIFEST_FILE),
   changelog: path.join(dir, 'changelog.jsonl'),
   backups: path.join(dir, 'backups'),
   documents: path.join(dir, 'documents'),
   applications: path.join(dir, 'applications'),
+  quarantine: path.join(dir, 'quarantine'),
+  staging: path.join(dir, 'staging'),
+  watch: path.join(dir, 'watch'),
+  inbox: path.join(dir, 'inbox'),
+  probe: path.join(dir, '.probe'),
 });
+export const STORE_DIRS = ['backups', 'documents', 'applications', 'quarantine', 'staging', 'watch', 'inbox'];
 
 export function storeExists(dir) { return exists(storePaths(dir).profile); }
 
@@ -53,13 +61,76 @@ export function storeExists(dir) { return exists(storePaths(dir).profile); }
 export function initStore(dir, { name, force = false } = {}) {
   const paths = storePaths(dir);
   if (exists(paths.profile) && !force) throw usageError(`a profile already exists at ${paths.profile} (use --force to replace it; a backup is kept)`);
-  for (const d of [paths.dir, paths.backups, paths.documents, paths.applications]) fs.mkdirSync(d, { recursive: true, mode: 0o700 });
+  ensureDirs(paths);
   const before = exists(paths.profile) ? backup(paths) : null;
   const profile = emptyProfile({ name });
   writeJsonAtomic(paths.profile, profile, { mode: 0o600 });
   appendChangelog(paths, { op: 'init', ids: [], before_sha: before ? before.sha : null, after_sha: profileSha(profile), note: force ? 'replaced' : 'created' });
   writeGitignore(paths);
+  writeManifest(paths);
   return { paths, profile };
+}
+
+export function ensureDirs(paths) {
+  fs.mkdirSync(paths.dir, { recursive: true, mode: 0o700 });
+  for (const d of STORE_DIRS) fs.mkdirSync(path.join(paths.dir, d), { recursive: true, mode: 0o700 });
+}
+
+// ---------------------------------------------------------------------------
+// Manifest: sha256 of every store file, written last after every write.
+
+const MANIFEST_FILES = [STORE_FILE, PREFS_FILE, 'changelog.jsonl'];
+export function manifestEntries(paths) {
+  const files = {};
+  for (const name of MANIFEST_FILES) {
+    const f = path.join(paths.dir, name);
+    if (exists(f)) files[name] = sha256(fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n'));
+  }
+  return files;
+}
+export function writeManifest(paths, extra = {}) {
+  const prev = readManifest(paths) || {};
+  const m = { schema: MANIFEST_SCHEMA, store_version: STORE_VERSION, skill_version: skillVersion(), written_at: nowIso(), last_probe_at: prev.last_probe_at || null, ...extra, files: manifestEntries(paths) };
+  writeJsonAtomic(paths.manifest, m, { mode: 0o600 });
+  return m;
+}
+/** Merge fields into the manifest without recomputing file hashes (probe bookkeeping). */
+export function updateManifestFields(paths, extra) {
+  const m = readManifest(paths);
+  if (!m) return writeManifest(paths, extra);
+  const next = { ...m, ...extra };
+  writeJsonAtomic(paths.manifest, next, { mode: 0o600 });
+  return next;
+}
+export function readManifest(paths) {
+  if (!exists(paths.manifest)) return null;
+  return tryJson(safeRead(paths.manifest)) || null;
+}
+/** Compare the manifest with the files: `{ ok, missing_manifest, drift[] }`. */
+export function verifyManifest(paths) {
+  const m = readManifest(paths);
+  if (!m) return { ok: false, missing_manifest: true, drift: [], store_version: null };
+  const now = manifestEntries(paths);
+  const drift = [];
+  for (const [name, h] of Object.entries(now)) if (m.files && m.files[name] && m.files[name] !== h) drift.push(name);
+  for (const name of Object.keys(now)) if (!m.files || !(name in m.files)) drift.push(`${name} (not listed)`);
+  return { ok: drift.length === 0, missing_manifest: false, drift, store_version: m.store_version ?? null, last_probe_at: m.last_probe_at || null };
+}
+/** Exit 3 when the store was written by a newer layout than this script knows. */
+export function checkStoreVersion(paths) {
+  const m = readManifest(paths);
+  const v = m && typeof m.store_version === 'number' ? m.store_version : null;
+  if (v != null && v > STORE_VERSION) throw envError('STORE_NEWER', `the store at ${paths.dir} is version ${v}; this skill (version ${skillVersion()}) knows version ${STORE_VERSION}. Update the skill before writing.`);
+  return v;
+}
+
+/** Move a file into quarantine/ with a timestamp; returns the new path (or null when absent). */
+export function quarantineFile(paths, file, label) {
+  if (!exists(file)) return null;
+  fs.mkdirSync(paths.quarantine, { recursive: true, mode: 0o700 });
+  const dest = path.join(paths.quarantine, `${label}.${nowIso().replace(/[:.]/g, '-')}${path.extname(file)}`);
+  fs.renameSync(file, dest);
+  return dest;
 }
 
 /** The sha256 of the profile file exactly as written (asciiJson + newline, LF). */
@@ -80,6 +151,7 @@ export function loadProfile(dir, { strict = true } = {}) {
   if (!exists(paths.profile)) {
     throw envError('NO_STORE', `no profile at ${paths.profile}; run "store init" (or point --store / CAREER_PROFILER_HOME at an existing store)`);
   }
+  checkStoreVersion(paths);
   const profile = readJson(paths.profile);
   const validation = validateProfile(profile);
   if (strict && !validation.ok) {
@@ -96,10 +168,12 @@ export function saveProfile(paths, profile, { op = 'update', ids = [], note, dry
   }
   profile.meta = { ...(profile.meta || {}), updated: nowIso(), generated_by: generatedBy(), sequence: ((profile.meta && profile.meta.sequence) || 0) + 1 };
   if (dryRun) return { dry_run: true, op, ids, validation };
+  checkStoreVersion(paths);
   const before = exists(paths.profile) ? backup(paths) : null;
   writeJsonAtomic(paths.profile, profile, { mode: 0o600 });
   const entry = appendChangelog(paths, { op, ids, before_sha: before ? before.sha : null, after_sha: profileSha(profile), note });
   pruneBackups(paths);
+  writeManifest(paths);
   return { ...entry, validation };
 }
 
@@ -124,7 +198,7 @@ export function readChangelog(paths) {
   return fs.readFileSync(paths.changelog, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => tryJson(l)).filter(Boolean);
 }
 
-function appendChangelog(paths, fields) {
+export function appendChangelog(paths, fields) {
   const log = readChangelog(paths);
   const prev = log.length ? log[log.length - 1].hash : null;
   const seq = log.length ? (log[log.length - 1].seq || 0) + 1 : 1;
@@ -156,7 +230,9 @@ export function verifyChangelog(paths) {
 /** Record the current file as the accepted state (after a deliberate hand edit or restore). */
 export function acceptProfile(paths, note = 'accepted current file') {
   const { profile } = loadProfile(paths.dir);
-  return appendChangelog(paths, { op: 'accept', ids: [], before_sha: null, after_sha: fileSha(fs.readFileSync(paths.profile, 'utf8')), note, sequence: profile.meta && profile.meta.sequence });
+  const e = appendChangelog(paths, { op: 'accept', ids: [], before_sha: null, after_sha: fileSha(fs.readFileSync(paths.profile, 'utf8')), note, sequence: profile.meta && profile.meta.sequence });
+  writeManifest(paths);
+  return e;
 }
 
 // ---------------------------------------------------------------------------
@@ -209,14 +285,59 @@ export function addFact(profile, kindName, data, { parent, source = 'interview',
     return entry;
   }
   const id = kind === 'skills' ? skillId(profile, rest.name) : nextId(profile, kind);
-  if (kind === 'skills' && (profile.skills || []).some((s) => s.name && rest.name && s.name.toLowerCase() === String(rest.name).toLowerCase())) {
-    throw usageError(`skill "${rest.name}" already exists (${profile.skills.find((s) => s.name.toLowerCase() === String(rest.name).toLowerCase()).id}); use "fact update"`);
-  }
+  const dup = findDuplicate(profile, kind, rest);
+  if (dup) throw usageError(`${kind === 'skills' ? 'skill' : kind.replace(/s$/, '')} "${dup.label}" already exists (${dup.id}); use "fact update ${dup.id}"`);
   const entry = { id, ...rest, provenance };
   profile[kind] = profile[kind] || [];
   profile[kind].push(entry);
   return entry;
 }
+
+const normName = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** An existing entry that the new one duplicates: same skill name; same employer and title with overlapping dates; same certification name and issuer. */
+export function findDuplicate(profile, kind, data) {
+  if (kind === 'skills') {
+    const hit = (profile.skills || []).find((s) => s.name && data.name && normName(s.name) === normName(data.name));
+    return hit ? { id: hit.id, label: hit.name } : null;
+  }
+  if (kind === 'experience') {
+    const hit = (profile.experience || []).find((e) => normName(e.employer) === normName(data.employer) && normName(e.title) === normName(data.title) && overlaps(e, data));
+    return hit ? { id: hit.id, label: `${hit.title} at ${hit.employer}` } : null;
+  }
+  if (kind === 'certifications') {
+    const hit = (profile.certifications || []).find((c) => normName(c.name) === normName(data.name) && normName(c.issuer || '') === normName(data.issuer || ''));
+    return hit ? { id: hit.id, label: hit.name } : null;
+  }
+  return null;
+}
+function overlaps(a, b) {
+  const s1 = String(a.start || ''), e1 = a.end && !/present/i.test(a.end) ? String(a.end) : '9999';
+  const s2 = String(b.start || ''), e2 = b.end && !/present/i.test(b.end) ? String(b.end) : '9999';
+  if (!s1 || !s2) return true;
+  return s1 <= e2 && s2 <= e1;
+}
+
+// ---------------------------------------------------------------------------
+// Staging: a fact is staged, shown to the user, then committed with --confirm.
+
+export function stageFacts(paths, kindName, items, { parent, source = 'interview' } = {}) {
+  resolveKind(kindName);
+  fs.mkdirSync(paths.staging, { recursive: true, mode: 0o700 });
+  const n = fs.readdirSync(paths.staging).filter((f) => /^T-\d+\.json$/.test(f)).map((f) => Number(f.slice(2, -5))).reduce((m, x) => Math.max(m, x), 0) + 1;
+  const id = `T-${String(n).padStart(3, '0')}`;
+  const record = { id, kind: kindName, parent: parent || null, source, items, staged_at: nowIso() };
+  writeJsonAtomic(path.join(paths.staging, `${id}.json`), record, { mode: 0o600 });
+  return record;
+}
+export function readStaged(paths, id) {
+  const f = path.join(paths.staging, `${id}.json`);
+  if (!exists(f)) throw usageError(`no staged facts with id "${id}" (fact stage first; "fact staged" lists them)`);
+  return readJson(f);
+}
+export function listStaged(paths) {
+  try { return fs.readdirSync(paths.staging).filter((f) => /^T-\d+\.json$/.test(f)).sort().map((f) => tryJson(safeRead(path.join(paths.staging, f)))).filter(Boolean); } catch { return []; }
+}
+export function dropStaged(paths, id) { try { fs.unlinkSync(path.join(paths.staging, `${id}.json`)); } catch {} }
 
 /** Merge fields into an existing entry (null removes a field). */
 export function updateFact(profile, id, data, { source, confirmed } = {}) {
@@ -292,6 +413,24 @@ export function summarize(kind, e) {
 // ---------------------------------------------------------------------------
 // Export and import
 
+const MASK = '[restricted]';
+/** A copy of the profile with restricted fields and never-tier entries masked (the default view). */
+export function maskProfile(p, { tiers = ['professional'], include = [] } = {}) {
+  const q = JSON.parse(JSON.stringify(p));
+  const show = (t) => tiers.includes(t || 'professional');
+  const released = (f) => show('restricted') || include.includes(f);
+  for (const [name, fields] of Object.entries(RESTRICTED_FIELDS)) if (q[name]) for (const f of fields) if (q[name][f] != null && q[name][f] !== '' && !released(f)) q[name][f] = MASK;
+  for (const name of Object.keys(SECTIONS)) {
+    q[name] = (q[name] || []).filter((e) => show(tierOf(e))).map((e) => {
+      const copy = { ...e };
+      for (const f of RESTRICTED_ENTRY_FIELDS[name] || []) if (copy[f] != null && !released(f)) copy[f] = MASK;
+      if (Array.isArray(copy.achievements)) copy.achievements = copy.achievements.filter((a) => show(tierOf(a)));
+      return copy;
+    });
+  }
+  return q;
+}
+
 /** Markdown rendering of the whole profile, every entry with its id (the audit view). */
 export function exportMarkdown(p) {
   const out = [];
@@ -354,6 +493,26 @@ export function gitInfo(dir) {
   const dedicated = path.resolve(top) === path.resolve(dir);
   const remote = spawnSync('git', ['-C', dir, 'remote', 'get-url', 'origin'], { encoding: 'utf8' });
   return { repo: true, top, dedicated, remote: remote.status === 0 ? remote.stdout.trim() : null };
+}
+
+/** `git init` the store and optionally add a remote (a dedicated private repository). */
+export function syncInit(dir, { remote } = {}) {
+  const info = gitInfo(dir);
+  if (info.repo && !info.dedicated) throw usageError(`the store sits inside another repository (${info.top}); a profile belongs in its own private repository`);
+  const run = (args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8' });
+  if (!info.repo) { const r = run(['init', '-q', '-b', 'main']); if (r.status !== 0) throw unverifiable('GIT_INIT', `git init failed: ${(r.stderr || '').trim()}`); }
+  if (remote) { if (info.remote) run(['remote', 'set-url', 'origin', remote]); else run(['remote', 'add', 'origin', remote]); }
+  const ga = path.join(dir, '.gitattributes');
+  if (!exists(ga)) writeFileAtomic(ga, '* text=auto eol=lf\n*.json text eol=lf\n*.jsonl text eol=lf\n*.md text eol=lf\n');
+  return { initialized: !info.repo, remote: remote || info.remote || null };
+}
+
+/** Files that a synced folder (Dropbox, OneDrive, iCloud) left behind after a conflict. */
+export function conflictFiles(dir) {
+  const out = [];
+  const walk = (d, depth) => { let es = []; try { es = fs.readdirSync(d, { withFileTypes: true }); } catch { return; } for (const e of es) { const f = path.join(d, e.name); if (/conflicted copy|conflict-\d|\(conflict|sync-conflict/i.test(e.name)) out.push(f); else if (e.isDirectory() && depth < 3 && !['backups', 'node_modules', '.git'].includes(e.name)) walk(f, depth + 1); } };
+  walk(dir, 0);
+  return out;
 }
 
 /** Commit the store and push, best effort; never throws for network problems. */

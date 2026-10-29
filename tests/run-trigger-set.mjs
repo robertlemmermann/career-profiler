@@ -16,14 +16,17 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+import { appendRows } from './lib/ledger.mjs';
 
 const NAME = 'career-profiler';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { values: opt } = parseArgs({ options: {
   'dry-run': { type: 'boolean' }, runs: { type: 'string' }, split: { type: 'string', default: 'all' }, only: { type: 'string' },
   model: { type: 'string' }, 'max-cost-usd': { type: 'string', default: '10' }, 'budget-per-run': { type: 'string', default: '0.6' },
-  'timeout-s': { type: 'string', default: '180' }, out: { type: 'string' }, json: { type: 'boolean' },
+  'timeout-s': { type: 'string', default: '180' }, out: { type: 'string' }, json: { type: 'boolean' }, host: { type: 'string', default: 'claude' }, ledger: { type: 'boolean', default: true },
 } });
+const HOST = opt.host;
+if (!['claude', 'copilot', 'codex'].includes(HOST)) { console.error('--host must be claude, copilot or codex'); process.exit(2); }
 const set = JSON.parse(fs.readFileSync(path.join(repo, 'evals', 'trigger-set.json'), 'utf8'));
 if (set.queries.some((q) => /TODO/.test(q.query))) { console.error('trigger set still contains TODO queries'); process.exit(2); }
 const runs = Number(opt.runs || set.runs || 3);
@@ -38,26 +41,39 @@ if (opt.only === 'pos') queries = queries.filter((q) => q.should_trigger);
 else if (opt.only === 'neg') queries = queries.filter((q) => !q.should_trigger);
 else if (opt.only) { const ids = new Set(opt.only.split(',')); queries = queries.filter((q) => ids.has(q.id)); }
 
+const SKILL_DIR_FOR = { claude: ['.claude', 'skills'], copilot: ['.github', 'skills'], codex: ['.agents', 'skills'] };
 function workspace() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cp-trigger-'));
-  const dest = path.join(dir, '.claude', 'skills', NAME);
+  const dest = path.join(dir, ...SKILL_DIR_FOR[HOST], NAME);
   fs.cpSync(path.join(repo, 'skills', NAME), dest, { recursive: true });
+  if (HOST === 'codex') spawnSync('git', ['init', '-q'], { cwd: dir });
   return dir;
 }
+/** Method per host, from agentic-developer-companion's tooling-eval playbook; confidence is reported in the result. */
+const METHOD = {
+  claude: { confidence: 'high', bin: 'claude', args: (q) => ['-p', q, '--output-format', 'stream-json', '--verbose', '--tools', 'Skill,Read,Glob,Grep', '--permission-mode', 'dontAsk', '--no-session-persistence', '--max-budget-usd', String(perRun), ...(opt.model ? ['--model', opt.model] : [])],
+    triggered: (text) => new RegExp(`"name":"Skill"[^\\n]*${NAME}`).test(text) || new RegExp(`"name":"Read"[^\\n]*skills/${NAME}/SKILL\\.md`).test(text) },
+  copilot: { confidence: 'unconfirmed', bin: 'copilot', args: (q, dir) => ['-p', q, '--output-format', 'json', '--no-ask-user', '--trust-folder', '--share', path.join(dir, 'share.md')],
+    triggered: (text, dir) => { let share = ''; try { share = fs.readFileSync(path.join(dir, 'share.md'), 'utf8'); } catch {} return new RegExp(`skills/${NAME}/SKILL\\.md`).test(text) || new RegExp(`"skill"[^\\n]*${NAME}`).test(text) || (/skill/i.test(share) && share.includes(NAME) && !share.includes(`"${NAME}"`)); } },
+  codex: { confidence: 'medium', bin: 'codex', args: (q) => ['exec', '--json', '--ephemeral', '--skip-git-repo-check', q],
+    triggered: (text) => new RegExp(`skills/${NAME}/(?:SKILL\\.md|scripts/)`).test(text) },
+};
 
 function runOnce(query, dir) {
   const env = { ...process.env };
   for (const k of Object.keys(env)) if (/^(CLAUDECODE|CLAUDE_CODE_ENTRYPOINT|COPILOT|CODEX_)/.test(k)) delete env[k];
   env.HOME = env.HOME || os.homedir();
-  const args = ['-p', query, '--output-format', 'stream-json', '--verbose', '--tools', 'Skill,Read,Glob,Grep', '--permission-mode', 'dontAsk',
-    '--no-session-persistence', '--max-budget-usd', String(perRun), ...(opt.model ? ['--model', opt.model] : [])];
+  if (HOST === 'copilot') env.COPILOT_AUTO_UPDATE = 'false';
+  const m = METHOD[HOST];
+  const args = m.args(query, dir);
   const started = Date.now();
-  const r = spawnSync('claude', args, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync(m.bin, args, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
+  if (r.error && r.error.code === 'ENOENT') { console.error(`${m.bin} is not installed`); process.exit(3); }
   const text = r.stdout || '';
-  const triggered = new RegExp(`"name":"Skill"[^\\n]*${NAME}`).test(text) || new RegExp(`"name":"Read"[^\\n]*skills/${NAME}/SKILL\\.md`).test(text);
+  const triggered = m.triggered(text, dir);
   let cost = null;
-  const m = /"total_cost_usd":\s*([0-9.]+)/.exec(text);
-  if (m) cost = Number(m[1]);
+  const costMatch = /"total_cost_usd":\s*([0-9.]+)/.exec(text);
+  if (costMatch) cost = Number(costMatch[1]);
   const error = r.error ? r.error.message : (r.status !== 0 && !text ? `exit ${r.status}: ${(r.stderr || '').slice(0, 200)}` : null);
   return { triggered, cost_usd: cost, error, ms: Date.now() - started };
 }
@@ -85,14 +101,15 @@ for (const q of queries) {
 const scored = results.filter((r) => r.passed != null);
 const score = (rows) => (rows.length ? rows.filter((r) => r.passed).length / rows.length : null);
 const report = {
-  schema: 'cp-trigger-results/1', skill: NAME, host: 'claude', runs, model: opt.model || null, dry_run: !!opt['dry-run'], partial,
+  schema: 'cp-trigger-results/1', skill: NAME, host: HOST, method_confidence: METHOD[HOST].confidence, runs, model: opt.model || null, dry_run: !!opt['dry-run'], partial,
   queries: results.length, suite_score: score(scored), threshold: set.suite_threshold ?? 0.8,
   train_score: score(scored.filter((r) => r.split === 'train')), validation_score: score(scored.filter((r) => r.split === 'validation')),
   cost_usd: Math.round(spent * 1000) / 1000, errors: results.flatMap((r) => r.runs).filter((r) => r.error).length,
   failing: scored.filter((r) => !r.passed).map((r) => ({ id: r.id, should_trigger: r.should_trigger, pass_rate: r.pass_rate })),
   results,
-  method: 'claude -p --output-format stream-json --tools Skill,Read,Glob,Grep; triggered = a Skill call naming the skill or a Read of its SKILL.md',
+  method: HOST === 'claude' ? 'claude -p --output-format stream-json --tools Skill,Read,Glob,Grep; triggered = a Skill call naming the skill or a Read of its SKILL.md' : HOST === 'copilot' ? 'copilot -p --output-format json --share; triggered = an event or share line naming the skill (unconfirmed method)' : 'codex exec --json --ephemeral; triggered = an event naming the skill folder',
 };
+if (opt.ledger && !opt['dry-run']) appendRows(results.map((r) => ({ runner: 'trigger-set', host: HOST, model: opt.model || null, judge_model: null, item: r.id, run: 1, score: r.pass_rate, passed: r.passed, checks: r.runs.map((x) => ({ triggered: x.triggered, error: x.error })), cost_usd: r.runs.reduce((s, x) => s + (x.cost_usd || 0), 0) || null, failure_class: null, note: r.should_trigger ? 'should trigger' : 'near miss' })));
 if (opt.out) fs.writeFileSync(opt.out, `${JSON.stringify(report, null, 2)}\n`);
 if (opt.json) console.log(JSON.stringify(report, null, 2));
 else {

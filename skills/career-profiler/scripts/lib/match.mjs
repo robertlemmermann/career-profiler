@@ -22,11 +22,20 @@ export function entryText(kind, e) {
  * declared skill at advanced/expert, 0.7 intermediate, 0.4 beginner, 0.6 for a stack entry or an
  * achievement/project/certification that names the term.
  */
+const todayMonth = () => nowIso().slice(0, 7);
+/** A certification whose `expires` is in the past (YYYY or YYYY-MM compared with today). */
+export const isExpired = (entry, now = todayMonth()) => !!(entry && entry.expires && String(entry.expires).slice(0, 7) < now.slice(0, String(entry.expires).length));
+
 export function buildEvidenceIndex(profile, matchers) {
   const index = new Map();
   const add = (term, hit) => { if (!index.has(term)) index.set(term, []); index.get(term).push(hit); };
   for (const [id, { kind, entry, parent }] of indexProfile(profile)) {
     if (!entry.provenance || entry.provenance.confirmed !== true) continue;
+    if (entry.tier === 'never') continue;
+    if (kind === 'certifications' && isExpired(entry)) {
+      for (const t of findTerms(entryText(kind, entry), matchers)) add(t.term, { id, kind, strength: 0.3, via: 'expired-certification', expired: true, expires: entry.expires });
+      continue;
+    }
     if (kind === 'skills') {
       const names = [entry.name, ...(entry.aliases || [])];
       const canon = new Set();
@@ -46,6 +55,7 @@ export function buildEvidenceIndex(profile, matchers) {
 
 function statusOf(hits) {
   if (!hits || !hits.length) return 'missing';
+  if (hits.every((h) => h.expired)) return 'expired';
   const best = Math.max(...hits.map((h) => h.strength));
   const skill = hits.some((h) => h.via === 'skill');
   const uses = hits.filter((h) => h.via !== 'skill').length;
@@ -53,7 +63,8 @@ function statusOf(hits) {
   return 'partial';
 }
 
-const STATUS_SCORE = { strong: 1, partial: 0.5, missing: 0 };
+const STATUS_SCORE = { strong: 1, partial: 0.5, expired: 0.25, missing: 0 };
+const MAX_GAP_QUESTIONS = 5;
 const DEGREE_RANK = { 'High school diploma': 0, 'Associate degree': 1, "Bachelor's degree": 2, "Master's degree": 3, PhD: 4 };
 
 /** The highest degree level in the profile's education entries, with its id. */
@@ -104,8 +115,12 @@ export function matchJob(profile, job) {
     // A degree requirement is met by any degree at that level or above.
     if (k.category === 'education-level' && DEGREE_RANK[k.term] != null && degree && degree.rank >= DEGREE_RANK[k.term] && !hits.length) hits = [{ id: degree.id, kind: 'education', strength: 1, via: 'degree' }];
     const status = statusOf(hits);
-    return { term: k.term, kind: k.kind, category: k.category, in_title: !!k.in_title, status, evidence: hits.map((h) => h.id), use_verbatim: status !== 'missing' };
+    return { term: k.term, kind: k.kind, category: k.category, in_title: !!k.in_title, status, evidence: hits.map((h) => h.id), use_verbatim: status !== 'missing' && status !== 'expired', expires: status === 'expired' ? hits[0].expires : undefined };
   });
+  // Declined gaps: an extras fact tagged gap and the posting's hash (or the term) means "asked, user said no".
+  const declined = new Set();
+  for (const x of profile.extras || []) if (Array.isArray(x.tags) && x.tags.includes('gap')) for (const t of x.tags) if (t !== 'gap') declined.add(t.toLowerCase());
+  const declinedFor = (term) => declined.has(`term:${term.toLowerCase()}`) || declined.has(`${job.text_sha256}:${term.toLowerCase()}`);
   const requirements = job.requirements.map((r) => {
     const terms = r.keywords.map((t) => keywords.find((k) => k.term === t)).filter(Boolean);
     let status;
@@ -130,9 +145,22 @@ export function matchJob(profile, job) {
     job: job.seniority, profile: mySen,
     verdict: !job.seniority || !mySen ? 'unknown' : SENIORITY_RANK[mySen] >= SENIORITY_RANK[job.seniority] ? 'meets' : SENIORITY_RANK[mySen] + 1 === SENIORITY_RANK[job.seniority] ? 'one-step-up' : 'stretch',
   };
-  const gaps = keywords.filter((k) => k.status === 'missing' && k.kind !== 'context').map((k) => ({
-    term: k.term, kind: k.kind,
-    question: `The posting ${k.kind === 'must' ? 'requires' : 'prefers'} ${k.term}. Do you have real experience with it that is not in your profile yet? If yes: where, for how long, and what did you do with it? If no, it stays out of the resume.`,
+  const rankKind = { must: 0, nice: 1, responsibility: 2 };
+  const gaps = keywords.filter((k) => (k.status === 'missing' || k.status === 'expired') && k.kind !== 'context' && !declinedFor(k.term))
+    .sort((a, b) => (rankKind[a.kind] ?? 3) - (rankKind[b.kind] ?? 3))
+    .map((k, i) => ({
+      term: k.term, kind: k.kind, status: k.status, ask_now: i < MAX_GAP_QUESTIONS,
+      question: k.status === 'expired'
+        ? `Your ${k.term} credential shows as expired (${k.expires}). Has it been renewed? If yes, give me the new date and I will update it; if not, it stays off the resume.`
+        : `The posting ${k.kind === 'must' ? 'requires' : 'prefers'} ${k.term}. Do you have real experience with it that is not in your profile yet? If yes: where, for how long, and what did you do with it? If no, it stays out of the resume.`,
+      decline_tag: `${job.text_sha256}:${k.term.toLowerCase()}`,
+    }));
+  const declinedTerms = keywords.filter((k) => (k.status === 'missing' || k.status === 'expired') && k.kind !== 'context' && declinedFor(k.term)).map((k) => k.term);
+  // Years per term: "4+ years of React" against skills[].years.
+  const byTerm = (job.years_mentions || []).filter((y) => y.terms && y.terms.length).flatMap((y) => y.terms.map((t) => {
+    const sk = (profile.skills || []).find((s) => s.provenance && s.provenance.confirmed && findTerms(`${s.name} ${(s.aliases || []).join(' ')}`, matchers).some((x) => x.term === t));
+    const have = sk && typeof sk.years === 'number' ? sk.years : null;
+    return { term: t, required: y.min, profile: have, verdict: have == null ? 'unknown' : have >= y.min ? 'meets' : 'short' };
   }));
   const highlights = keywords.filter((k) => k.status !== 'missing' && k.kind !== 'context').map((k) => ({ term: k.term, kind: k.kind, evidence: k.evidence.slice(0, 6) }));
   return {
@@ -140,12 +168,13 @@ export function matchJob(profile, job) {
     job: { title: job.title, company: job.company, slug: job.slug, text_sha256: job.text_sha256 },
     profile_sequence: profile.meta && profile.meta.sequence,
     fit, coverage: { must: byKind('must'), nice: byKind('nice'), responsibility: byKind('responsibility') },
-    years: { profile_total: years, required: job.years_required, verdict: job.years_required == null ? 'unknown' : years >= job.years_required ? 'meets' : 'short' },
+    years: { profile_total: years, required: job.years_required, verdict: job.years_required == null ? 'unknown' : years >= job.years_required ? 'meets' : 'short', by_term: byTerm },
     seniority,
-    keywords, requirements, highlights, gaps,
+    keywords, requirements, highlights, gaps, declined: declinedTerms, max_questions: MAX_GAP_QUESTIONS,
     guidance: [
       'Use only terms whose status is strong or partial; cite their evidence ids in the resume.',
-      'Every gap is a question for the user, never a line in the resume. Ask them before writing.',
+      `Every gap is a question for the user, never a line in the resume. Ask at most ${MAX_GAP_QUESTIONS} (ask_now), three per turn, must-haves first; record a "no" with: fact add extras --data '{"text":"No <term> experience (asked for <company>)","tags":["gap","<decline_tag>"]}' --confirm`,
+      'An expired credential is never listed as current; ask whether it was renewed.',
       'A partial term may appear where its evidence shows it; do not escalate it to an expert claim.',
     ],
   };

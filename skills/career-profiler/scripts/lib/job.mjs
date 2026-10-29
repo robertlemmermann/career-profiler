@@ -3,7 +3,7 @@
 // responsibility, recognised keywords). The model refines what the heuristics miss; the file is
 // what `match` and `resume check` read.
 
-import { JOB_SCHEMA, nowIso, sha256, generatedBy, slugify, uniq, unverifiable } from './core.mjs';
+import { JOB_SCHEMA, nowIso, sha256, generatedBy, slugify, uniq, unverifiable, usageError, tryJson } from './core.mjs';
 import { buildMatchers, findTerms } from './taxonomy.mjs';
 
 const HEADINGS = [
@@ -39,15 +39,63 @@ export function htmlToText(html) {
 
 export const looksLikeHtml = (s) => /<\s*(?:html|body|div|p|ul|li|br|h[1-6])\b/i.test(s);
 
-/** Fetch a URL to text (Node's global fetch). Exit 4 when it cannot be read. */
-export async function fetchPosting(url, { timeoutMs = 20000 } = {}) {
+const MAX_BYTES = 2 * 1024 * 1024;
+const BLOCK_PHRASES = [/sign in to (?:view|continue|see)/i, /log ?in to (?:view|continue|see)/i, /verify (?:that )?you are (?:a )?human/i, /enable javascript/i, /access denied/i, /captcha/i, /unusual traffic/i, /just a moment/i, /are you a robot/i];
+export const REFUSED_HOSTS = [/(^|\.)indeed\.[a-z.]+$/i, /(^|\.)glassdoor\.[a-z.]+$/i, /(^|\.)linkedin\.com$/i];
+
+/** Public JSON endpoints of the common applicant tracking systems, derived from a posting URL. */
+export function atsEndpoint(url) {
+  let u;
+  try { u = new URL(url); } catch { return null; }
+  const h = u.hostname.toLowerCase();
+  let m;
+  if (/(^|\.)greenhouse\.io$/.test(h) && (m = /^\/([^/]+)\/jobs\/(\d+)/.exec(u.pathname))) return { family: 'greenhouse', api: `https://boards-api.greenhouse.io/v1/boards/${m[1]}/jobs/${m[2]}`, board: m[1], id: m[2] };
+  if (h === 'jobs.lever.co' && (m = /^\/([^/]+)\/([0-9a-f-]{20,})/.exec(u.pathname))) return { family: 'lever', api: `https://api.lever.co/v0/postings/${m[1]}/${m[2]}`, board: m[1], id: m[2] };
+  if (h === 'jobs.ashbyhq.com' && (m = /^\/([^/]+)\/([0-9a-f-]{20,})/.exec(u.pathname))) return { family: 'ashby', api: `https://api.ashbyhq.com/posting-api/job-board/${m[1]}`, board: m[1], id: m[2] };
+  if (h === 'jobs.smartrecruiters.com' && (m = /^\/([^/]+)\/(\d+)/.exec(u.pathname))) return { family: 'smartrecruiters', api: `https://api.smartrecruiters.com/v1/companies/${m[1]}/postings/${m[2]}`, board: m[1], id: m[2] };
+  if (h === 'apply.workable.com' && (m = /^\/([^/]+)\/j\/([A-Z0-9]+)/i.exec(u.pathname))) return { family: 'workable', api: `https://apply.workable.com/api/v2/accounts/${m[1]}/jobs/${m[2]}`, board: m[1], id: m[2] };
+  return null;
+}
+
+/** Text of one ATS JSON posting document. */
+export function atsPostingText(family, j) {
+  const strip = (h) => (h ? htmlToText(String(h)) : '');
+  if (!j || typeof j !== 'object') return '';
+  switch (family) {
+    case 'greenhouse': return [j.title, j.location && j.location.name, strip(j.content)].filter(Boolean).join('\n');
+    case 'lever': return [j.text, j.categories && [j.categories.team, j.categories.location, j.categories.commitment].filter(Boolean).join(' · '), strip(j.descriptionPlain || j.description), ...(j.lists || []).map((l) => `${l.text}\n${strip(l.content)}`), strip(j.additionalPlain || j.additional)].filter(Boolean).join('\n');
+    case 'ashby': { const job = Array.isArray(j.jobs) ? j.jobs[0] : j; return [job.title, job.location, job.descriptionPlain || strip(job.descriptionHtml)].filter(Boolean).join('\n'); }
+    case 'smartrecruiters': return [j.name, j.location && [j.location.city, j.location.country].filter(Boolean).join(', '), ...Object.values((j.jobAd && j.jobAd.sections) || {}).map((s) => `${s.title || ''}\n${strip(s.text)}`)].filter(Boolean).join('\n');
+    case 'workable': return [j.title, j.location && j.location.city, strip(j.description), strip(j.requirements), strip(j.benefits)].filter(Boolean).join('\n');
+    default: return '';
+  }
+}
+
+/** Fetch a URL to text (Node's global fetch). Exit 4 when it cannot be read; refused hosts never fetched. */
+export async function fetchPosting(url, { timeoutMs = 20000, fetchImpl = globalThis.fetch } = {}) {
+  let host = '';
+  try { host = new URL(url).hostname; } catch { throw usageError(`not a URL: ${url}`); }
+  if (REFUSED_HOSTS.some((re) => re.test(host))) throw unverifiable('REFUSED_HOST', `${host} forbids automated access in its terms and sits behind a login wall; open the posting yourself and paste its text`);
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), timeoutMs);
+  const headers = { 'user-agent': 'career-profiler/1 (+https://github.com/robertlemmermann/career-profiler)', accept: 'application/json,text/html,text/plain;q=0.9,*/*;q=0.5' };
   try {
-    const res = await fetch(url, { signal: ac.signal, redirect: 'follow', headers: { 'user-agent': `career-profiler/1 (+https://github.com/robertlemmermann/career-profiler)`, accept: 'text/html,text/plain;q=0.9,*/*;q=0.5' } });
+    const ats = atsEndpoint(url);
+    if (ats) {
+      const res = await fetchImpl(ats.api, { signal: ac.signal, redirect: 'follow', headers });
+      if (res.ok) {
+        const body = await res.text();
+        if (body.length <= MAX_BYTES) { const j = tryJson(body); const text = atsPostingText(ats.family, ats.family === 'ashby' && j && Array.isArray(j.jobs) ? { jobs: j.jobs.filter((x) => String(x.id) === ats.id) } : j); if (text.trim().length >= 200) return text; }
+      }
+    }
+    const res = await fetchImpl(url, { signal: ac.signal, redirect: 'follow', headers });
+    if (res.status === 403 || res.status === 429 || res.status === 401) throw unverifiable('FETCH_BLOCKED', `GET ${url} returned ${res.status} (${res.status === 429 ? 'rate limited' : 'blocked or login required'}); paste the posting text instead`);
     if (!res.ok) throw unverifiable('FETCH_FAILED', `GET ${url} returned ${res.status}; paste the posting text instead`);
     const body = await res.text();
+    if (body.length > MAX_BYTES) throw unverifiable('FETCH_TOO_LARGE', `GET ${url} returned more than 2 MB; paste the posting text instead`);
     const text = looksLikeHtml(body) ? htmlToText(body) : body;
+    const blocked = BLOCK_PHRASES.find((re) => re.test(text.slice(0, 4000)));
+    if (blocked && text.trim().length < 1500) throw unverifiable('FETCH_LOGIN_WALL', `GET ${url} shows a login wall or bot check ("${blocked.source.replace(/\\/g, '')}"); paste the posting text instead`);
     if (text.trim().length < 200) throw unverifiable('FETCH_EMPTY', `GET ${url} returned almost no text (a login wall or a JavaScript-only page); paste the posting text instead`);
     return text;
   } catch (err) {

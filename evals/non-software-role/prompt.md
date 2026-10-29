@@ -17,6 +17,12 @@ No shell is available, so use the guidance-only path of the career-profiler skil
 tailored resume and cover letter for the posting below, with a `<!-- fact: id -->` citation on
 every claim line. Leave out anything my profile does not support and list it as a gap at the end.
 
+My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
+
+```json
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+```
+
 My profile:
 
 ```json
