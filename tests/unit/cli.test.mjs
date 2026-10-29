@@ -61,7 +61,8 @@ test('the full application pipeline through the CLI', () => {
   assert.equal(r.json.verdict, 'FAIL');
   r = cp(['resume', 'finalize', fixture('resumes', 'fabricated.md'), '--json'], { store, cwd: work });
   assert.equal(r.status, 2, 'finalize refuses a failing draft');
-  r = cp(['cover-letter', 'check', fixture('resumes', 'good-cover-letter.md'), '--job', 'job.json', '--json'], { store, cwd: work });
+  fs.copyFileSync(fixture('resumes', 'good-cover-letter.md'), path.join(work, 'cover-letter.md')); // the check writes its report next to the input
+  r = cp(['cover-letter', 'check', 'cover-letter.md', '--job', 'job.json', '--json'], { store, cwd: work });
   assert.equal(r.json.verdict, 'PASS');
   r = cp(['interview', 'next', '--max', '2', '--json'], { store });
   assert.equal(r.json.questions.length, 2);

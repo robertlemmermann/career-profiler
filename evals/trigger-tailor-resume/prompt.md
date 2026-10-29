@@ -10,10 +10,16 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent loads career-profiler, treats the posting as the target, and looks for or asks for the user's profile facts before writing anything."
+expected_outcome: "With the automation preference already recorded, the agent loads career-profiler, treats the posting as the target, and looks for or asks for the user's profile facts before writing anything."
 ---
 
-Tailor my resume to this posting and write a cover letter for it.
+My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
+
+```json
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+```
+
+No shell is available, so use the career-profiler skill the guidance-only way. Tailor my resume to this posting and write a cover letter for it.
 
 ```
 Lead Software Engineer, Frontend (React)

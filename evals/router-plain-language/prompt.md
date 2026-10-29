@@ -13,4 +13,4 @@ allowed_tools:
 expected_outcome: "The agent maps \"only alert me, never apply\" to the setup mode and records the preference."
 ---
 
-From now on I only want you to alert me when something matching shows up on the boards I give you, and never apply to anything for me. Make that the rule.
+No shell is available, so use the career-profiler skill the guidance-only way. From now on I only want you to alert me when something matching shows up on the boards I give you, and never apply to anything for me. Make that the rule.

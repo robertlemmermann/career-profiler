@@ -68,10 +68,10 @@ function deterministicReply(agentText) {
     if (usedAnswers.has(i)) continue;
     if (new RegExp(a.match, 'i').test(t)) { usedAnswers.add(i); return a.reply; }
   }
-  if (/is that (?:right|correct|exact)|confirm|does that look|shall i (?:save|record)|can i record|ok to save|anything (?:wrong|to correct)/i.test(agentText)) return det.confirm;
+  if (/is (?:that|this|everything|it) (?:all )?(?:right|correct|exact|accurate)|confirm|does (?:that|this|everything) look|looks? (?:right|correct|good|accurate)|shall i (?:save|record|commit)|can i (?:record|save|commit)|ok(?:ay)? to (?:save|record|commit)|anything (?:wrong|to correct|to change|to fix|to add or change)|pending your (?:yes|ok|confirmation)|your (?:yes|go-ahead|okay)|say yes|reply yes|yes or no|before i (?:save|record|commit)|(?:save|record|commit) (?:it|them|these|this|that)\?/i.test(agentText)) return det.confirm;
   return det.default;
 }
-const CONFIRM_ASK = /is that (?:right|correct|exact)|confirm|does that look|shall i (?:save|record)|can i record|ok to save|anything (?:wrong|to correct)/i;
+const CONFIRM_ASK = /is (?:that|this|everything|it) (?:all )?(?:right|correct|exact|accurate)|confirm|does (?:that|this|everything) look|looks? (?:right|correct|good|accurate)|shall i (?:save|record|commit)|can i (?:record|save|commit)|ok(?:ay)? to (?:save|record|commit)|anything (?:wrong|to correct|to change|to fix|to add or change)|pending your (?:yes|ok|confirmation)|your (?:yes|go-ahead|okay)|say yes|reply yes|yes or no|before i (?:save|record|commit)|(?:save|record|commit) (?:it|them|these|this|that)\?/i;
 /** The deterministic candidate confirms first when asked to, then answers the new question in the same message (a real person does both). */
 function deterministicTurn(agentText) {
   const asked = CONFIRM_ASK.test(agentText);
