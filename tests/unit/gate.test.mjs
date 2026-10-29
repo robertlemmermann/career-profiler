@@ -167,3 +167,20 @@ test('a store from a newer layout is refused', () => {
   assert.equal(r.status, 3);
   assert.equal(r.json.error.code, 'STORE_NEWER');
 });
+
+test('re-recording the preference quarantines the old record, appends a second preference.set entry and stays ok', () => {
+  const store = seededStore();
+  const before = fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"preference.set"')).length;
+  assert.equal(before, 1);
+  const r = cp(['gate', 'record', '--automation', 'alert', '--statement', 'Only alert me from now on; I decide what to apply to.', '--confirm', '--json'], { store });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.json.recorded.automation, 'alert');
+  const q = fs.readdirSync(path.join(store, 'quarantine')).filter((f) => f.startsWith('preferences-previous'));
+  assert.equal(q.length, 1, 'the previous record is kept aside');
+  assert.ok(fs.readFileSync(path.join(store, 'quarantine', q[0]), 'utf8').includes('"draft"'));
+  const after = fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"preference.set"')).length;
+  assert.equal(after, 2);
+  const g = cp(['gate', '--json'], { store });
+  assert.equal(g.json.state, 'ok');
+  assert.equal(g.json.record.automation, 'alert');
+});

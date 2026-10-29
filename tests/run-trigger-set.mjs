@@ -6,7 +6,7 @@
 // of passing queries, accepted at the set's suite_threshold (0.8).
 //
 //   node tests/run-trigger-set.mjs [--dry-run] [--runs 3] [--split all|train|validation]
-//        [--only pos|neg|<id,...>] [--model <id>] [--max-cost-usd 10] [--budget-per-run 0.6]
+//        [--only pos|neg|<id,...>] [--model <id>] [--max-cost-usd 80] [--budget-per-run 0.6]
 //        [--timeout-s 180] [--out results.json] [--json]
 
 import { spawnSync } from 'node:child_process';
@@ -22,7 +22,7 @@ const NAME = 'career-profiler';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const { values: opt } = parseArgs({ allowNegative: true, options: {
   'dry-run': { type: 'boolean' }, runs: { type: 'string' }, split: { type: 'string', default: 'all' }, only: { type: 'string' },
-  model: { type: 'string' }, 'max-cost-usd': { type: 'string', default: '10' }, 'budget-per-run': { type: 'string', default: '0.6' },
+  model: { type: 'string' }, 'max-cost-usd': { type: 'string', default: '80' }, 'budget-per-run': { type: 'string', default: '0.6' },
   'timeout-s': { type: 'string', default: '180' }, out: { type: 'string' }, json: { type: 'boolean' }, host: { type: 'string', default: 'claude' }, ledger: { type: 'boolean', default: true },
 } });
 const HOST = opt.host;

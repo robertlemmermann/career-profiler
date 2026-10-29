@@ -128,6 +128,46 @@
       "id": "neg-12",
       "should_trigger": false,
       "query": "Set up a GitHub Actions workflow that runs our Playwright suite nightly and posts failures to Slack."
+    },
+    {
+      "id": "pos-13",
+      "should_trigger": true,
+      "query": "Write a cover letter for this opening (text below) from what my profile says; the resume is already done."
+    },
+    {
+      "id": "pos-14",
+      "should_trigger": true,
+      "query": "Here is my LinkedIn data export (Positions.csv). Pull my jobs into my career profile and ask me to confirm each one."
+    },
+    {
+      "id": "pos-15",
+      "should_trigger": true,
+      "query": "I saved three Indeed job-alert emails to a folder. Can you watch that folder and tell me which ones match my profile?"
+    },
+    {
+      "id": "pos-16",
+      "should_trigger": true,
+      "query": "Export my profile as JSON Resume and as plain text I can paste into an ATS form."
+    },
+    {
+      "id": "neg-13",
+      "should_trigger": false,
+      "query": "Translate this cover letter into German and keep the tone."
+    },
+    {
+      "id": "neg-14",
+      "should_trigger": false,
+      "query": "I am the hiring manager: summarise this candidate's resume and flag anything inconsistent."
+    },
+    {
+      "id": "neg-15",
+      "should_trigger": false,
+      "query": "Write me a polite two-weeks-notice resignation letter."
+    },
+    {
+      "id": "neg-16",
+      "should_trigger": false,
+      "query": "Generate three fake resumes as test fixtures for our ATS parser."
     }
   ]
 }

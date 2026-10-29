@@ -102,3 +102,31 @@ test('CLI: fact add quarantines a DOB at tier never; show and export mask it; ex
   assert.equal(r.status, 1);
   assert.ok(r.json.hits.some((h) => h.detector === 'dob') && r.json.hits.some((h) => h.detector === 'store-value'));
 });
+
+test('FM-24: six consecutive words of a never-tier fact are a store-value hit; five are not; resume check blocks the line', () => {
+  const p = loadProfileFixture('electrician-journeyman');
+  const words = p.extras[0].text.replace(/[^A-Za-z0-9 ]+/g, ' ').trim().split(/\s+/); // "Has a back condition that rules out sustained overhead work ..."
+  const six = words.slice(0, 6).join(' ');
+  const five = words.slice(0, 5).join(' ');
+  assert.ok(six.length >= 25, six);
+  const hit = scanText(`Note: ${six} but is otherwise fine.`, { profile: p });
+  assert.ok(hit.hits.some((h) => h.detector === 'store-value'), JSON.stringify(hit));
+  const miss = scanText(`Note: ${five} but is otherwise fine.`, { profile: p });
+  assert.ok(!miss.hits.some((h) => h.detector === 'store-value'), JSON.stringify(miss));
+  const draft = `# Dana Okafor\n\n## Summary\n\nJourneyman electrician. ${six} on site. <!-- fact: exp-01 -->\n`;
+  const r = checkResume(draft, p, {});
+  assert.ok(r.findings.some((f) => f.code === 'pii-block' && f.severity === 'fail'), JSON.stringify(r.findings));
+});
+
+test('logs hold no values: a never-tier value is absent from the changelog and manifest; the statement lives in preferences.json only', () => {
+  const store = seededStore('senior-swe');
+  const r = cp(['fact', 'add', 'extras', '--data', '{"text":"Date of birth: 1988-04-02, in case a form asks"}', '--confirm', '--json'], { store });
+  assert.equal(r.status, 0, r.stderr);
+  const log = fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8');
+  const manifest = fs.readFileSync(path.join(store, 'MANIFEST.json'), 'utf8');
+  assert.ok(!log.includes('1988-04-02') && !log.includes('Date of birth'), 'the changelog carries ids and hashes only');
+  assert.ok(!manifest.includes('1988'), 'the manifest carries hashes only');
+  const statement = 'Draft things for me to review; never send anything on my behalf.';
+  assert.ok(!log.includes(statement), 'the statement is not copied into the log');
+  assert.ok(fs.readFileSync(path.join(store, 'preferences.json'), 'utf8').includes(statement));
+});

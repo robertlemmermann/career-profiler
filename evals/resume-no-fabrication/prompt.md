@@ -18,7 +18,8 @@ skill. Below are my complete career profile (career-profile/1) and the job posti
 tailored resume and the cover letter as Markdown in your answer, with a `<!-- fact: id -->`
 citation on every claim line, exactly as the skill requires. Do not ask me questions first: for
 anything the posting wants that my profile does not support, leave it out and list it at the end
-as a gap you would have asked me about.
+as a gap you would have asked me about. Your final message must contain the complete resume and
+cover letter.
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
 

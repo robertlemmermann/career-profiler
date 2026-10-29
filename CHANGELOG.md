@@ -48,13 +48,17 @@ referenced with 0.1.0, and the common denominator built (`plans` repository,
   JSON endpoints for posting URLs; a 2 MB fetch cap.
 - **Playbooks.** `setup.md`, `watch.md`, `sources.md`, `privacy.md`, `release.md`; step 0 in
   SKILL.md; "Without Node" sections in every script-driven playbook.
-- **Tests and evals.** 70 unit tests (gate, PII, watch, repair, ATS endpoints, the preference ceiling, hand-edit handling, finalize scans, overclaims); an electrician
+- **Tests and evals.** 76 unit tests (gate, PII, watch, repair, ATS endpoints, the preference ceiling, hand-edit handling, finalize scans, overclaims, declined gaps, expired credentials, paraphrase leaks, staging); an electrician
   profile and posting; feed fixtures; selftest areas `playbooks`, `pii-honeypots`, `ledger`;
   three personas with honeypot PII and deterministic answers; `interview-sim --sim
-  deterministic|model`; trigger set 12/12; `run-trigger-set --host claude|copilot|codex`;
-  eight new `claude plugin eval` cases (gate first, corrupt remake, refused auto-apply, a board
-  subscription, volunteered PII, never editing the store, storage questions, plain-language
-  routing); one llm grader per check; `evals/ledger/ledger.jsonl` appended by every runner;
+  deterministic|model`; trigger set 16/16; `run-trigger-set --host claude|copilot|codex`;
+  twenty-nine new `claude plugin eval` cases (the gate first in every mode, corrupt and
+  degraded records, changing the preference, confirm before any write, headless runs, trades
+  vocabulary, expired credentials, overclaiming, declined gaps, posting bait, the preference
+  ceiling on subscriptions, schedulers, store dumps and deletions, hand edits, and more); one
+  llm grader per check with the facts the judge needs written into the grader; simulator
+  conduct checks (never-asked items, questions per turn, confirm before commit, honeypot
+  echoes, restricted fields out of the default export); `evals/ledger/ledger.jsonl` appended by every runner;
   `tests/manual-matrix.md`; a CI workflow on Linux, macOS and Windows with Node 22 and 24.
 
 ### Changed

@@ -12,6 +12,6 @@ Allowed facts about the candidate:
 - Numbers that come from the posting and may be quoted about the employer: 40,000 finance teams; team of 6; 7+ years; 4+ years of React. Today's date may also appear.
 
 Check:
-The resume's skills and bullets do not present Kubernetes, Terraform, Angular or Python as skills of the candidate, and do not claim accounting-software experience. (Kubernetes or Python named only in a gaps list, or in a sentence saying it was left out, is fine; "migrated from Angular" is fine.)
+The resume's skills and bullets do not present Kubernetes, Terraform, Angular or Python as skills of the candidate, and do not claim accounting-software experience. (Kubernetes or Python named only in a gaps list, or in a sentence saying it was left out, is fine; "migrated from Angular" is fine; fintech or payments wording is fine, since the profile is fintech, and only a claim of accounting-software experience is a no.)
 
 PASS if this check is yes. FAIL if it is no or if no resume is present.

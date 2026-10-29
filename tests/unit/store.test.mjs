@@ -152,3 +152,37 @@ test('store sync refuses a store nested in a project repository and works in a d
   assert.match(r.json.reason, /inside another repository/);
 });
 async function require_child() { return import('node:child_process'); }
+
+test('doctor warns when the store sits inside a project repository', async () => {
+  const { spawnSync } = await require_child();
+  const repo = tmpDir();
+  spawnSync('git', ['-C', repo, 'init', '-q']);
+  fs.writeFileSync(path.join(repo, 'package.json'), '{"name":"payments-app"}');
+  const store = path.join(repo, 'career');
+  cp(['store', 'init', '--json'], { store });
+  const r = cp(['doctor', '--json'], { store });
+  const git = r.json.items.find((i) => i.name === 'git');
+  assert.ok(git && git.status === 'warn', JSON.stringify(r.json.items));
+  assert.match(git.detail, /inside the repository/);
+});
+
+test('fact stage writes to staging/, fact staged lists it, commit needs --confirm and keeps the quote', () => {
+  const store = seededStore();
+  let r = cp(['fact', 'stage', 'experience', '--data', '{"title":"Staff Engineer","employer":"Globex","start":"2024-02","end":"present"}', '--quote', 'I moved to Globex as a staff engineer in February 2024', '--json'], { store });
+  assert.equal(r.status, 0, r.stderr);
+  const id = r.json.staged.id;
+  assert.match(id, /^T-\d+/);
+  assert.ok(fs.readdirSync(path.join(store, 'staging')).some((f) => f.includes(id)));
+  r = cp(['fact', 'staged', '--json'], { store });
+  assert.ok(r.json.staged.some((s) => s.id === id && s.kind === 'experience'));
+  r = cp(['fact', 'commit', id, '--json'], { store });
+  assert.equal(r.status, 2, 'commit without --confirm is a usage error');
+  r = cp(['fact', 'commit', id, '--confirm', '--json'], { store });
+  assert.equal(r.status, 0, r.stderr);
+  const added = r.json.added[0];
+  assert.equal(added.title, 'Staff Engineer');
+  const got = cp(['fact', 'get', added.id, '--json'], { store }).json;
+  const entry = got.entry || got.fact || got;
+  assert.equal(JSON.stringify(entry).includes('February 2024'), true, 'the quote is kept in provenance');
+  assert.ok(!fs.readdirSync(path.join(store, 'staging')).some((f) => f.includes(id)), 'the staged record is dropped after commit');
+});

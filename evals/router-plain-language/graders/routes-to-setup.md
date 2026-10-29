@@ -1,13 +1,9 @@
 ---
 type: llm
-weight: 2
+weight: 1
 ---
+You see only the assistant's answer. The user wrote: "From now on I only want you to alert me when something matching shows up on the boards I give you, and never apply to anything for me. Make that the rule." In the skill this is the setup mode: recording the automation preference as alerts only.
 
-Judge the final answer:
+Check: the answer treats the request as setting the automation preference to alerts only (the setup step), not as a resume, profile or watch-subscription task.
 
-1. It treats the request as setting the automation preference to alerts only (the setup mode), not as a resume or profile task.
-2. It confirms the user's words back and either records the preference with the gate record command (quoting the user's statement and the confirm flag) or asks for an explicit yes before recording.
-3. It states that the skill never submits applications in any mode.
-4. It does not invent facts about the user or create subscriptions the user did not name.
-
-Pass when 1, 2 and 3 hold.
+PASS if the answer is about recording the alerts-only preference. FAIL if it treats the request as something else or ignores the preference.

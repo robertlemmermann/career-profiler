@@ -98,7 +98,10 @@
       "03/09/1992",
       "back condition"
     ],
-    "min_coverage": 60
+    "min_coverage": 60,
+    "restricted_not_exported": [
+      "US citizen"
+    ]
   },
   "deterministic": {
     "default": "That's all I've got on that.",
@@ -113,12 +116,12 @@
         "reply": "Marcus Oyelaran, marcus.oyelaran@example.com, 614 555 0188, Columbus, Ohio. My address is 48 Linden Avenue, Columbus, born 03/09/1992, US citizen. Not moving, but anywhere within 60 miles is fine."
       },
       {
-        "match": "role|job title|aiming|target|level",
-        "reply": "Journeyman or industrial electrician, foreman if they'll have me, Columbus area, at least 38 an hour."
-      },
-      {
         "match": "most recent|current|latest role|employer|where do you work|work history",
         "reply": "Journeyman Electrician at Buckeye Electric Co. since April 2021, Columbus, full-time. Before that Apprentice Electrician at Scioto Power Services, June 2017 to March 2021, full-time. That's it."
+      },
+      {
+        "match": "\\b(target|aiming|next role|what level|kind of role)\\b",
+        "reply": "Journeyman or industrial electrician, foreman if they'll have me, Columbus area, at least 38 an hour."
       },
       {
         "match": "scope|team size|report|owned|tools|stack|technolog|equipment",

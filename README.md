@@ -213,15 +213,18 @@ From a clone (tests and evals are never installed):
 node tests/selftest.mjs                 # footprint, playbooks, honeypots, ledger, frontmatter, scripts, assets, evals, readme, release, unit tests
 node --test "tests/unit/*.test.mjs"     # unit tests over fixtures: three profiles, five postings, resumes, feeds, stores
 node tests/run-evals.mjs                # paid: claude plugin eval on a temp copy of the skill (threshold 1, sonnet judge)
-node tests/run-trigger-set.mjs --dry-run   # the 24-query trigger set; drop --dry-run to run it (paid); --host copilot|codex
+node tests/run-trigger-set.mjs --dry-run   # the 32-query trigger set; drop --dry-run to run it (paid); --host copilot|codex
 node tests/live/interview-sim.mjs --persona icu-nurse --sim deterministic   # paid (12 turns): a scripted candidate is interviewed, the store is graded
 ```
 
-The eval cases are under [`evals/`](evals/): seventeen shell-free `claude plugin eval` cases
-(triggering, the gate first and on corruption, no fabrication, gap questions, a nurse role,
-promotion updates, match-only, no posting, refused auto-apply, a board subscription,
-volunteered PII, never editing the store, storage questions, plain-language routing) and one
-shell case (`scripts-pipeline`, needs `--scaffold`, `--allow-tools` and the OS sandbox). Every
+The eval cases are under [`evals/`](evals/): thirty-eight shell-free `claude plugin eval` cases
+(triggering, the gate first in every mode and on corruption or degradation, confirm before any
+write, headless runs, no fabrication or overclaiming, gap questions, declined gaps, expired
+credentials, a nurse and an electrician, promotion updates, match-only and skip advice, no
+posting, refused auto-apply and the preference ceiling, board subscriptions and schedulers,
+volunteered PII and posting bait, never editing or dumping the store, storage questions,
+plain-language routing) and one shell case (`scripts-pipeline`, needs `--scaffold`,
+`--allow-tools` and the OS sandbox). Every
 runner appends to the results ledger in [`evals/ledger/`](evals/ledger/README.md); the release
 rule is in [release](skills/career-profiler/references/release.md).
 

@@ -26,12 +26,20 @@ const todayMonth = () => nowIso().slice(0, 7);
 /** A certification whose `expires` is in the past (YYYY or YYYY-MM compared with today). */
 export const isExpired = (entry, now = todayMonth()) => !!(entry && entry.expires && String(entry.expires).slice(0, 7) < now.slice(0, String(entry.expires).length));
 
+/** True for an extras fact that records a declined gap: tagged gap, or text that starts with "No/Not/Never". */
+export function isDeclineFact(entry) {
+  if (Array.isArray(entry.tags) && entry.tags.includes('gap')) return true;
+  return /^\s*(no|not|never)\b/i.test(String(entry.text || ''));
+}
+
 export function buildEvidenceIndex(profile, matchers) {
   const index = new Map();
   const add = (term, hit) => { if (!index.has(term)) index.set(term, []); index.get(term).push(hit); };
   for (const [id, { kind, entry, parent }] of indexProfile(profile)) {
     if (!entry.provenance || entry.provenance.confirmed !== true) continue;
     if (entry.tier === 'never') continue;
+    // A recorded decline ("No Kubernetes experience", tagged gap) names the term but is never evidence for it.
+    if (kind === 'extras' && isDeclineFact(entry)) continue;
     if (kind === 'certifications' && isExpired(entry)) {
       for (const t of findTerms(entryText(kind, entry), matchers)) add(t.term, { id, kind, strength: 0.3, via: 'expired-certification', expired: true, expires: entry.expires });
       continue;

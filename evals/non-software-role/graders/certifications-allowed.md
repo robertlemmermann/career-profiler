@@ -12,6 +12,6 @@ Allowed facts about the candidate:
 - Numbers that come from the posting and may be quoted about the employer: 24-bed ICU, 36 hours per week, three 12-hour shifts, 2 years of ICU experience required, 6 months. Today's date may also appear.
 
 Check:
-Every certification named anywhere in the answer is one of the four allowed certifications. PALS, ECMO, TNCC, NIHSS or any other certification is a no.
+Every certification the answer attributes to the candidate is one of the four allowed certifications. PALS, ECMO, TNCC, NIHSS or any other certification presented as held by the candidate is a no. A credential quoted from the posting in a gaps list, or in a sentence saying the candidate lacks it or that it is not needed (for example "compact state license" or "ADN"), is fine.
 
 PASS if this check is yes. FAIL if it is no or if no resume is present.

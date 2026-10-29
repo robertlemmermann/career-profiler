@@ -16,6 +16,7 @@ expected_outcome: "A cited ICU nurse resume for Lakeside Regional with CCRN, ACL
 No shell is available, so use the guidance-only path of the career-profiler skill. Write my
 tailored resume and cover letter for the posting below, with a `<!-- fact: id -->` citation on
 every claim line. Leave out anything my profile does not support and list it as a gap at the end.
+Your final message must contain the complete resume and cover letter.
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
 

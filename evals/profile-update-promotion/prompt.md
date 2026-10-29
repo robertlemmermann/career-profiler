@@ -19,5 +19,5 @@ My automation preference is already recorded (the gate is satisfied); here is my
 {"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
 ```
 
-Good news: I was promoted to Staff Engineer at Brightline Payments last month. Update my career
+No shell is available, so use the career-profiler skill the guidance-only way. Good news: I was promoted to Staff Engineer at Brightline Payments last month. Update my career
 profile so the next resume reflects it.

@@ -6,9 +6,11 @@
 //   node tests/run-evals.mjs [claude plugin eval options...]
 //
 // Defaults: --ablation none (so `tool_used: Skill` graders count), --threshold 1 (every grader
-// must pass in every run), --judge-model sonnet, --max-cost-usd 15, --no-publish, --tag outcome --tag trigger (the shell case is excluded unless
+// must pass in every run), --judge-model sonnet, --max-cost-usd 100, --no-publish, --tag outcome --tag trigger (the shell case is excluded unless
 // you pass --tag shell or --case scripts-pipeline with --scaffold and --allow-tools), results in a
-// temp dir that is printed. Pass --case <glob>, --tag <tag>, --model, --judge-model, --runs through.
+// temp dir that is printed. Pass --case <glob>, --tag <tag>, --model, --judge-model, --runs, -j through.
+// When the cost ceiling trips, `claude plugin eval` skips the paid graders of the runs in flight, so a
+// budget stop reads as llm-grader failures: batch by tag or raise --max-cost-usd rather than let it trip.
 
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -39,7 +41,7 @@ const evalArgs = ['plugin', 'eval', target, '--trust-plugin',
   ...(has('--ablation') ? [] : ['--ablation', 'none']),
   ...(has('--threshold') ? [] : ['--threshold', '1']),
   ...(has('--judge-model') ? [] : ['--judge-model', 'sonnet']),
-  ...(has('--max-cost-usd') ? [] : ['--max-cost-usd', '15']),
+  ...(has('--max-cost-usd') ? [] : ['--max-cost-usd', '100']),
   ...(has('--publish-report') || has('--no-publish') ? [] : ['--no-publish']),
   ...(has('--tag') || has('--case') ? [] : ['--tag', 'outcome', '--tag', 'trigger']),
   ...(out ? ['--output-dir', out] : []),

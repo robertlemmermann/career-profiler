@@ -1,13 +1,9 @@
 ---
 type: llm
-weight: 3
+weight: 2
 ---
+You see only the assistant's answer. The user (Priya Natarajan, an ICU registered nurse) pasted her profile and a Cardiothoracic ICU posting from Mercy Heart Institute and asked how well she matches and what the assistant needs before writing the resume. Facts for this check: the posting requires ECMO specialist training and PALS, and the profile records neither.
 
-Judge the final answer:
+Check: the answer asks the user whether she has real experience or certification for the missing items (ECMO, PALS, and optionally IABP or cardiothoracic experience), or asks for the facts needed to record them. It does not assume either way: it neither states she has them nor states she definitely lacks them as a fact about her.
 
-1. It identifies ECMO and PALS as requirements the profile does not support (it may also name IABP and cardiothoracic experience as missing or partial).
-2. It asks the user whether they have real experience or certification for the missing items, or asks for the facts needed to record them; it does not assume either way.
-3. It names strong matches that the profile does support: for example BSN, ICU experience, CCRN, Impella, CRRT, Epic, precepting, 1:1 and 1:2 assignments.
-4. It does not write the resume, and it does not state that the user has ECMO or PALS.
-
-Pass when all four hold.
+PASS if the answer asks the user about the missing items without assuming an answer. FAIL if it asks nothing about them, or if it asserts that she has or does not have them.

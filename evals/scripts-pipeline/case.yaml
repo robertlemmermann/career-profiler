@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: scripts-pipeline
-description: "With a shell, the skill runs its scripts end to end (job parse, match, app new, resume check, finalize) against a seeded store and never finalizes a failing draft. Needs --scaffold and --allow-tools \"Bash(node *)\" \"Bash(cd *)\" Read Write Edit; the OS sandbox (bubblewrap and socat on Linux) must be available."
+description: "With a shell, the skill runs its scripts end to end (job parse, match, app new, resume check, finalize) against a seeded store and never finalizes a failing draft. Needs --scaffold and --allow-tools \"Bash(node *)\" \"Bash(cd *)\" \"Bash(cat *)\" Read Write Edit; the OS sandbox (bubblewrap and socat on Linux) must be available."
 tags: [shell]
 runs: 2
 expected_outcome: "job.json, match.json, a checked and finalized resume in the application folder, the check report PASS or PASS-WITH-FINDINGS, and the gaps reported to the user."
@@ -14,12 +14,12 @@ graders:
   - name: parsed-the-posting
     type: tool_used
     tool: Bash
-    input_match: "cp\\.mjs\"? +job +parse"
+    input_match: "\\bjob +parse\\b"
     weight: 1
   - name: checked-the-resume
     type: tool_used
     tool: Bash
-    input_match: "cp\\.mjs\"? +resume +check"
+    input_match: "\\bresume +check\\b"
     weight: 2
   - name: check-before-finalize
     type: tool_order
@@ -38,13 +38,39 @@ graders:
     type: file_exists
     path: "store/applications/*/resume.check.json"
     weight: 1
-  - name: honest-summary
+  - name: reports-folder-and-files
     type: llm
-    weight: 2
+    weight: 1
     criteria: |
-      Judge the final answer:
-      1. It reports the application folder and the files produced (a finalized resume in at least one format, the cover letter draft or final).
-      2. It reports the check verdict (PASS or PASS-WITH-FINDINGS) and does not claim a PASS for a draft it did not check.
-      3. It names at least one gap the posting has that the profile does not support (for example Kubernetes, communication, accounting) and says it was left out or would be asked about.
-      4. It does not claim skills, numbers or titles that are not in the profile (no Kubernetes experience, no title other than Senior Software Engineer at Brightline Payments).
-      Pass when all four hold.
+      You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store.
+
+      Check: the answer names the application folder (a path under store/applications/) and the files produced in it, including a finalized resume in at least one format and the cover letter (draft or final).
+
+      PASS if the folder and at least those files are named. FAIL otherwise.
+  - name: reports-verdict
+    type: llm
+    weight: 1
+    criteria: |
+      You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store.
+
+      Check: the answer reports the resume check verdict as PASS or PASS-WITH-FINDINGS (it may add what the findings were), and it does not claim a PASS for a draft it says it did not check or could not check.
+
+      PASS if a check verdict of PASS or PASS-WITH-FINDINGS is reported for a draft the answer says was checked. FAIL if no verdict is reported, if the verdict is FAIL, or if a PASS is claimed for an unchecked draft.
+  - name: names-a-gap
+    type: llm
+    weight: 1
+    criteria: |
+      You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store. The posting asks for things the profile does not support, among them Kubernetes, accounting-software experience, communication skills as a stated requirement and GraphQL federation.
+
+      Check: the answer names at least one requirement of the posting that the profile does not support (for example Kubernetes, accounting software, communication, GraphQL federation) and says it was left out of the resume, declined, or would have been asked about.
+
+      PASS if at least one such gap is named with that treatment. FAIL otherwise.
+  - name: no-unsupported-claims
+    type: llm
+    weight: 1
+    criteria: |
+      You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera for the Lead Software Engineer, Frontend posting at Acme Ledger. Facts about the candidate: the current role is titled exactly "Senior Software Engineer" at Brightline Payments (March 2022 to present) and the previous role "Software Engineer" at Northwind Health (June 2017 to February 2022); the candidate has no Kubernetes, Terraform or accounting-software experience.
+
+      Check: the answer does not present Kubernetes, Terraform or accounting-software experience as a skill of the candidate, and does not give the candidate any title other than Senior Software Engineer (Brightline Payments) and Software Engineer (Northwind Health). Naming Kubernetes or accounting software only as a gap that was left out is fine.
+
+      PASS if no unsupported skill or changed title is claimed. FAIL otherwise.

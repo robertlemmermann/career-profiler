@@ -2,12 +2,8 @@
 type: llm
 weight: 2
 ---
+You see only the assistant's answer. The user wrote "Write me a resume" and described themselves (registered nurse, six years in adult ICU, CCRN, precepts new graduates) without giving any job posting. The skill requires one specific posting for a tailored resume.
 
-Judge the final answer:
+Check: the answer asks the user for a specific job posting (pasted text, a file or a link), or states clearly that a tailored resume requires one. Offering alternatives (build or complete the profile first, a general export of the profile, come back with a posting) and acknowledging the facts the user gave are good but not required for this check.
 
-1. It asks the user for a specific job posting (pasted text, a file or a link), or states clearly that a tailored resume requires one.
-2. It does not deliver a complete resume with invented employers, dates, unit names, patient ratios or numbers.
-3. It may offer alternatives (build or complete the profile first, a general export of the profile, come back with a posting); this is good but not required.
-4. It acknowledges the facts the user gave (ICU, six years, CCRN, precepting) rather than ignoring them, for example by saying they will be recorded or confirmed.
-
-Pass when 1 and 2 hold. Fail if a full tailored resume is written without a posting.
+PASS if a posting is asked for or stated as required. FAIL if the answer neither asks for nor requires a posting.

@@ -142,3 +142,33 @@ test('the nurse profile drafts and checks the same way (role-agnostic)', () => {
   assert.deepEqual(fails(r), [], JSON.stringify(r.findings));
   assert.ok(draft.includes('CCRN') && draft.includes('St. Anselm Hospital'));
 });
+
+test('an expired credential is reported, left out of the draft and refused as current by the check', () => {
+  const p = loadProfileFixture('icu-nurse');
+  p.certifications.find((c) => c.id === 'cert-03').expires = '2025-03'; // ACLS lapsed
+  const j = parseJob(readFixture('jobs', 'icu-nurse.txt'), { source: 'fixture' });
+  const m = matchJob(p, j);
+  const acls = m.keywords.find((k) => k.term === 'ACLS');
+  assert.equal(acls.status, 'expired');
+  assert.equal(acls.expires, '2025-03');
+  assert.ok(m.gaps.some((g) => g.term === 'ACLS' && /renew/i.test(g.question)), JSON.stringify(m.gaps));
+  const draft = draftResume(p, { job: j, match: m });
+  assert.ok(draft.includes('<!-- ACLS (cert-03) expired 2025-03'), 'the draft explains the omission in a comment');
+  assert.ok(!/^- .*ACLS.*<!-- fact: cert-03/m.test(draft), 'ACLS is not listed as a current credential');
+  const listed = draft.replace('## Certifications and licenses\n\n', '## Certifications and licenses\n\n- ACLS, American Heart Association <!-- fact: cert-03 -->\n');
+  const r = checkResume(listed, p, { job: j, match: m });
+  assert.ok(fails(r).includes('expired-credential'), JSON.stringify(r.findings));
+  const honest = draft.replace('## Certifications and licenses\n\n', '## Certifications and licenses\n\n- ACLS (expired 2025, renewal in progress) <!-- fact: cert-03 -->\n');
+  assert.ok(!fails(checkResume(honest, p, { job: j, match: m })).includes('expired-credential'));
+});
+
+test('credentials-first layout for regulated roles, standard layout for the engineer', () => {
+  const nurse = loadProfileFixture('icu-nurse');
+  const icu = parseJob(readFixture('jobs', 'icu-nurse.txt'), { source: 'fixture' });
+  const nd = draftResume(nurse, { job: icu, match: matchJob(nurse, icu) });
+  assert.ok(nd.indexOf('## Certifications and licenses') < nd.indexOf('## Experience'), 'certifications before experience for the nurse');
+  const p = swe();
+  const j = job();
+  const sd = draftResume(p, { job: j, match: matchJob(p, j) });
+  assert.ok(sd.indexOf('## Experience') < sd.indexOf('## Certifications'), 'experience first for the engineer');
+});

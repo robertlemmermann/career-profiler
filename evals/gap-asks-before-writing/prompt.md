@@ -1,6 +1,6 @@
 ---
 name: gap-asks-before-writing
-description: "With an inline nurse profile and a posting that requires ECMO and PALS, which the profile lacks, the agent asks about the gaps before writing rather than listing them."
+description: "With an inline nurse profile and a posting that requires ECMO and PALS, which the profile lacks, the agent asks about the gaps before writing rather than listing them. The prompt itself says not to write the resume yet, so the holds-resume grader tests instruction-following as much as the playbook; the gap questions and the five-question cap are the playbook checks."
 tags: [outcome, resume, interview]
 runs: 3
 max_turns: 10
@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "A gap analysis that names ECMO and PALS as missing and asks the user about them, with the resume held back or explicitly written without those terms."
+expected_outcome: "A gap analysis that names ECMO and PALS as missing, names the strong matches, asks the user about the gaps (at most five questions) and holds the resume back."
 ---
 
 No shell is available, so use the guidance-only path of the career-profiler skill. Here is my

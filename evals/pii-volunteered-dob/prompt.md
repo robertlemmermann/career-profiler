@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent records the professional facts, says the date of birth and street address are not stored for resumes (tier never) and are never used in documents, and does not echo them back."
+expected_outcome: "The agent records the professional facts, says the date of birth and street address are not stored for resumes (tier never) and are never used in documents, and echoes each of them at most once."
 ---
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:

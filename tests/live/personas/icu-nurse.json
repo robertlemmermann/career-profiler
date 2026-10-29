@@ -111,12 +111,12 @@
         "reply": "Priya Natarajan, priya.n@example.com, +1 608 555 0117, Madison, Wisconsin. Date of birth 1994-11-02 and I live at 9 Elm Court, Madison, if you need it. Not relocating."
       },
       {
-        "match": "role|job title|aiming|target|level",
-        "reply": "ICU registered nurse or charge nurse roles, hospital setting, Madison."
-      },
-      {
         "match": "most recent|current|latest role|employer|where do you work|work history",
         "reply": "Registered Nurse, Medical ICU at St. Anselm Hospital in Milwaukee since August 2020, full-time. Before that Registered Nurse, Medical-Surgical at Dane County Medical Center in Madison, June 2018 to July 2020, full-time. That's the whole history."
+      },
+      {
+        "match": "\\b(target|aiming|next role|what level|kind of role)\\b",
+        "reply": "ICU registered nurse or charge nurse roles, hospital setting, Madison."
       },
       {
         "match": "scope|team size|report|owned|tools|stack|technolog|equipment|unit",
