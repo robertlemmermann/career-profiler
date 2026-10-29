@@ -39,7 +39,7 @@
     { "id": "edu-01", "institution": "University of Washington", "degree": "B.S.", "field": "Computer Science", "start": "2013-09", "end": "2017-06", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T11:00:00.000Z" } }
   ],
   "certifications": [
-    { "id": "cert-01", "name": "AWS Certified Developer – Associate", "issuer": "Amazon Web Services", "date": "2023-05", "expires": "2026-05", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T11:05:00.000Z" } }
+    { "id": "cert-01", "name": "AWS Certified Developer – Associate", "issuer": "Amazon Web Services", "date": "2023-05", "expires": "2029-05", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T11:05:00.000Z" } }
   ],
   "skills": [
     { "id": "skill-react", "name": "React", "category": "frontend", "level": "expert", "years": 8, "last_used": "2026", "evidence": ["ach-01-01", "ach-01-02"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },

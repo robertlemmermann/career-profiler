@@ -328,7 +328,7 @@ My profile:
    "name": "AWS Certified Developer \u2013 Associate",
    "issuer": "Amazon Web Services",
    "date": "2023-05",
-   "expires": "2026-05",
+   "expires": "2029-05",
    "provenance": {
     "confirmed": true
    }

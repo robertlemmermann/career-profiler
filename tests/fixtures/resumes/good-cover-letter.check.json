@@ -1,0 +1,194 @@
+{
+  "schema": "career-resume-check/1",
+  "kind": "cover-letter",
+  "checked_at": "2026-10-29T02:29:04.808Z",
+  "generated_by": "career-profiler 0.1.0",
+  "document_sha256": "1995295c7335bf990a127da5ed965eb207db851babbbfd8c4d24310b1e7fc513",
+  "profile_sequence": 15,
+  "job": {
+    "title": "Lead Software Engineer, Frontend",
+    "company": "Acme Ledger",
+    "text_sha256": "af276fa18bba276f041dc853ad82a9e59db6f1483c04ff40e0cb4488a654ffad"
+  },
+  "verdict": "PASS",
+  "counts": {
+    "fail": 0,
+    "finding": 0,
+    "words": 206,
+    "cited_facts": 5
+  },
+  "findings": [],
+  "coverage": {
+    "must": {
+      "total": 9,
+      "supported": 8,
+      "used": 4
+    },
+    "nice": {
+      "total": 6,
+      "supported": 4,
+      "used": 0
+    },
+    "rows": [
+      {
+        "term": "React",
+        "kind": "must",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "ach-01-01",
+          "ach-01-02",
+          "exp-02",
+          "skill-react",
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Technical Leadership",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "ach-01-03",
+          "skill-technical-leadership"
+        ]
+      },
+      {
+        "term": "CI/CD",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "ach-01-04",
+          "ach-02-02",
+          "skill-ci-cd"
+        ]
+      },
+      {
+        "term": "Accessibility",
+        "kind": "must",
+        "status": "partial",
+        "used": true,
+        "evidence": [
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Testing",
+        "kind": "must",
+        "status": "partial",
+        "used": true,
+        "evidence": [
+          "ach-01-04"
+        ]
+      },
+      {
+        "term": "Communication",
+        "kind": "must",
+        "status": "missing",
+        "used": false,
+        "evidence": []
+      },
+      {
+        "term": "TypeScript",
+        "kind": "must",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "ach-01-01",
+          "skill-typescript",
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Bachelor's degree",
+        "kind": "must",
+        "status": "partial",
+        "used": false,
+        "evidence": [
+          "edu-01"
+        ]
+      },
+      {
+        "term": "Performance Optimization",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "ach-01-01",
+          "skill-performance-optimization"
+        ]
+      },
+      {
+        "term": "Accounting",
+        "kind": "nice",
+        "status": "missing",
+        "used": false,
+        "evidence": []
+      },
+      {
+        "term": "GraphQL",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "skill-graphql"
+        ]
+      },
+      {
+        "term": "JavaScript",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "exp-02",
+          "ach-02-01",
+          "skill-javascript",
+          "skill-next-js",
+          "skill-node-js"
+        ]
+      },
+      {
+        "term": "Next.js",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "skill-next-js"
+        ]
+      },
+      {
+        "term": "AWS",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "cert-01",
+          "skill-aws"
+        ]
+      },
+      {
+        "term": "Kubernetes",
+        "kind": "nice",
+        "status": "missing",
+        "used": false,
+        "evidence": []
+      }
+    ]
+  },
+  "cited_ids": [
+    "ach-01-01",
+    "ach-01-03",
+    "ach-01-04",
+    "exp-01",
+    "proj-01"
+  ],
+  "document": "/home/user/career-profiler/tests/fixtures/resumes/good-cover-letter.md"
+}

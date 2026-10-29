@@ -189,7 +189,7 @@ My profile:
    "name": "CCRN",
    "issuer": "AACN",
    "date": "2022-09",
-   "expires": "2025-09",
+   "expires": "2028-09",
    "provenance": {
     "confirmed": true
    }
@@ -199,7 +199,7 @@ My profile:
    "name": "ACLS",
    "issuer": "American Heart Association",
    "date": "2024-03",
-   "expires": "2026-03",
+   "expires": "2028-03",
    "provenance": {
     "confirmed": true
    }
@@ -209,7 +209,7 @@ My profile:
    "name": "BLS",
    "issuer": "American Heart Association",
    "date": "2024-03",
-   "expires": "2026-03",
+   "expires": "2028-03",
    "provenance": {
     "confirmed": true
    }
