@@ -37,7 +37,7 @@ for (const k of Object.keys(env)) if (/^(CLAUDECODE|CLAUDE_CODE_ENTRYPOINT|COPIL
 let spent = 0;
 const transcript = [];
 function claude(args, { cwd = work, label }) {
-  const r = spawnSync('claude', ['-p', '--output-format', 'json', ...args], { cwd, env, encoding: 'utf8', timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync('claude', ['-p', '--output-format', 'json', ...args], { cwd, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
   let json = null;
   try { json = JSON.parse(r.stdout); } catch {}
   if (!json) return { error: `${label}: ${r.error ? r.error.message : `exit ${r.status}`}: ${(r.stderr || r.stdout || '').slice(0, 300)}` };
@@ -45,7 +45,8 @@ function claude(args, { cwd = work, label }) {
   return { text: json.result || '', session: json.session_id, error: json.is_error ? `${label}: ${(json.errors || []).join('; ') || json.subtype}` : null, raw: json };
 }
 
-const agentArgs = (first) => ['--allowedTools', 'Bash(node:*),Bash(cat:*),Bash(ls:*),Bash(mkdir:*),Read,Glob,Grep,Skill', '--permission-mode', 'dontAsk',
+// --allowedTools is variadic: one argument per rule (a comma-joined list is read as one unknown tool).
+const agentArgs = (first) => ['--allowedTools', 'Bash(node:*)', 'Bash(cat:*)', 'Bash(ls:*)', 'Bash(mkdir:*)', 'Read', 'Glob', 'Grep', 'Skill', '--permission-mode', 'dontAsk',
   '--max-budget-usd', String(Math.max(0.5, cap / (turns + 1))), ...(opt.model ? ['--model', opt.model] : []),
   ...(first ? [] : [])];
 const candidateSystem = `${persona.voice}\n\nYour facts (the only things you know):\n${JSON.stringify(persona.facts, null, 2)}\n\nReply in plain prose, two to six sentences, no lists longer than four items.`;
@@ -56,14 +57,14 @@ let userMessage = `Use the career-profiler skill to build my career profile. Int
 let failure = null;
 for (let t = 1; t <= turns; t++) {
   if (spent >= cap) { failure = `cost cap $${cap} reached after ${t - 1} turns`; break; }
-  const a = claude([...(agentSession ? ['--resume', agentSession] : []), ...agentArgs(!agentSession), userMessage], { label: `agent turn ${t}` });
+  const a = claude([...(agentSession ? ['--resume', agentSession] : []), ...agentArgs(!agentSession), '--', userMessage], { label: `agent turn ${t}` });
   if (a.error && !a.text) { failure = a.error; break; }
   agentSession = a.session || agentSession;
   transcript.push({ turn: t, role: 'agent', text: a.text });
   process.stderr.write(`agent ${t}: ${a.text.replace(/\s+/g, ' ').slice(0, 160)}\n`);
   if (t === turns) break;
   const c = claude([...(candidateSession ? ['--resume', candidateSession] : ['--system-prompt', candidateSystem]), '--tools', '', '--max-budget-usd', '0.5',
-    ...(opt['candidate-model'] ? ['--model', opt['candidate-model']] : []), a.text], { label: `candidate turn ${t}`, cwd: os.tmpdir() });
+    ...(opt['candidate-model'] ? ['--model', opt['candidate-model']] : []), '--', a.text], { label: `candidate turn ${t}`, cwd: os.tmpdir() });
   if (c.error && !c.text) { failure = c.error; break; }
   candidateSession = c.session || candidateSession;
   transcript.push({ turn: t, role: 'candidate', text: c.text });
@@ -87,7 +88,9 @@ if (profile) {
   for (const x of exps) check(`no-fabricated-employer:${x.employer}`, gt.employers.some((e) => norm(x.employer).includes(norm(e)) || norm(e).includes(norm(x.employer))), x.id);
   for (const t of gt.titles) check(`exact-title:${t}`, exps.some((x) => norm(x.title) === norm(t)), exps.map((x) => x.title).join(' | '));
   for (const s of gt.starts) check(`start-date:${s}`, exps.some((x) => String(x.start).startsWith(s)), exps.map((x) => x.start).join(' | '));
-  const text = JSON.stringify([profile.experience, profile.skills, profile.certifications, profile.education, profile.summary]);
+  // Numbers the agent wrote into fact text and metrics (provenance timestamps, ids and dates excluded).
+  const stripped = JSON.parse(JSON.stringify([profile.experience, profile.skills, profile.certifications, profile.education, profile.summary], (k, v) => (['provenance', 'id', 'at', 'start', 'end', 'date', 'expires', 'last_used', 'added', 'evidence', 'skills'].includes(k) ? undefined : v)));
+  const text = JSON.stringify(stripped);
   const numbers = new Set((text.match(/(?<![\w.-])\d+(?:\.\d+)?(?![\w.])/g) || []).map(Number).filter((n) => n < 1900 || n > 2100 || gt.numbers.includes(n)));
   const unknown = [...numbers].filter((n) => !gt.numbers.includes(n) && !(n >= 1900 && n <= 2100));
   check('no-invented-numbers', unknown.length === 0, unknown.join(', ') || 'none');

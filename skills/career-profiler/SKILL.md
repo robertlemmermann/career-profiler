@@ -29,9 +29,11 @@ line against it. Invoked as `/career-profiler <mode>` (Claude Code, Copilot CLI,
 
 ## Operating principles (every mode)
 
-- **Facts come from the user, never from the model.** Every entry in the store is something the
-  user said or a document they gave, confirmed in conversation before it is written. Unknown
-  stays unknown; "probably" is a question, not a fact.
+- **Facts come from the user, never from the model or the environment.** Every entry in the
+  store is something the user said or a document they gave, confirmed in conversation before it
+  is written. Account metadata, environment variables, git configuration, earlier sessions and
+  the host's own context are not sources: an email address or name seen there is asked for, never
+  assumed or quoted. Unknown stays unknown; "probably" is a question, not a fact.
 - **A resume is a cited document.** Every claim line in a draft carries `<!-- fact: id -->`;
   `resume check` fails any line whose numbers, employer, title, dates, skills or keywords the
   cited facts do not support. Never finalize a draft that fails.

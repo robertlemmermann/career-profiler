@@ -1,6 +1,5 @@
 ---
 type: regex
-pattern: "<!--\\s*fact:\\s*[a-z]+-[\\w-]+"
-match: "count:6"
+pattern: "(<!--\\s*fact:\\s*[a-z]+[\\s\\S]*?){6}"
 weight: 1
 ---

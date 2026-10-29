@@ -52,7 +52,7 @@ function runOnce(query, dir) {
   const args = ['-p', query, '--output-format', 'stream-json', '--verbose', '--tools', 'Skill,Read,Glob,Grep', '--permission-mode', 'dontAsk',
     '--no-session-persistence', '--max-budget-usd', String(perRun), ...(opt.model ? ['--model', opt.model] : [])];
   const started = Date.now();
-  const r = spawnSync('claude', args, { cwd: dir, env, encoding: 'utf8', timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
+  const r = spawnSync('claude', args, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
   const text = r.stdout || '';
   const triggered = new RegExp(`"name":"Skill"[^\\n]*${NAME}`).test(text) || new RegExp(`"name":"Read"[^\\n]*skills/${NAME}/SKILL\\.md`).test(text);
   let cost = null;

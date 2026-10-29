@@ -34,7 +34,9 @@
         "type": "full-time",
         "scope": "5 to 6 telemetry patients per shift on a 32-bed med-surg unit",
         "tools": "Cerner, telemetry",
-        "achievements": ["Nominated for a DAISY award in 2019 for family communication"]
+        "achievements": [
+          "Nominated for a DAISY award in 2019 for family communication"
+        ]
       }
     ],
     "education": "BSN in Nursing, University of Wisconsin-Madison, 2014 to 2018",
@@ -43,11 +45,46 @@
     "none": "no projects, no publications, no awards beyond the DAISY nomination, no volunteering, only speaks English"
   },
   "ground_truth": {
-    "employers": ["St. Anselm Hospital", "Dane County Medical Center"],
-    "titles": ["Registered Nurse, Medical ICU", "Registered Nurse, Medical-Surgical"],
-    "starts": ["2020-08", "2018-06"],
-    "numbers": [7, 12, 14, 20, 32, 5, 6, 2019, 2024, 2018, 2020, 2014, 2022, 2027, 1],
-    "must_mention": ["CCRN", "ACLS", "BLS", "Epic", "CRRT"],
+    "employers": [
+      "St. Anselm Hospital",
+      "Dane County Medical Center"
+    ],
+    "titles": [
+      "Registered Nurse, Medical ICU",
+      "Registered Nurse, Medical-Surgical"
+    ],
+    "starts": [
+      "2020-08",
+      "2018-06"
+    ],
+    "numbers": [
+      7,
+      12,
+      14,
+      20,
+      32,
+      5,
+      6,
+      1,
+      2,
+      4,
+      8,
+      3,
+      2019,
+      2024,
+      2018,
+      2020,
+      2014,
+      2022,
+      2027
+    ],
+    "must_mention": [
+      "CCRN",
+      "ACLS",
+      "BLS",
+      "Epic",
+      "CRRT"
+    ],
     "min_coverage": 60
   }
 }

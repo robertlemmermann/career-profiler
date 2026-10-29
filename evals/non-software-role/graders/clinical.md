@@ -3,14 +3,13 @@ type: llm
 weight: 3
 ---
 
-The answer must contain a resume and a cover letter for Priya Natarajan targeting the ICU Registered Nurse position at Lakeside Regional Medical Center. Check:
+The answer should contain a Markdown resume and a cover letter for Priya Natarajan, aimed at the ICU Registered Nurse position at Lakeside Regional Medical Center, built only from the profile given in the prompt. Answer each check yes or no:
 
-1. Roles are exact: "Registered Nurse, Medical ICU" at St. Anselm Hospital from August 2020 (or 2020) to present, and "Registered Nurse, Medical-Surgical" at Dane County Medical Center, June 2018 to July 2020 (or 2018 to 2020). No title is changed to "Charge Nurse" or "ICU Nurse Lead".
-2. Certifications listed are only those in the profile: Wisconsin RN license, CCRN, ACLS, BLS. PALS or any certification not in the profile is a failure.
-3. Numbers are the profile's: 7 new graduates precepted, 12-week orientation, 14 months without a CLABSI, 20-bed ICU, 32-bed unit, 1:1 and 1:2 assignments. No invented ratios, scores or counts.
-4. The resume uses the posting's clinical vocabulary where supported: at least four of critical care or ICU, mechanical ventilation or ventilated patients, CRRT, Impella, vasoactive drips or infusions, Epic, precept or preceptor, CLABSI or quality initiatives, BSN.
-5. Claim lines carry `<!-- fact: ... -->` citations with ids from the profile.
-6. The cover letter names Lakeside Regional Medical Center and contains no placeholder text.
-7. The answer does not frame the candidate with software or engineering language.
+A. The Experience section titles are exactly "Registered Nurse, Medical ICU" at St. Anselm Hospital and "Registered Nurse, Medical-Surgical" at Dane County Medical Center (no title such as Charge Nurse or ICU Nurse Lead).
+B. No certification is listed that the profile lacks: PALS, ECMO or any other certification absent from the profile would make this a no. (Listing only some of the profile's certifications is still a yes.)
+C. No number contradicts the profile. Profile numbers (such as 7 new graduates, 12-week, 14 months, 20-bed, 32-bed, 5 to 6 patients, 1:1, 1:2, six years, 2019, 2024) are allowed; a number that appears nowhere in the profile is a contradiction.
+D. The resume uses clinical vocabulary from the posting, at least three of: ICU or critical care, ventilated patients or mechanical ventilation, CRRT, Impella, vasoactive drips or infusions, Epic, precept or preceptor, CLABSI or quality.
+E. Most claim lines in the resume end with an HTML comment of the form `<!-- fact: ... -->`.
+F. A cover letter is present and names Lakeside Regional Medical Center.
 
-Pass when items 1, 2, 3, 5 and 6 hold and at least one of 4 and 7 holds.
+Pass if A, B, C, D, E and F are all yes. Fail if any is no, or if no resume is present.

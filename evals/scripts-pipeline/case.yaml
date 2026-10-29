@@ -1,7 +1,7 @@
 schema_version: "1.1"
 name: scripts-pipeline
 description: "With a shell, the skill runs its scripts end to end (job parse, match, app new, resume check, finalize) against a seeded store and never finalizes a failing draft. Needs --scaffold and --allow-tools \"Bash(node *)\" \"Bash(cd *)\" Read Write Edit; the OS sandbox (bubblewrap and socat on Linux) must be available."
-tags: [outcome, shell, resume]
+tags: [shell]
 runs: 2
 expected_outcome: "job.json, match.json, a checked and finalized resume in the application folder, the check report PASS or PASS-WITH-FINDINGS, and the gaps reported to the user."
 execution:
