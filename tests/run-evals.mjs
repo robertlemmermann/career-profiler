@@ -5,8 +5,8 @@
 //
 //   node tests/run-evals.mjs [claude plugin eval options...]
 //
-// Defaults: --ablation none (so `tool_used: Skill` graders count), --threshold 0.8,
-// --max-cost-usd 15, --no-publish, --tag outcome --tag trigger (the shell case is excluded unless
+// Defaults: --ablation none (so `tool_used: Skill` graders count), --threshold 1 (every grader
+// must pass in every run), --judge-model sonnet, --max-cost-usd 15, --no-publish, --tag outcome --tag trigger (the shell case is excluded unless
 // you pass --tag shell or --case scripts-pipeline with --scaffold and --allow-tools), results in a
 // temp dir that is printed. Pass --case <glob>, --tag <tag>, --model, --judge-model, --runs through.
 
@@ -28,7 +28,8 @@ fs.cpSync(path.join(repo, 'evals'), path.join(target, 'evals'), { recursive: tru
 const out = has('--output-dir') ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'cp-eval-results-'));
 const evalArgs = ['plugin', 'eval', target, '--trust-plugin',
   ...(has('--ablation') ? [] : ['--ablation', 'none']),
-  ...(has('--threshold') ? [] : ['--threshold', '0.8']),
+  ...(has('--threshold') ? [] : ['--threshold', '1']),
+  ...(has('--judge-model') ? [] : ['--judge-model', 'sonnet']),
   ...(has('--max-cost-usd') ? [] : ['--max-cost-usd', '15']),
   ...(has('--publish-report') || has('--no-publish') ? [] : ['--no-publish']),
   ...(has('--tag') || has('--case') ? [] : ['--tag', 'outcome', '--tag', 'trigger']),
