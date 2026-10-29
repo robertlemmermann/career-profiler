@@ -72,3 +72,14 @@ the four values, `submit` `never`, a non-empty `statement`, `recorded_at` and a 
 cannot verify the hash by hand: treat any doubt as corrupt, ask the user again, and write the
 file with `"hash": "unverified-manual"`; the next session with Node will report it as corrupt
 and re-record it with their confirmation. Write "guidance-only mode" in your reply.
+
+The same two rules as with Node hold when the user writes the file by hand:
+
+- **Their words, then their yes, then the file.** Quote the statement back and ask "shall I
+  record that?"; give them the file contents (or the `gate record` command for a later session
+  with Node) only after they say yes in this conversation, never in the same message as the
+  question.
+- **The old record is kept, never overwritten.** When a record already exists (a change of
+  preference), tell them to move it to `quarantine/preferences-previous.<date>.json` first, so
+  the change stays traceable, and say that `mode: inherit` subscriptions follow the new value at
+  the next poll.
