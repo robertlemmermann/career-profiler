@@ -13,6 +13,8 @@ allowed_tools:
 expected_outcome: "The agent loads career-profiler and either produces a gap analysis from the profile or, lacking one, asks for the profile facts; it does not write a resume."
 ---
 
+No shell is available, so use the career-profiler skill the guidance-only way.
+
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
 
 ```json

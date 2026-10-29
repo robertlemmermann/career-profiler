@@ -13,6 +13,8 @@ allowed_tools:
 expected_outcome: "The agent explains that a tailored resume needs one specific posting and asks for it (text, file or link), optionally offering a general export or to start the profile interview."
 ---
 
+No shell is available, so use the career-profiler skill the guidance-only way.
+
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
 
 ```json
