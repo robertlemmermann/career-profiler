@@ -1,0 +1,17 @@
+---
+name: profile-update-promotion
+description: "A promotion is recorded as a new role entry with exact facts asked for, never by overwriting the old title."
+tags: [trigger, profile, update]
+runs: 3
+max_turns: 8
+timeout_seconds: 300
+allowed_tools:
+  - Read
+  - Glob
+  - Grep
+  - Skill
+expected_outcome: "The agent loads career-profiler, explains it will add a new experience entry (Staff Engineer at Brightline Payments) and close the previous one, and asks for the exact start month, scope and any new achievements."
+---
+
+Good news: I was promoted to Staff Engineer at Brightline Payments last month. Update my career
+profile so the next resume reflects it.

@@ -1,0 +1,50 @@
+schema_version: "1.1"
+name: scripts-pipeline
+description: "With a shell, the skill runs its scripts end to end (job parse, match, app new, resume check, finalize) against a seeded store and never finalizes a failing draft. Needs --scaffold and --allow-tools \"Bash(node *)\" \"Bash(cd *)\" Read Write Edit; the OS sandbox (bubblewrap and socat on Linux) must be available."
+tags: [outcome, shell, resume]
+runs: 2
+expected_outcome: "job.json, match.json, a checked and finalized resume in the application folder, the check report PASS or PASS-WITH-FINDINGS, and the gaps reported to the user."
+execution:
+  max_turns: 40
+  timeout_seconds: 900
+  allowed_tools: [Read, Glob, Grep, Skill, Bash, Write, Edit]
+context:
+  scaffold_script: fixture.sh
+graders:
+  - name: parsed-the-posting
+    type: tool_used
+    tool: Bash
+    input_match: "cp\\.mjs\"? +job +parse"
+    weight: 1
+  - name: checked-the-resume
+    type: tool_used
+    tool: Bash
+    input_match: "cp\\.mjs\"? +resume +check"
+    weight: 2
+  - name: check-before-finalize
+    type: tool_order
+    before:
+      tool: Bash
+      input_match: "resume +check"
+    after:
+      tool: Bash
+      input_match: "resume +finalize"
+    weight: 1
+  - name: outputs-written
+    type: file_exists
+    path: "store/applications/*/resume.html"
+    weight: 1
+  - name: report-written
+    type: file_exists
+    path: "store/applications/*/resume.check.json"
+    weight: 1
+  - name: honest-summary
+    type: llm
+    weight: 2
+    criteria: |
+      Judge the final answer:
+      1. It reports the application folder and the files produced (a finalized resume in at least one format, the cover letter draft or final).
+      2. It reports the check verdict (PASS or PASS-WITH-FINDINGS) and does not claim a PASS for a draft it did not check.
+      3. It names at least one gap the posting has that the profile does not support (for example Kubernetes, communication, accounting) and says it was left out or would be asked about.
+      4. It does not claim skills, numbers or titles that are not in the profile (no Kubernetes experience, no title other than Senior Software Engineer at Brightline Payments).
+      Pass when all four hold.

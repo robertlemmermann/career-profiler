@@ -1,0 +1,70 @@
+{
+  "schema": "career-profile/1",
+  "meta": { "created": "2026-10-01T10:00:00.000Z", "updated": "2026-10-20T10:00:00.000Z", "generated_by": "career-profiler 0.1.0", "locale": "en", "sequence": 14 },
+  "identity": {
+    "name": "Jordan Rivera", "headline": "Senior software engineer, web platforms", "email": "jordan.rivera@example.com", "phone": "+1 415 555 0142",
+    "location": { "city": "Oakland", "region": "CA", "country": "USA" },
+    "links": [ { "label": "GitHub", "url": "https://github.com/jrivera-dev" }, { "label": "LinkedIn", "url": "https://linkedin.com/in/jordan-rivera" } ],
+    "remote_preference": "remote or hybrid", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T10:05:00.000Z" }
+  },
+  "targets": { "roles": ["Lead Software Engineer", "Staff Engineer", "Senior Frontend Engineer"], "industries": ["SaaS", "fintech"], "seniority": "lead", "locations": ["remote", "San Francisco Bay Area"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T10:06:00.000Z" } },
+  "summary": { "pitch": "Senior software engineer with nine years building web platforms, the last four leading frontend architecture for a payments product used by 2 million customers.", "strengths": ["frontend architecture", "performance", "mentoring"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T10:07:00.000Z" } },
+  "experience": [
+    {
+      "id": "exp-01", "employer": "Brightline Payments", "title": "Senior Software Engineer", "start": "2022-03", "end": null, "location": "San Francisco, CA (remote)", "type": "full-time", "industry": "fintech",
+      "team_size": 8, "scope": "Frontend architecture for the merchant dashboard and checkout SDK; tech lead for a squad of 5 engineers since 2024.",
+      "stack": ["React", "TypeScript", "Next.js", "Node.js", "GraphQL", "PostgreSQL", "AWS", "GitHub Actions", "Playwright"],
+      "responsibilities": ["Own the frontend platform roadmap", "Run design reviews and code reviews for the dashboard squad", "On-call rotation for checkout"],
+      "achievements": [
+        { "id": "ach-01-01", "text": "Led the migration of the merchant dashboard from a legacy Angular app to React and TypeScript, cutting p95 page load from 4.1s to 1.6s and reducing frontend incidents by 60% over the following year.", "metrics": [ { "value": 4.1, "unit": "s", "label": "p95 load before" }, { "value": 1.6, "unit": "s", "label": "p95 load after" }, { "value": 60, "unit": "%", "label": "fewer frontend incidents" } ], "skills": ["skill-react", "skill-typescript", "skill-performance-optimization"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-02T10:00:00.000Z" } },
+        { "id": "ach-01-02", "text": "Designed and shipped the embeddable checkout SDK (React, 38 KB gzipped) adopted by 1,200 merchants in its first six months, processing $410M annually.", "metrics": [ { "value": 1200, "label": "merchants adopting" }, { "value": 410, "unit": "M", "label": "USD processed annually" }, { "value": 38, "unit": "KB", "label": "bundle size" } ], "skills": ["skill-react", "skill-system-design"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-02T10:10:00.000Z" } },
+        { "id": "ach-01-03", "text": "Mentored 4 engineers, two of whom were promoted to senior; introduced a weekly architecture review that cut rework on large features by about a third.", "metrics": [ { "value": 4, "label": "engineers mentored" }, { "value": 2, "label": "promoted to senior" } ], "skills": ["skill-mentoring", "skill-technical-leadership"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-02T10:20:00.000Z" } },
+        { "id": "ach-01-04", "text": "Built the Playwright end-to-end suite for checkout (220 scenarios) and wired it into GitHub Actions, taking release confidence from manual QA to a 25-minute automated gate.", "metrics": [ { "value": 220, "label": "e2e scenarios" }, { "value": 25, "unit": "min", "label": "automated gate duration" } ], "skills": ["skill-playwright", "skill-ci-cd"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-02T10:30:00.000Z" } }
+      ],
+      "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T10:30:00.000Z" }
+    },
+    {
+      "id": "exp-02", "employer": "Northwind Health", "title": "Software Engineer", "start": "2017-06", "end": "2022-02", "location": "Seattle, WA", "type": "full-time", "industry": "healthcare software",
+      "team_size": 12, "scope": "Full-stack engineer on the patient scheduling product; owned the appointment API and its React front end.",
+      "stack": ["React", "JavaScript", "Node.js", "Express", "PostgreSQL", "Redis", "Docker", "Jenkins"],
+      "achievements": [
+        { "id": "ach-02-01", "text": "Rebuilt the appointment search API with PostgreSQL full-text search and Redis caching, bringing median response time from 900ms to 120ms for 3 million monthly searches.", "metrics": [ { "value": 900, "unit": "ms", "label": "median before" }, { "value": 120, "unit": "ms", "label": "median after" }, { "value": 3, "unit": "M", "label": "monthly searches" } ], "skills": ["skill-postgresql", "skill-redis", "skill-node-js"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-03T10:00:00.000Z" } },
+        { "id": "ach-02-02", "text": "Containerized the scheduling services with Docker and moved CI to Jenkins pipelines, cutting the build-and-deploy cycle from 2 hours to 20 minutes.", "metrics": [ { "value": 2, "unit": "h", "label": "cycle before" }, { "value": 20, "unit": "min", "label": "cycle after" } ], "skills": ["skill-docker", "skill-ci-cd"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-03T10:10:00.000Z" } },
+        { "id": "ach-02-03", "text": "Implemented HIPAA audit logging across the patient-facing services, passing the 2020 external audit with zero findings.", "metrics": [ { "value": 0, "label": "audit findings" } ], "skills": ["skill-security"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-03T10:20:00.000Z" } }
+      ],
+      "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T10:40:00.000Z" }
+    }
+  ],
+  "education": [
+    { "id": "edu-01", "institution": "University of Washington", "degree": "B.S.", "field": "Computer Science", "start": "2013-09", "end": "2017-06", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T11:00:00.000Z" } }
+  ],
+  "certifications": [
+    { "id": "cert-01", "name": "AWS Certified Developer – Associate", "issuer": "Amazon Web Services", "date": "2023-05", "expires": "2026-05", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-01T11:05:00.000Z" } }
+  ],
+  "skills": [
+    { "id": "skill-react", "name": "React", "category": "frontend", "level": "expert", "years": 8, "last_used": "2026", "evidence": ["ach-01-01", "ach-01-02"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-typescript", "name": "TypeScript", "category": "language", "level": "expert", "years": 5, "last_used": "2026", "evidence": ["ach-01-01"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-javascript", "name": "JavaScript", "category": "language", "level": "expert", "years": 9, "last_used": "2026", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-next-js", "name": "Next.js", "category": "frontend", "level": "advanced", "years": 3, "last_used": "2026", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-node-js", "name": "Node.js", "category": "backend", "level": "advanced", "years": 8, "last_used": "2026", "evidence": ["ach-02-01"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-graphql", "name": "GraphQL", "category": "api", "level": "advanced", "years": 3, "last_used": "2026", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-postgresql", "name": "PostgreSQL", "category": "database", "level": "advanced", "years": 7, "last_used": "2026", "evidence": ["ach-02-01"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-redis", "name": "Redis", "category": "database", "level": "intermediate", "years": 3, "last_used": "2022", "evidence": ["ach-02-01"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-aws", "name": "AWS", "category": "cloud", "level": "advanced", "years": 4, "last_used": "2026", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-docker", "name": "Docker", "category": "devops", "level": "advanced", "years": 6, "last_used": "2026", "evidence": ["ach-02-02"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-ci-cd", "name": "CI/CD", "category": "devops", "level": "advanced", "years": 7, "last_used": "2026", "evidence": ["ach-01-04", "ach-02-02"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-playwright", "name": "Playwright", "category": "engineering", "level": "advanced", "years": 2, "last_used": "2026", "evidence": ["ach-01-04"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-performance-optimization", "name": "Performance Optimization", "category": "engineering", "level": "advanced", "years": 5, "last_used": "2026", "evidence": ["ach-01-01", "ach-02-01"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-system-design", "name": "System Design", "category": "architecture", "level": "advanced", "years": 5, "last_used": "2026", "evidence": ["ach-01-02"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-technical-leadership", "name": "Technical Leadership", "category": "leadership", "level": "advanced", "years": 2, "last_used": "2026", "evidence": ["ach-01-03"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-mentoring", "name": "Mentoring", "category": "leadership", "level": "advanced", "years": 4, "last_used": "2026", "evidence": ["ach-01-03"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-security", "name": "Security", "category": "engineering", "level": "intermediate", "years": 3, "last_used": "2022", "evidence": ["ach-02-03"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-04T10:00:00.000Z" } },
+    { "id": "skill-python", "name": "Python", "category": "language", "level": "beginner", "years": 1, "last_used": "2019", "provenance": { "source": "interview", "confirmed": false, "at": "2026-10-04T10:00:00.000Z", "note": "mentioned in the old resume; the user has not confirmed it yet" } }
+  ],
+  "projects": [
+    { "id": "proj-01", "name": "react-form-kit", "role": "maintainer", "start": "2021", "url": "https://github.com/jrivera-dev/react-form-kit", "summary": "Open-source accessible form primitives for React, 1.9k GitHub stars, used by 3 companies in production.", "stack": ["React", "TypeScript", "Accessibility"], "metrics": [ { "value": 1900, "label": "GitHub stars" }, { "value": 3, "label": "companies using it in production" } ], "skills": ["skill-react", "skill-typescript"], "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-05T10:00:00.000Z" } }
+  ],
+  "publications": [], "awards": [], "volunteering": [],
+  "languages": [ { "id": "lang-01", "name": "English", "level": "native", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-05T10:00:00.000Z" } }, { "id": "lang-02", "name": "Spanish", "level": "conversational", "provenance": { "source": "interview", "confirmed": true, "at": "2026-10-05T10:00:00.000Z" } } ],
+  "extras": [], "documents": [ { "id": "doc-01", "path": "documents/resume-2024.pdf", "kind": "resume", "added": "2026-10-01", "provenance": { "source": "document", "confirmed": true, "at": "2026-10-01T10:00:00.000Z" } } ]
+}

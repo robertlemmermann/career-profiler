@@ -1,0 +1,1523 @@
+{
+  "schema": "career-taxonomy/1",
+  "note": "Canonical terms with aliases, used to recognise requirements in job postings and to match them against the profile. Role-agnostic: software, data, product, healthcare, sales, finance, operations, education, trades and general workplace skills. Extend freely; matching is case-insensitive on word boundaries.",
+  "terms": [
+    {
+      "term": "JavaScript",
+      "category": "language",
+      "aliases": [
+        "js",
+        "JS",
+        "ecmascript",
+        "es6",
+        "es2015+"
+      ]
+    },
+    {
+      "term": "TypeScript",
+      "category": "language",
+      "aliases": [
+        "ts",
+        "TS"
+      ]
+    },
+    {
+      "term": "Python",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "Java",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "C#",
+      "category": "language",
+      "aliases": [
+        "csharp",
+        "c-sharp",
+        ".net c#"
+      ]
+    },
+    {
+      "term": "C++",
+      "category": "language",
+      "aliases": [
+        "cpp"
+      ]
+    },
+    {
+      "term": "Go",
+      "category": "language",
+      "aliases": [
+        "golang"
+      ]
+    },
+    {
+      "term": "Rust",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "Ruby",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "PHP",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "Kotlin",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "Swift",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "Scala",
+      "category": "language",
+      "aliases": []
+    },
+    {
+      "term": "SQL",
+      "category": "language",
+      "aliases": [
+        "t-sql",
+        "pl/sql",
+        "plsql"
+      ]
+    },
+    {
+      "term": "HTML",
+      "category": "frontend",
+      "aliases": [
+        "html5"
+      ]
+    },
+    {
+      "term": "CSS",
+      "category": "frontend",
+      "aliases": [
+        "css3",
+        "scss",
+        "sass",
+        "less"
+      ]
+    },
+    {
+      "term": "React",
+      "category": "frontend",
+      "aliases": [
+        "reactjs",
+        "react.js",
+        "react js",
+        "React.js",
+        "ReactJS"
+      ]
+    },
+    {
+      "term": "React Native",
+      "category": "mobile",
+      "aliases": [
+        "react-native"
+      ]
+    },
+    {
+      "term": "Next.js",
+      "category": "frontend",
+      "aliases": [
+        "nextjs",
+        "next js"
+      ]
+    },
+    {
+      "term": "Angular",
+      "category": "frontend",
+      "aliases": [
+        "angularjs",
+        "angular.js"
+      ]
+    },
+    {
+      "term": "Vue",
+      "category": "frontend",
+      "aliases": [
+        "vue.js",
+        "vuejs",
+        "nuxt"
+      ]
+    },
+    {
+      "term": "Svelte",
+      "category": "frontend",
+      "aliases": [
+        "sveltekit"
+      ]
+    },
+    {
+      "term": "Redux",
+      "category": "frontend",
+      "aliases": [
+        "redux toolkit"
+      ]
+    },
+    {
+      "term": "GraphQL",
+      "category": "api",
+      "aliases": [
+        "apollo"
+      ]
+    },
+    {
+      "term": "REST",
+      "category": "api",
+      "aliases": [
+        "rest api",
+        "restful",
+        "restful apis",
+        "rest apis",
+        "http apis"
+      ]
+    },
+    {
+      "term": "gRPC",
+      "category": "api",
+      "aliases": [
+        "protobuf",
+        "protocol buffers"
+      ]
+    },
+    {
+      "term": "Node.js",
+      "category": "backend",
+      "aliases": [
+        "node",
+        "nodejs",
+        "node js"
+      ]
+    },
+    {
+      "term": "Express",
+      "category": "backend",
+      "aliases": [
+        "express.js",
+        "expressjs"
+      ]
+    },
+    {
+      "term": "NestJS",
+      "category": "backend",
+      "aliases": [
+        "nest.js",
+        "nest"
+      ]
+    },
+    {
+      "term": "Django",
+      "category": "backend",
+      "aliases": []
+    },
+    {
+      "term": "Flask",
+      "category": "backend",
+      "aliases": []
+    },
+    {
+      "term": "FastAPI",
+      "category": "backend",
+      "aliases": []
+    },
+    {
+      "term": "Spring",
+      "category": "backend",
+      "aliases": [
+        "spring boot",
+        "springboot"
+      ]
+    },
+    {
+      "term": ".NET",
+      "category": "backend",
+      "aliases": [
+        "dotnet",
+        "asp.net",
+        "asp.net core",
+        ".net core"
+      ]
+    },
+    {
+      "term": "Rails",
+      "category": "backend",
+      "aliases": [
+        "ruby on rails",
+        "ror"
+      ]
+    },
+    {
+      "term": "Laravel",
+      "category": "backend",
+      "aliases": []
+    },
+    {
+      "term": "PostgreSQL",
+      "category": "database",
+      "aliases": [
+        "postgres",
+        "psql"
+      ]
+    },
+    {
+      "term": "MySQL",
+      "category": "database",
+      "aliases": [
+        "mariadb"
+      ]
+    },
+    {
+      "term": "SQL Server",
+      "category": "database",
+      "aliases": [
+        "mssql",
+        "microsoft sql server"
+      ]
+    },
+    {
+      "term": "MongoDB",
+      "category": "database",
+      "aliases": [
+        "mongo"
+      ]
+    },
+    {
+      "term": "Redis",
+      "category": "database",
+      "aliases": []
+    },
+    {
+      "term": "Elasticsearch",
+      "category": "database",
+      "aliases": [
+        "opensearch",
+        "elastic"
+      ]
+    },
+    {
+      "term": "DynamoDB",
+      "category": "database",
+      "aliases": []
+    },
+    {
+      "term": "Kafka",
+      "category": "data",
+      "aliases": [
+        "apache kafka"
+      ]
+    },
+    {
+      "term": "RabbitMQ",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Spark",
+      "category": "data",
+      "aliases": [
+        "apache spark",
+        "pyspark"
+      ]
+    },
+    {
+      "term": "Airflow",
+      "category": "data",
+      "aliases": [
+        "apache airflow"
+      ]
+    },
+    {
+      "term": "dbt",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Snowflake",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "BigQuery",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Databricks",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Pandas",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Machine Learning",
+      "category": "data",
+      "aliases": [
+        "ML",
+        "machine-learning"
+      ]
+    },
+    {
+      "term": "Deep Learning",
+      "category": "data",
+      "aliases": [
+        "neural networks"
+      ]
+    },
+    {
+      "term": "PyTorch",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "TensorFlow",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "LLM",
+      "category": "data",
+      "aliases": [
+        "LLMs",
+        "large language models",
+        "generative ai",
+        "genai"
+      ]
+    },
+    {
+      "term": "Data Analysis",
+      "category": "data",
+      "aliases": [
+        "data analytics",
+        "analytics"
+      ]
+    },
+    {
+      "term": "Data Visualization",
+      "category": "data",
+      "aliases": [
+        "data visualisation",
+        "dashboards"
+      ]
+    },
+    {
+      "term": "Tableau",
+      "category": "data",
+      "aliases": []
+    },
+    {
+      "term": "Power BI",
+      "category": "data",
+      "aliases": [
+        "powerbi"
+      ]
+    },
+    {
+      "term": "Excel",
+      "category": "tools",
+      "aliases": [
+        "microsoft excel",
+        "Microsoft Excel",
+        "spreadsheets"
+      ]
+    },
+    {
+      "term": "AWS",
+      "category": "cloud",
+      "aliases": [
+        "amazon web services"
+      ]
+    },
+    {
+      "term": "Azure",
+      "category": "cloud",
+      "aliases": [
+        "microsoft azure"
+      ]
+    },
+    {
+      "term": "GCP",
+      "category": "cloud",
+      "aliases": [
+        "google cloud",
+        "google cloud platform"
+      ]
+    },
+    {
+      "term": "Docker",
+      "category": "devops",
+      "aliases": [
+        "containers",
+        "containerization"
+      ]
+    },
+    {
+      "term": "Kubernetes",
+      "category": "devops",
+      "aliases": [
+        "k8s",
+        "K8s",
+        "K8S",
+        "EKS",
+        "GKE",
+        "AKS"
+      ]
+    },
+    {
+      "term": "Terraform",
+      "category": "devops",
+      "aliases": [
+        "infrastructure as code",
+        "iac"
+      ]
+    },
+    {
+      "term": "CI/CD",
+      "category": "devops",
+      "aliases": [
+        "ci cd",
+        "continuous integration",
+        "continuous delivery",
+        "continuous deployment",
+        "CI"
+      ]
+    },
+    {
+      "term": "GitHub Actions",
+      "category": "devops",
+      "aliases": []
+    },
+    {
+      "term": "Jenkins",
+      "category": "devops",
+      "aliases": []
+    },
+    {
+      "term": "Linux",
+      "category": "devops",
+      "aliases": [
+        "unix"
+      ]
+    },
+    {
+      "term": "Git",
+      "category": "tools",
+      "aliases": [
+        "github",
+        "gitlab",
+        "version control"
+      ]
+    },
+    {
+      "term": "Observability",
+      "category": "devops",
+      "aliases": [
+        "datadog",
+        "grafana",
+        "prometheus",
+        "opentelemetry",
+        "application monitoring",
+        "production monitoring",
+        "alerting"
+      ]
+    },
+    {
+      "term": "Microservices",
+      "category": "architecture",
+      "aliases": [
+        "micro-services",
+        "service-oriented architecture",
+        "soa"
+      ]
+    },
+    {
+      "term": "Distributed Systems",
+      "category": "architecture",
+      "aliases": [
+        "distributed computing"
+      ]
+    },
+    {
+      "term": "System Design",
+      "category": "architecture",
+      "aliases": [
+        "software architecture",
+        "architecture design",
+        "systems design"
+      ]
+    },
+    {
+      "term": "Event-Driven Architecture",
+      "category": "architecture",
+      "aliases": [
+        "event driven",
+        "event sourcing",
+        "cqrs"
+      ]
+    },
+    {
+      "term": "Performance Optimization",
+      "category": "engineering",
+      "aliases": [
+        "performance tuning",
+        "performance optimisation",
+        "web performance"
+      ]
+    },
+    {
+      "term": "Accessibility",
+      "category": "frontend",
+      "aliases": [
+        "a11y",
+        "wcag"
+      ]
+    },
+    {
+      "term": "Testing",
+      "category": "engineering",
+      "aliases": [
+        "unit testing",
+        "test automation",
+        "automated testing",
+        "tdd",
+        "TDD",
+        "test-driven development",
+        "end-to-end testing",
+        "e2e",
+        "E2E",
+        "end-to-end tests",
+        "end-to-end suite",
+        "unit tests",
+        "integration tests",
+        "test suite"
+      ]
+    },
+    {
+      "term": "Jest",
+      "category": "engineering",
+      "aliases": [
+        "vitest"
+      ]
+    },
+    {
+      "term": "Cypress",
+      "category": "engineering",
+      "aliases": []
+    },
+    {
+      "term": "Playwright",
+      "category": "engineering",
+      "aliases": []
+    },
+    {
+      "term": "Selenium",
+      "category": "engineering",
+      "aliases": []
+    },
+    {
+      "term": "Code Review",
+      "category": "engineering",
+      "aliases": [
+        "code reviews",
+        "pull request reviews"
+      ]
+    },
+    {
+      "term": "Security",
+      "category": "engineering",
+      "aliases": [
+        "application security",
+        "appsec",
+        "owasp",
+        "secure coding"
+      ]
+    },
+    {
+      "term": "OAuth",
+      "category": "engineering",
+      "aliases": [
+        "oauth2",
+        "openid connect",
+        "oidc",
+        "sso"
+      ]
+    },
+    {
+      "term": "iOS",
+      "category": "mobile",
+      "aliases": [
+        "swiftui",
+        "uikit"
+      ]
+    },
+    {
+      "term": "Android",
+      "category": "mobile",
+      "aliases": [
+        "jetpack compose"
+      ]
+    },
+    {
+      "term": "Flutter",
+      "category": "mobile",
+      "aliases": [
+        "dart"
+      ]
+    },
+    {
+      "term": "Agile",
+      "category": "process",
+      "aliases": [
+        "scrum",
+        "kanban",
+        "agile methodologies",
+        "sprint planning"
+      ]
+    },
+    {
+      "term": "Jira",
+      "category": "tools",
+      "aliases": [
+        "atlassian",
+        "confluence"
+      ]
+    },
+    {
+      "term": "Figma",
+      "category": "design",
+      "aliases": []
+    },
+    {
+      "term": "UX Design",
+      "category": "design",
+      "aliases": [
+        "UX",
+        "user experience",
+        "ui/ux",
+        "ux/ui",
+        "user research"
+      ]
+    },
+    {
+      "term": "Product Management",
+      "category": "product",
+      "aliases": [
+        "product manager",
+        "product owner",
+        "roadmap",
+        "product roadmap",
+        "product strategy"
+      ]
+    },
+    {
+      "term": "A/B Testing",
+      "category": "product",
+      "aliases": [
+        "experimentation",
+        "ab testing",
+        "split testing"
+      ]
+    },
+    {
+      "term": "Technical Leadership",
+      "category": "leadership",
+      "aliases": [
+        "tech lead",
+        "technical lead",
+        "lead engineer",
+        "engineering lead",
+        "team lead",
+        "leading a team",
+        "lead a team",
+        "technical direction"
+      ]
+    },
+    {
+      "term": "Mentoring",
+      "category": "leadership",
+      "aliases": [
+        "mentor",
+        "mentorship",
+        "coaching",
+        "coach"
+      ]
+    },
+    {
+      "term": "People Management",
+      "category": "leadership",
+      "aliases": [
+        "line management",
+        "managing people",
+        "direct reports",
+        "performance reviews",
+        "hiring"
+      ]
+    },
+    {
+      "term": "Project Management",
+      "category": "leadership",
+      "aliases": [
+        "project manager",
+        "pmp",
+        "program management",
+        "programme management",
+        "delivery management"
+      ]
+    },
+    {
+      "term": "Stakeholder Management",
+      "category": "leadership",
+      "aliases": [
+        "stakeholders",
+        "cross-functional collaboration",
+        "cross functional",
+        "cross-functional"
+      ]
+    },
+    {
+      "term": "Communication",
+      "category": "general",
+      "aliases": [
+        "communication skills",
+        "written communication",
+        "verbal communication",
+        "presentation skills"
+      ]
+    },
+    {
+      "term": "Problem Solving",
+      "category": "general",
+      "aliases": [
+        "problem-solving",
+        "analytical skills",
+        "critical thinking"
+      ]
+    },
+    {
+      "term": "Customer Service",
+      "category": "general",
+      "aliases": [
+        "customer support",
+        "client service",
+        "customer care",
+        "customer success"
+      ]
+    },
+    {
+      "term": "Budget Management",
+      "category": "general",
+      "aliases": [
+        "budgeting",
+        "budgets",
+        "p&l",
+        "cost control",
+        "financial planning"
+      ]
+    },
+    {
+      "term": "Vendor Management",
+      "category": "general",
+      "aliases": [
+        "supplier management",
+        "procurement",
+        "contract negotiation"
+      ]
+    },
+    {
+      "term": "Compliance",
+      "category": "general",
+      "aliases": [
+        "regulatory compliance",
+        "regulations",
+        "audit",
+        "audits"
+      ]
+    },
+    {
+      "term": "Training",
+      "category": "general",
+      "aliases": [
+        "onboarding",
+        "staff training",
+        "curriculum",
+        "instruction"
+      ]
+    },
+    {
+      "term": "Sales",
+      "category": "sales",
+      "aliases": [
+        "b2b sales",
+        "b2c sales",
+        "selling",
+        "quota",
+        "pipeline",
+        "closing"
+      ]
+    },
+    {
+      "term": "Account Management",
+      "category": "sales",
+      "aliases": [
+        "key accounts",
+        "account manager",
+        "client relationships",
+        "relationship management"
+      ]
+    },
+    {
+      "term": "Business Development",
+      "category": "sales",
+      "aliases": [
+        "BD",
+        "lead generation",
+        "prospecting",
+        "new business"
+      ]
+    },
+    {
+      "term": "CRM",
+      "category": "sales",
+      "aliases": [
+        "salesforce",
+        "hubspot",
+        "dynamics 365"
+      ]
+    },
+    {
+      "term": "Negotiation",
+      "category": "sales",
+      "aliases": [
+        "negotiating",
+        "negotiations"
+      ]
+    },
+    {
+      "term": "Marketing",
+      "category": "marketing",
+      "aliases": [
+        "digital marketing",
+        "content marketing",
+        "campaigns",
+        "brand"
+      ]
+    },
+    {
+      "term": "SEO",
+      "category": "marketing",
+      "aliases": [
+        "search engine optimization",
+        "SEM",
+        "paid search"
+      ]
+    },
+    {
+      "term": "Social Media",
+      "category": "marketing",
+      "aliases": [
+        "social media marketing",
+        "community management"
+      ]
+    },
+    {
+      "term": "Accounting",
+      "category": "finance",
+      "aliases": [
+        "GAAP",
+        "IFRS",
+        "bookkeeping",
+        "general ledger",
+        "accounts payable",
+        "accounts receivable",
+        "month-end close"
+      ]
+    },
+    {
+      "term": "Financial Analysis",
+      "category": "finance",
+      "aliases": [
+        "financial modeling",
+        "financial modelling",
+        "forecasting",
+        "FP&A",
+        "variance analysis"
+      ]
+    },
+    {
+      "term": "CPA",
+      "category": "finance",
+      "aliases": [
+        "certified public accountant",
+        "chartered accountant",
+        "ACA",
+        "ACCA",
+        "CIMA"
+      ]
+    },
+    {
+      "term": "Nursing",
+      "category": "healthcare",
+      "aliases": [
+        "registered nurse",
+        "RN",
+        "nurse",
+        "staff nurse",
+        "charge nurse",
+        "LPN",
+        "LVN"
+      ]
+    },
+    {
+      "term": "Patient Care",
+      "category": "healthcare",
+      "aliases": [
+        "patient-centered care",
+        "bedside care",
+        "direct patient care",
+        "patient assessment",
+        "patient education"
+      ]
+    },
+    {
+      "term": "Critical Care",
+      "category": "healthcare",
+      "aliases": [
+        "ICU",
+        "intensive care",
+        "CCU",
+        "CCRN",
+        "critical-care"
+      ]
+    },
+    {
+      "term": "Emergency Care",
+      "category": "healthcare",
+      "aliases": [
+        "emergency department",
+        "ER",
+        "ED nurse",
+        "trauma",
+        "triage"
+      ]
+    },
+    {
+      "term": "ACLS",
+      "category": "healthcare",
+      "aliases": [
+        "advanced cardiac life support",
+        "advanced cardiovascular life support"
+      ]
+    },
+    {
+      "term": "BLS",
+      "category": "healthcare",
+      "aliases": [
+        "basic life support",
+        "CPR"
+      ]
+    },
+    {
+      "term": "PALS",
+      "category": "healthcare",
+      "aliases": [
+        "pediatric advanced life support"
+      ]
+    },
+    {
+      "term": "EHR",
+      "category": "healthcare",
+      "aliases": [
+        "electronic health records",
+        "EMR",
+        "Epic",
+        "Cerner",
+        "Meditech",
+        "electronic medical records"
+      ]
+    },
+    {
+      "term": "Medication Administration",
+      "category": "healthcare",
+      "aliases": [
+        "medication management",
+        "administer medications",
+        "administering medications",
+        "medications",
+        "iv therapy",
+        "iv insertion",
+        "infusion",
+        "infusions",
+        "titrate infusions",
+        "titration"
+      ]
+    },
+    {
+      "term": "Ventilator Management",
+      "category": "healthcare",
+      "aliases": [
+        "mechanical ventilation",
+        "ventilators",
+        "vent management",
+        "ventilator"
+      ]
+    },
+    {
+      "term": "HIPAA",
+      "category": "healthcare",
+      "aliases": [
+        "patient privacy",
+        "PHI"
+      ]
+    },
+    {
+      "term": "Clinical Documentation",
+      "category": "healthcare",
+      "aliases": [
+        "charting",
+        "care plans",
+        "nursing documentation"
+      ]
+    },
+    {
+      "term": "Phlebotomy",
+      "category": "healthcare",
+      "aliases": [
+        "venipuncture",
+        "blood draws"
+      ]
+    },
+    {
+      "term": "Pharmacy",
+      "category": "healthcare",
+      "aliases": [
+        "pharmacist",
+        "PharmD",
+        "pharmacy technician"
+      ]
+    },
+    {
+      "term": "Physical Therapy",
+      "category": "healthcare",
+      "aliases": [
+        "physiotherapy",
+        "DPT",
+        "rehabilitation"
+      ]
+    },
+    {
+      "term": "Medical Coding",
+      "category": "healthcare",
+      "aliases": [
+        "ICD-10",
+        "CPT coding",
+        "medical billing"
+      ]
+    },
+    {
+      "term": "Supply Chain",
+      "category": "operations",
+      "aliases": [
+        "logistics",
+        "inventory management",
+        "warehouse",
+        "procurement planning",
+        "distribution"
+      ]
+    },
+    {
+      "term": "Lean",
+      "category": "operations",
+      "aliases": [
+        "six sigma",
+        "lean six sigma",
+        "kaizen",
+        "continuous improvement",
+        "5S"
+      ]
+    },
+    {
+      "term": "Quality Assurance",
+      "category": "operations",
+      "aliases": [
+        "QA",
+        "quality control",
+        "QC",
+        "iso 9001",
+        "quality management"
+      ]
+    },
+    {
+      "term": "Health and Safety",
+      "category": "operations",
+      "aliases": [
+        "OSHA",
+        "EHS",
+        "HSE",
+        "safety compliance",
+        "workplace safety"
+      ]
+    },
+    {
+      "term": "Manufacturing",
+      "category": "operations",
+      "aliases": [
+        "production",
+        "assembly",
+        "CNC",
+        "machining",
+        "fabrication"
+      ]
+    },
+    {
+      "term": "Electrical",
+      "category": "trades",
+      "aliases": [
+        "electrician",
+        "journeyman electrician",
+        "wiring",
+        "electrical systems"
+      ]
+    },
+    {
+      "term": "Plumbing",
+      "category": "trades",
+      "aliases": [
+        "plumber",
+        "pipefitting"
+      ]
+    },
+    {
+      "term": "HVAC",
+      "category": "trades",
+      "aliases": [
+        "heating and cooling",
+        "refrigeration",
+        "EPA 608"
+      ]
+    },
+    {
+      "term": "Welding",
+      "category": "trades",
+      "aliases": [
+        "MIG",
+        "TIG",
+        "welder"
+      ]
+    },
+    {
+      "term": "Carpentry",
+      "category": "trades",
+      "aliases": [
+        "carpenter",
+        "framing",
+        "finish carpentry"
+      ]
+    },
+    {
+      "term": "Forklift",
+      "category": "trades",
+      "aliases": [
+        "forklift certified",
+        "forklift operator",
+        "pallet jack"
+      ]
+    },
+    {
+      "term": "Commercial Driving",
+      "category": "trades",
+      "aliases": [
+        "CDL",
+        "class a",
+        "class b",
+        "truck driver",
+        "delivery driver"
+      ]
+    },
+    {
+      "term": "Blueprint Reading",
+      "category": "trades",
+      "aliases": [
+        "blueprints",
+        "schematics",
+        "technical drawings"
+      ]
+    },
+    {
+      "term": "Teaching",
+      "category": "education",
+      "aliases": [
+        "teacher",
+        "classroom management",
+        "lesson planning",
+        "instructional design",
+        "educator"
+      ]
+    },
+    {
+      "term": "Special Education",
+      "category": "education",
+      "aliases": [
+        "SpEd",
+        "IEP",
+        "IEPs",
+        "differentiated instruction"
+      ]
+    },
+    {
+      "term": "Curriculum Development",
+      "category": "education",
+      "aliases": [
+        "curriculum design",
+        "course design",
+        "e-learning"
+      ]
+    },
+    {
+      "term": "Research",
+      "category": "general",
+      "aliases": [
+        "research methods",
+        "qualitative research",
+        "quantitative research",
+        "literature review"
+      ]
+    },
+    {
+      "term": "Writing",
+      "category": "general",
+      "aliases": [
+        "copywriting",
+        "technical writing",
+        "editing",
+        "content writing",
+        "technical documentation"
+      ]
+    },
+    {
+      "term": "Legal",
+      "category": "legal",
+      "aliases": [
+        "paralegal",
+        "contracts",
+        "litigation",
+        "legal research",
+        "juris doctor",
+        "JD"
+      ]
+    },
+    {
+      "term": "Human Resources",
+      "category": "hr",
+      "aliases": [
+        "HR",
+        "recruiting",
+        "recruitment",
+        "talent acquisition",
+        "employee relations",
+        "HRIS",
+        "payroll",
+        "benefits administration"
+      ]
+    },
+    {
+      "term": "Administrative Support",
+      "category": "admin",
+      "aliases": [
+        "administrative assistant",
+        "executive assistant",
+        "office management",
+        "scheduling",
+        "calendar management",
+        "data entry"
+      ]
+    },
+    {
+      "term": "Microsoft Office",
+      "category": "tools",
+      "aliases": [
+        "ms office",
+        "MS Office",
+        "Word",
+        "PowerPoint",
+        "Outlook",
+        "office 365",
+        "microsoft 365"
+      ]
+    },
+    {
+      "term": "Google Workspace",
+      "category": "tools",
+      "aliases": [
+        "g suite",
+        "G Suite",
+        "google docs",
+        "google sheets"
+      ]
+    },
+    {
+      "term": "Hospitality",
+      "category": "hospitality",
+      "aliases": [
+        "food service",
+        "front of house",
+        "guest services",
+        "restaurant",
+        "barista",
+        "bartending",
+        "serving"
+      ]
+    },
+    {
+      "term": "Retail",
+      "category": "retail",
+      "aliases": [
+        "point of sale",
+        "POS",
+        "merchandising",
+        "cashier",
+        "store operations",
+        "loss prevention"
+      ]
+    },
+    {
+      "term": "Event Planning",
+      "category": "general",
+      "aliases": [
+        "event management",
+        "event coordination",
+        "conferences"
+      ]
+    },
+    {
+      "term": "Graphic Design",
+      "category": "design",
+      "aliases": [
+        "adobe creative suite",
+        "photoshop",
+        "illustrator",
+        "indesign",
+        "canva"
+      ]
+    },
+    {
+      "term": "Video Production",
+      "category": "design",
+      "aliases": [
+        "video editing",
+        "premiere",
+        "final cut",
+        "after effects"
+      ]
+    },
+    {
+      "term": "Public Speaking",
+      "category": "general",
+      "aliases": [
+        "presenting",
+        "presentations",
+        "keynote speaker",
+        "facilitation"
+      ]
+    },
+    {
+      "term": "Spanish",
+      "category": "language-spoken",
+      "aliases": [
+        "bilingual spanish",
+        "spanish-speaking"
+      ]
+    },
+    {
+      "term": "French",
+      "category": "language-spoken",
+      "aliases": []
+    },
+    {
+      "term": "German",
+      "category": "language-spoken",
+      "aliases": []
+    },
+    {
+      "term": "Mandarin",
+      "category": "language-spoken",
+      "aliases": [
+        "chinese"
+      ]
+    },
+    {
+      "term": "Bachelor's degree",
+      "category": "education-level",
+      "aliases": [
+        "bachelors",
+        "bachelor's",
+        "BA",
+        "BS",
+        "BSc",
+        "BSN",
+        "B.S.",
+        "B.A.",
+        "B.Eng",
+        "BEng",
+        "undergraduate degree",
+        "4-year degree"
+      ]
+    },
+    {
+      "term": "Master's degree",
+      "category": "education-level",
+      "aliases": [
+        "masters",
+        "master's",
+        "MS",
+        "MSc",
+        "M.S.",
+        "MA",
+        "MBA",
+        "graduate degree"
+      ]
+    },
+    {
+      "term": "PhD",
+      "category": "education-level",
+      "aliases": [
+        "ph.d.",
+        "doctorate",
+        "doctoral"
+      ]
+    },
+    {
+      "term": "Associate degree",
+      "category": "education-level",
+      "aliases": [
+        "associate's",
+        "associates",
+        "ADN",
+        "associate degree"
+      ]
+    },
+    {
+      "term": "High school diploma",
+      "category": "education-level",
+      "aliases": [
+        "GED",
+        "high school",
+        "secondary education"
+      ]
+    }
+  ]
+}

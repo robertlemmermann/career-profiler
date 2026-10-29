@@ -1,0 +1,33 @@
+{
+  "schema": "adc-trigger-set/1",
+  "skill": "career-profiler",
+  "runs": 3,
+  "query_threshold": 0.5,
+  "suite_threshold": 0.8,
+  "guidance": [
+    "The skill's own trigger set: 10 should-trigger queries across both jobs (building or updating a career profile; tailoring a resume or cover letter to a posting; match-only questions) and 10 near misses that share the vocabulary (interview coaching, job search, generic templates, HR tooling, unrelated coding).",
+    "Release gate: suite_threshold in Claude Code. Run with node tests/run-trigger-set.mjs (paid; --dry-run prints the plan). The format is the one agentic-developer-companion's tooling trigger-set reads, so that runner works too."
+  ],
+  "queries": [
+    { "id": "pos-01", "should_trigger": true, "query": "I want to build a proper career profile I can generate resumes from later. Interview me about my jobs, what I achieved and my skills, and save it somewhere I can keep updating." },
+    { "id": "pos-02", "should_trigger": true, "query": "Here is a job posting for a Lead Software Engineer (React, TypeScript, 7+ years, leads a team of 6). Tailor my resume to it and write a cover letter: [posting pasted below]" },
+    { "id": "pos-03", "should_trigger": true, "query": "I just got promoted to Staff Engineer at Brightline Payments as of last month. Update my profile so the next resume reflects it." },
+    { "id": "pos-04", "should_trigger": true, "query": "Attached is my old resume from 2024 (resume-2024.pdf). Pull the facts out of it into my profile and ask me about anything that is missing or out of date." },
+    { "id": "pos-05", "should_trigger": true, "query": "Am I a good fit for this ICU registered nurse night-shift position at Lakeside Regional? Which of their requirements am I missing? https://jobs.example.org/rn-icu-nights" },
+    { "id": "pos-06", "should_trigger": true, "query": "apply to this one: Regional Sales Manager, Midwest, Kestrel Industrial Supply. need a resume and cover letter that hit their requirements (5+ yrs B2B, Salesforce, managed a team)" },
+    { "id": "pos-07", "should_trigger": true, "query": "My brother is an electrician looking for a journeyman position. Can you help him put together a record of his work history and certifications so we can make resumes for different postings?" },
+    { "id": "pos-08", "should_trigger": true, "query": "Check this resume draft against my profile: I think I may have rounded some numbers up and I do not want anything in there I cannot back up." },
+    { "id": "pos-09", "should_trigger": true, "query": "I have a profile from last year. Where is it stored, what does it contain, and is it complete enough to generate a CV for a product manager role?" },
+    { "id": "pos-10", "should_trigger": true, "query": "Write a CV tailored to this posting (text below) for a data analyst role; keep my Tableau and SQL work front and centre and leave out the retail jobs." },
+    { "id": "neg-01", "should_trigger": false, "query": "Give me ten common behavioural interview questions for a senior engineer role and model answers using the STAR method." },
+    { "id": "neg-02", "should_trigger": false, "query": "Which job boards and recruiters are best for finding remote React roles in Europe right now?" },
+    { "id": "neg-03", "should_trigger": false, "query": "Write a generic one-page resume template in Markdown with placeholders for name, experience and skills." },
+    { "id": "neg-04", "should_trigger": false, "query": "I got an offer of 145k base plus 10% bonus. How should I negotiate for more, and what is a reasonable counter?" },
+    { "id": "neg-05", "should_trigger": false, "query": "Build a React component that renders a candidate's resume from a JSON object with sections for experience and education." },
+    { "id": "neg-06", "should_trigger": false, "query": "Our HR team needs a job description for a Lead Software Engineer opening. Draft the posting with responsibilities and requirements." },
+    { "id": "neg-07", "should_trigger": false, "query": "Explain the difference between a resume and a CV, and when to use each in the US versus the UK." },
+    { "id": "neg-08", "should_trigger": false, "query": "Parse this LinkedIn CSV export into a Postgres table with one row per connection and their current company." },
+    { "id": "neg-09", "should_trigger": false, "query": "Write a LinkedIn post announcing that I am open to work as a nurse practitioner, upbeat tone, under 150 words." },
+    { "id": "neg-10", "should_trigger": false, "query": "Review the applicant tracking system integration in src/ats/client.ts for error handling problems." }
+  ]
+}
