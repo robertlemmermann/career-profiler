@@ -26,7 +26,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..', '..');
 const CP = path.join(repo, 'skills', NAME, 'scripts', 'cp.mjs');
 const { values: opt } = parseArgs({ allowNegative: true, options: {
-  persona: { type: 'string', default: 'icu-nurse' }, turns: { type: 'string', default: '8' }, 'max-cost-usd': { type: 'string', default: '12' },
+  persona: { type: 'string', default: 'icu-nurse' }, turns: { type: 'string', default: '12' }, 'max-cost-usd': { type: 'string', default: '12' },
   model: { type: 'string' }, 'candidate-model': { type: 'string' }, keep: { type: 'boolean' }, json: { type: 'boolean' }, out: { type: 'string' }, 'timeout-s': { type: 'string', default: '300' },
   sim: { type: 'string', default: 'deterministic' }, ledger: { type: 'boolean', default: true },
 } });
