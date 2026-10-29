@@ -22,7 +22,12 @@ Windows: `node` on PATH, paths with backslashes are fine, outputs are ASCII-only
 
 ## 2. Script commands
 
-Every command accepts `--json`, `--store <dir>`, `--cwd <dir>`, `--dry-run`. Exit codes:
+Every command accepts `--json`, `--store <dir>`, `--cwd <dir>`, `--dry-run`. The gate applies to
+every command except `gate`, `doctor`, `help`, `store init|path|validate|changelog|backup|accept|sync`,
+`pii scan|policy`, `job show` and `watch sources` (diagnostics, the store's own plumbing and
+scans that protect data). Writes that change or release facts need `--confirm` (`fact add|
+update|remove|confirm|commit`, `store import|accept`, `store init --force`, every
+`--include`); `--yes` never substitutes. Exit codes:
 `0` ok, `1` findings (a failing check, a must-have gap, an invalid store), `2` usage (bad
 option, invalid fact, a finalize of a failing draft), `3` environment (old Node, no store),
 `4` could not verify (corrupt JSON, unreachable URL, empty posting).
@@ -35,14 +40,14 @@ option, invalid fact, a finalize of a failing draft), `3` environment (old Node,
 | `store path` | `{ store, resolved_from, exists, files }` |
 | `store show` | the whole profile document |
 | `store validate` | `{ ok, validation, changelog, manifest: { ok, drift[] }, gate: { state }, unconfirmed[] }`, exit 1 when not ok |
-| `store changelog` · `store backup` · `store accept` | entries; the backup write; the accept entry |
+| `store changelog` · `store backup` · `store accept --confirm` | entries; the backup write; the accept entry (blesses a file written outside the scripts) |
 | `store show [--tier restricted]` · `store export [--format md\|json] [--out f] [--include restricted:<field>]` | masked view; `{ format, content, pii_reviews, include }` or `{ out }`; exit 2 on a PII block or a disallowed include |
-| `store import <profile.json>` | the write entry |
+| `store import <profile.json> --confirm` | the write entry plus `never_tier[]` (entries a detector moved to tier never) |
 | `store sync [--message m]` · `store sync init [--remote url]` | `{ synced, committed, reason }` · `{ initialized, remote }` |
 | `fact stage <section> --data '<json>' [--parent id] [--quote q]` · `fact staged` · `fact commit <T-id> --confirm` | `{ staged, next }` · `{ staged[] }` · `{ added[], never_tier[], write }` |
 | `fact add <section> --data '<json>' \| --file f --confirm \| --unconfirmed [--parent id] [--source s] [--quote q] [--tier t]` | `{ added[], never_tier[], write }`; `--data` may be one object or an array; exit 2 without `--confirm` or `--unconfirmed`, or on a duplicate |
-| `fact update <id> --data '<json>'` | `{ updated, write }`; `null` removes a field; singletons by name (`identity`) |
-| `fact remove <id>` · `fact confirm <id>... [--no]` | `{ removed }` · `{ facts[] }` |
+| `fact update <id> --data '<json>' --confirm` | `{ updated, write }`; `null` removes a field; singletons by name (`identity`); a detector hit on a singleton is refused |
+| `fact remove <id> --confirm` · `fact confirm <id>... [--no] --confirm` · `fact unstage <T-id>` | `{ removed }` · `{ facts[] }` · `{ unstaged }` |
 | `fact list [section]` · `fact get <id>` | `{ facts: [{ id, kind, confirmed, summary }], unconfirmed[] }` · `{ id, kind, parent, fact }` |
 | `interview coverage` | `{ score, domains[], sections[], gaps: [{ code, key, about, priority, question, probes[] }], resume_ready }` |
 | `interview next [--max n] [--focus id\|prefix]` | `{ score, resume_ready, remaining, questions[] }` |

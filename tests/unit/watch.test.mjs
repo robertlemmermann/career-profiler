@@ -50,11 +50,33 @@ test('refused sources exit 1 with the alternative; unknown source is usage; keys
   assert.ok(r.json.refused.indeed && r.json.families.greenhouse);
 });
 
-test('automation off refuses watching', () => {
+test('automation off refuses watching; the preference is the ceiling for a subscription mode', () => {
   const store = seededStore('senior-swe', { automation: 'off' });
-  const r = cp(['watch', 'add', '--source', 'greenhouse', '--board', 'acmeledger', '--json'], { store });
+  let r = cp(['watch', 'add', '--source', 'greenhouse', '--board', 'acmeledger', '--json'], { store });
   assert.equal(r.status, 2);
   assert.match(r.json.error.message, /"off"/);
+  const alert = seededStore('senior-swe', { automation: 'alert' });
+  r = cp(['watch', 'add', '--source', 'greenhouse', '--board', 'acmeledger', '--mode', 'prepare', '--json'], { store: alert });
+  assert.equal(r.status, 2, 'prepare above alert is refused');
+  assert.match(r.json.error.message, /ceiling/);
+  r = cp(['watch', 'add', '--source', 'greenhouse', '--board', 'acmeledger', '--mode', 'alert', '--json'], { store: alert });
+  assert.equal(r.status, 0);
+  // A subscription written with a higher mode (an older version, a hand edit) is clamped at poll time.
+  const subsFile = path.join(storePaths(alert).watch, 'subscriptions.json');
+  const subs = JSON.parse(fs.readFileSync(subsFile, 'utf8')); subs.subscriptions[0].mode = 'draft'; fs.writeFileSync(subsFile, JSON.stringify(subs));
+  const work = tmpDir();
+  r = cp(['watch', 'poll', '--fixture', fixturesFile(work), '--json'], { store: alert });
+  assert.ok(r.json.inbox.length >= 1 && r.json.drafted.length === 0, 'clamped to alert');
+  r = cp(['watch', 'list', '--json'], { store: alert });
+  assert.equal(r.json.subscriptions[0].effective_mode, 'alert');
+});
+
+test('the shipped fixture map works from the CLI', () => {
+  const store = seededStore('senior-swe', { automation: 'draft' });
+  for (const args of [['--source', 'greenhouse', '--board', 'acmeledger'], ['--source', 'lever', '--board', 'brightline'], ['--source', 'ashby', '--board', 'northstar'], ['--source', 'rss', '--url', 'https://jobs.example.org/feed.rss']]) cp(['watch', 'add', ...args, '--json'], { store });
+  const r = cp(['watch', 'poll', '--fixture', fixture('sources', 'fixture-map.json'), '--json'], { store });
+  assert.ok(r.json.subscriptions.every((s) => s.fetched > 0), JSON.stringify(r.json.subscriptions));
+  assert.ok(r.json.new_matches >= 2);
 });
 
 test('poll: matches land in the inbox, draft mode writes application folders, dedupe on the second poll, rate limit', async () => {

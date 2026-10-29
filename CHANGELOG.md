@@ -48,7 +48,7 @@ referenced with 0.1.0, and the common denominator built (`plans` repository,
   JSON endpoints for posting URLs; a 2 MB fetch cap.
 - **Playbooks.** `setup.md`, `watch.md`, `sources.md`, `privacy.md`, `release.md`; step 0 in
   SKILL.md; "Without Node" sections in every script-driven playbook.
-- **Tests and evals.** 63 unit tests (gate, PII, watch, repair, ATS endpoints); an electrician
+- **Tests and evals.** 70 unit tests (gate, PII, watch, repair, ATS endpoints, the preference ceiling, hand-edit handling, finalize scans, overclaims); an electrician
   profile and posting; feed fixtures; selftest areas `playbooks`, `pii-honeypots`, `ledger`;
   three personas with honeypot PII and deterministic answers; `interview-sim --sim
   deterministic|model`; trigger set 12/12; `run-trigger-set --host claude|copilot|codex`;

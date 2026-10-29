@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { cp, seededStore, loadProfileFixture, tmpDir } from './helpers.mjs';
+import { cp, seededStore, loadProfileFixture, tmpDir, fixture } from './helpers.mjs';
 import { scanText, tierForFact, forbiddenValues } from '../../skills/career-profiler/scripts/lib/pii.mjs';
 import { checkResume } from '../../skills/career-profiler/scripts/lib/resume.mjs';
 
@@ -60,6 +60,21 @@ test('resume check fails on PII blocks and never-tier citations; cover letter re
   assert.ok(!r.findings.some((f) => f.code === 'pii-block'), 'released with --include');
 });
 
+test('finalize scans every rendering: a JSON Resume that would carry a never-tier value is refused', () => {
+  const store = seededStore('senior-swe');
+  const work = tmpDir();
+  // A never-tier extras fact that the draft never cites still feeds nothing into JSON Resume; a restricted identity field does.
+  cp(['fact', 'update', 'identity', '--data', '{"work_authorization":"H-1B, needs sponsorship"}', '--confirm', '--json'], { store });
+  let r = cp(['job', 'parse', fixture('jobs', 'lead-react-engineer.txt'), '--out', 'job.json', '--json'], { store, cwd: work });
+  r = cp(['resume', 'draft', '--job', 'job.json', '--out', 'resume.md', '--json'], { store, cwd: work });
+  assert.equal(r.status, 0, r.stderr);
+  r = cp(['resume', 'finalize', 'resume.md', '--job', 'job.json', '--formats', 'md,json', '--json'], { store, cwd: work });
+  assert.equal(r.status, 0, r.stderr);
+  const json = JSON.parse(fs.readFileSync(path.join(work, 'resume.json'), 'utf8'));
+  assert.ok(!JSON.stringify(json).includes('H-1B'), 'restricted fields never enter the JSON Resume');
+  assert.equal(json.basics.name, 'Jordan Rivera');
+});
+
 test('CLI: fact add quarantines a DOB at tier never; show and export mask it; export --include releases a restricted field once and logs it', () => {
   const store = seededStore('electrician-journeyman');
   let r = cp(['fact', 'add', 'extras', '--data', '{"text":"Date of birth: 1988-04-02, in case a form asks"}', '--confirm', '--json'], { store });
@@ -72,11 +87,17 @@ test('CLI: fact add quarantines a DOB at tier never; show and export mask it; ex
   r = cp(['store', 'export', '--format', 'json', '--json'], { store });
   assert.ok(!r.json.content.includes('1988-04-02') && !r.json.content.includes('US citizen'));
   r = cp(['store', 'export', '--format', 'json', '--include', 'restricted:work_authorization', '--json'], { store });
-  assert.ok(r.json.content.includes('US citizen') && !r.json.content.includes('1988-04-02'));
+  assert.equal(r.status, 2, 'an include needs --confirm');
+  r = cp(['store', 'export', '--format', 'json', '--include', 'restricted:work_authorization', '--confirm', '--json'], { store });
+  assert.ok(r.json.content.includes('US citizen') && !r.json.content.includes('1988-04-02'), r.stdout.slice(0, 300));
+  assert.ok(!r.json.content.includes('at least 38 per hour'), 'only the released field is unmasked');
   const log = fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8');
-  assert.ok(log.includes('export.include'));
-  r = cp(['store', 'export', '--include', 'restricted:id_number', '--include', 'restricted:dob', '--json'], { store });
+  assert.ok(log.includes('"op":"include"'));
+  r = cp(['store', 'export', '--include', 'restricted:dob', '--confirm', '--json'], { store });
   assert.equal(r.status, 2, 'never fields cannot be included');
+  r = cp(['fact', 'list', '--json'], { store });
+  assert.ok(r.json.facts.every((f) => f.tier !== 'never' || /never-tier/.test(f.summary)), 'never-tier values are masked in lists');
+  assert.ok(!r.stdout.includes('1988-04-02'));
   r = cp(['pii', 'scan', '-', '--json'], { store, input: 'Marcus Oyelaran, US citizen, born 04/02/1988' });
   assert.equal(r.status, 1);
   assert.ok(r.json.hits.some((h) => h.detector === 'dob') && r.json.hits.some((h) => h.detector === 'store-value'));

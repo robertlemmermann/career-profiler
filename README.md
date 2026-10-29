@@ -92,7 +92,7 @@ flowchart LR
 - 🔒 **Tiers**: every fact is `professional`, `restricted` (work authorization, salary: released
   only on a confirmed `--include` for one document) or `never` (date of birth, ids, address,
   health, family: never leaves the store). The interview does not ask for the never list; what
-  you volunteer is quarantined.
+  you volunteer is stored at tier never.
 - 🕵️ **Scans**: 19 detectors plus the exact values of protected facts run inside every check,
   finalize, export and outbound request.
 

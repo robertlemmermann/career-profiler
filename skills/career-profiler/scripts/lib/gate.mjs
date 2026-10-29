@@ -8,10 +8,11 @@ import {
   PREFS_SCHEMA, STORE_VERSION, AUTOMATION_VALUES, exists, readJson, tryJson, writeJsonAtomic, nowIso, sha256, recordHash, skillVersion,
   usageError, unverifiable, CpError, EXIT, readText,
 } from './core.mjs';
-import { storePaths, storeExists, appendChangelog, readChangelog, writeManifest, updateManifestFields, readManifest, verifyManifest, quarantineFile, ensureDirs } from './store.mjs';
+import { storePaths, storeExists, appendChangelog, readChangelog, writeManifest, updateManifestFields, readManifest, verifyManifest, quarantineFile, ensureDirs, verifyChangelog, checkStoreVersion } from './store.mjs';
+import { scanText } from './pii.mjs';
 
-export const GATE_EXEMPT = new Set(['gate', 'doctor', 'help']);
-export const STORE_EXEMPT_SUBCOMMANDS = new Set(['init', 'path', 'validate', 'changelog', 'backup', 'accept', 'sync']);
+/** Commands that run without the gate: diagnostics, the store's own plumbing, and scans that protect data. Everything else goes through need(). */
+export const GATE_EXEMPT = Object.freeze({ gate: '*', doctor: '*', help: '*', store: ['init', 'path', 'validate', 'changelog', 'backup', 'accept', 'sync'], pii: ['scan', 'policy'], job: ['show'], watch: ['sources'] });
 const PROBE_INTERVAL_MS = 24 * 3600 * 1000;
 
 export const describeAutomation = {
@@ -40,6 +41,7 @@ const fileHash = (f) => sha256(readText(f).replace(/\r\n/g, '\n'));
 export function checkGate(dir, { quarantine = true, probe = true } = {}) {
   const paths = storePaths(dir);
   const checks = [];
+  if (storeExists(dir)) checkStoreVersion(paths); // exit 3 for a store from a newer layout
   const fail = (reason, detail) => ({ state: reason === 'missing' ? 'missing' : 'corrupt', remake_reason: reason, detail, checks, record: null, hint: null });
   if (!storeExists(dir)) return { state: 'missing', remake_reason: 'no_store', detail: 'no store yet', checks, record: null, hint: null };
   if (!exists(paths.preferences)) return fail('missing', 'no preferences.json');
@@ -73,6 +75,10 @@ export function checkGate(dir, { quarantine = true, probe = true } = {}) {
   if (mv.missing_manifest) degraded.push('manifest missing');
   else if (mv.drift.length) degraded.push(`manifest drift: ${mv.drift.join(', ')}`);
   checks.push('manifest');
+  const chain = verifyChangelog(paths);
+  if (chain.matches_file === false) degraded.push('profile.json was changed outside the scripts (hand edit, sync conflict or restore): review it, then "store accept --confirm" or restore a file from backups/');
+  if (!chain.ok && chain.problems.some((x) => /chain|hash mismatch/.test(x))) degraded.push('changelog chain broken');
+  checks.push('changelog-file');
   if (probe) {
     const m = readManifest(paths);
     const due = !m || !m.last_probe_at || Date.now() - Date.parse(m.last_probe_at) > PROBE_INTERVAL_MS;
@@ -91,13 +97,15 @@ export function recordGate(dir, { automation, statement, confirm }) {
   if (!storeExists(dir)) throw new CpError(EXIT.ENV, 'NO_STORE', `no store at ${dir}; run "store init" first`);
   ensureDirs(paths);
   const record = makeRecord({ automation, statement, storeDir: dir });
+  const leak = scanText(record.statement, { profileName: 'log' });
+  const warnings = leak.hits.map((h) => `the statement contains ${h.label}; it is stored verbatim in preferences.json, ask the user to restate it without personal details`);
   if (exists(paths.preferences)) quarantineFile(paths, paths.preferences, 'preferences-previous');
   writeJsonAtomic(paths.preferences, record, { mode: 0o600 });
   appendChangelog(paths, { op: 'preference.set', ids: [], before_sha: null, after_sha: null, record_hash: record.hash, automation, note: 'recorded with --confirm' });
   writeManifest(paths);
   const check = checkGate(dir, { quarantine: false, probe: true });
   if (check.state !== 'ok') throw unverifiable('GATE_UNVERIFIED', `the record was written but does not verify (${check.state}: ${check.detail}); run "doctor --repair"`, check);
-  return { record, check };
+  return { record, check, warnings };
 }
 
 /** Write-fsync-read-hash-delete a sentinel; record the result in the manifest. */

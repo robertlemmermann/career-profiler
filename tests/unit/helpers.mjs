@@ -36,9 +36,16 @@ export function seededStore(name = 'senior-swe', { gate = true, automation = 'dr
   const store = path.join(tmpDir(), 'store');
   const init = cp(['store', 'init', '--json'], { store });
   if (init.status !== 0) throw new Error(`store init failed: ${init.stderr}`);
-  if (gate) recordGate(store, automation);
-  const imp = cp(['store', 'import', fixture('profiles', `${name}.json`), '--json'], { store });
-  if (imp.status !== 0) throw new Error(`store import failed: ${imp.stderr}`);
+  if (gate) {
+    recordGate(store, automation);
+    const imp = cp(['store', 'import', fixture('profiles', `${name}.json`), '--confirm', '--json'], { store });
+    if (imp.status !== 0) throw new Error(`store import failed: ${imp.stderr}`);
+  } else {
+    // No gate yet: the fixture is copied in and accepted, the way a user restoring a backup would.
+    fs.copyFileSync(fixture('profiles', `${name}.json`), path.join(store, 'profile.json'));
+    const acc = cp(['store', 'accept', '--confirm', '--json'], { store });
+    if (acc.status !== 0) throw new Error(`store accept failed: ${acc.stderr}`);
+  }
   return store;
 }
 

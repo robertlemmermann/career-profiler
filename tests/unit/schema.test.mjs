@@ -6,7 +6,7 @@ import { SKILL, loadProfileFixture } from './helpers.mjs';
 import { validateProfile, emptyProfile, nextId, skillId, indexProfile, SECTIONS, CHILDREN, SINGLETONS } from '../../skills/career-profiler/scripts/lib/schema.mjs';
 
 test('fixture profiles are valid', () => {
-  for (const name of ['senior-swe', 'icu-nurse']) {
+  for (const name of ['senior-swe', 'icu-nurse', 'electrician-journeyman']) {
     const v = validateProfile(loadProfileFixture(name));
     assert.deepEqual(v.errors, [], `${name}: ${JSON.stringify(v.errors)}`);
   }

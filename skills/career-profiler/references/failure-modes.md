@@ -27,6 +27,8 @@ What goes wrong when a model writes resumes, and what in this skill stops it.
 | FM-21 | A corrupt or missing preference record silently reused, or a degraded store written to | `gate` quarantines and demands a fresh statement; the daily probe and `doctor --repair` log every repair; `repaired_but_unverified` until a fresh gate passes |
 | FM-22 | A profile value sent to a job board, or a board's terms broken | requests carry subscription terms only and are scanned; refused families and hosts; catalog rate limits |
 | FM-23 | Facts written on the model's say-so | `fact stage` then `fact commit --confirm`; `--yes` is never confirmation; `provenance.quote` |
+| FM-24 | A never-tier fact leaks by paraphrase | the value check matches any run of six words of a long never-tier fact; the playbooks paraphrase only the constraint, never the detail |
+| FM-25 | A repair that rewrites what the user did not approve | `doctor --repair` never touches `profile.json`; a hand edit stays `degraded` until `store accept --confirm` or a restore |
 
 Known limits: the checker proves consistency with the store, not the truth of the store (a
 user can lie to the interview); the keyword heuristics miss requirements written as prose

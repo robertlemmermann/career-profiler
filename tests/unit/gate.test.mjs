@@ -77,7 +77,16 @@ for (const [name, corrupt] of Object.entries(corruptions)) {
     }
     if (['corrupt-enum', 'corrupt-hash', 'corrupt-submit', 'journal-mismatch'].includes(name)) assert.ok(r.json.error.details.gate.hint, 'the old statement is offered as a hint');
     // Remake from a fresh statement passes again.
-    const rec = cp(['gate', 'record', '--automation', 'draft', '--statement', 'Draft for my review, never send anything.', '--confirm', '--json'], { store });
+    let rec = cp(['gate', 'record', '--automation', 'draft', '--statement', 'Draft for my review, never send anything.', '--confirm', '--json'], { store });
+    if (name === 'journal-mismatch') {
+      // Deleting the journal line also broke the hash chain: the remake is written but reports the degraded chain and the repair to run.
+      assert.equal(rec.status, 4, rec.stderr);
+      assert.equal(rec.json.error.code, 'GATE_UNVERIFIED');
+      assert.equal(rec.json.error.details.required_action, 'doctor --repair');
+      const d = cp(['doctor', '--repair', '--json'], { store });
+      assert.ok(d.json.repairs.some((x) => /chain/.test(x)), JSON.stringify(d.json.repairs));
+      rec = cp(['gate', 'record', '--automation', 'draft', '--statement', 'Draft for my review, never send anything.', '--confirm', '--json'], { store });
+    }
     assert.equal(rec.status, 0, rec.stderr);
     assert.equal(cp(['gate', '--json'], { store }).json.state, 'ok');
   });

@@ -141,8 +141,9 @@ const fileSha = (text) => sha256(text.replace(/\r\n/g, '\n'));
 function writeGitignore(paths) {
   const f = path.join(paths.dir, '.gitignore');
   if (exists(f)) return;
-  writeFileAtomic(f, ['# career-profiler: backups are local; applications hold generated outputs you may or may not want to keep.',
-    'backups/', '*.tmp', ''].join('\n'));
+  writeFileAtomic(f, ['# career-profiler: backups, staged facts, probe files and quarantined records stay on this machine;',
+    '# applications/ holds generated outputs you may or may not want to keep.',
+    'backups/', 'staging/', '.probe/', 'quarantine/', '*.tmp', ''].join('\n'));
 }
 
 /** Load and validate the profile. Throws exit 3 when the store is missing, exit 4 when it is corrupt. */
@@ -222,8 +223,10 @@ export function verifyChangelog(paths) {
   let current = null;
   if (exists(paths.profile)) current = fileSha(fs.readFileSync(paths.profile, 'utf8'));
   const last = log.length ? log[log.length - 1] : null;
-  const matchesFile = last && current ? last.after_sha === current : null;
-  if (last && current && !matchesFile) problems.push('profile.json was changed outside the scripts since the last logged write (hand edit, sync conflict or restore); run "store validate" and, if it is right, "store accept"');
+  // Only entries that wrote profile.json carry an after_sha; preference, include and repair entries do not.
+  const lastWrite = [...log].reverse().find((e) => typeof e.after_sha === 'string') || null;
+  const matchesFile = lastWrite && current ? lastWrite.after_sha === current : null;
+  if (lastWrite && current && !matchesFile) problems.push('profile.json was changed outside the scripts since the last logged write (hand edit, sync conflict or restore); run "store validate" and, if it is right, "store accept"');
   return { entries: log.length, ok: problems.length === 0, problems, matches_file: matchesFile, last_seq: last ? last.seq : 0 };
 }
 

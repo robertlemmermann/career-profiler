@@ -13,7 +13,8 @@ import { parseArgs } from 'node:util';
 const NAME = 'career-profiler';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SKILL = path.join(ROOT, 'skills', NAME);
-const { values: opt } = parseArgs({ options: { only: { type: 'string' }, json: { type: 'boolean' } } });
+const { values: opt } = parseArgs({ options: { only: { type: 'string' }, json: { type: 'boolean' }, release: { type: 'boolean' } } });
+// --release: the ledger area also requires a passing row for every item at HEAD (the release rule).
 const SHIPPED_TOP = new Set(['SKILL.md', 'references', 'scripts', 'assets']);
 const LIMITS = { files: 80, fileBytes: 2 * 1024 * 1024, skillLines: 160, refLines: 300, descriptionChars: 1024, compatibilityChars: 500, evalFiles: 12 };
 /** Playbooks that describe script steps must carry a "Without Node" (guidance-only) section. */
@@ -122,7 +123,7 @@ area('pii-honeypots', (p, n) => {
 area('ledger', (p, n) => {
   const f = path.join(ROOT, 'evals', 'ledger', 'ledger.jsonl');
   if (!exists(path.join(ROOT, 'evals', 'ledger', 'README.md'))) p.push('evals/ledger/README.md missing');
-  if (!exists(f)) { n.push('no rows yet'); return; }
+  if (!exists(f)) { if (opt.release) p.push('no ledger rows: run the paid runners on this sha'); else n.push('no rows yet'); return; }
   const rows = read(f).split(/\r?\n/).filter(Boolean).map((l, i) => { try { return JSON.parse(l); } catch { p.push(`row ${i + 1} is not JSON`); return null; } }).filter(Boolean);
   const classes = new Set([null, 'skill', 'grader', 'fixture', 'host-flake', 'model-drift']);
   rows.forEach((r, i) => {
@@ -137,6 +138,16 @@ area('ledger', (p, n) => {
   const failing = current.filter((r) => r.passed === false);
   n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row${sha ? `, HEAD ${sha}` : ''}`);
   if (failing.length) n.push(`failing: ${failing.map((r) => r.item).join(', ')}`);
+  if (opt.release) {
+    const atHead = current.filter((r) => r.git_sha === sha);
+    if (!atHead.length) p.push(`no ledger rows for HEAD ${sha}`);
+    for (const r of atHead) if (r.passed !== true) p.push(`${r.runner} ${r.item} is not passing at HEAD`);
+    const cases = fs.readdirSync(path.join(ROOT, 'evals'), { withFileTypes: true }).filter((e) => e.isDirectory() && e.name !== 'ledger').map((e) => e.name);
+    for (const c of cases) if (!atHead.some((r) => r.runner === 'plugin-eval' && r.item === c)) p.push(`no plugin-eval row at HEAD for case ${c}`);
+    const set = JSON.parse(read(path.join(ROOT, 'evals', 'trigger-set.json')));
+    for (const q of set.queries) if (!atHead.some((r) => r.runner === 'trigger-set' && r.item === q.id)) p.push(`no trigger-set row at HEAD for ${q.id}`);
+    for (const per of fs.readdirSync(path.join(ROOT, 'tests', 'live', 'personas')).filter((x) => x.endsWith('.json'))) { const name = per.replace(/\.json$/, ''); if (!atHead.some((r) => r.runner === 'interview-sim' && r.item === name)) p.push(`no interview-sim row at HEAD for ${name}`); }
+  }
 });
 
 area('frontmatter', (p, n) => {

@@ -25,7 +25,7 @@ One directory:
 | `staging/` | facts staged with `fact stage`, waiting for the user's yes (`fact commit --confirm`) |
 | `quarantine/` | what repairs and the gate moved aside: corrupt preference records, changelog tails, previous records |
 | `watch/`, `inbox/` | subscriptions and seen listings; inbox items; `inbox/email/` for saved job-alert emails |
-| `.gitignore` | ignores `backups/`, `staging/`, `.probe/` and temp files when the store is its own repository |
+| `.gitignore` | ignores `backups/`, `staging/`, `quarantine/`, `.probe/` and temp files when the store is its own repository (quarantined records never sync) |
 
 Files are created owner-only (`0600`, `0700`) on POSIX systems.
 
@@ -49,8 +49,10 @@ code.
   covers the entry and the previous hash.
 - `store validate` checks the structure, the chain, the manifest, the gate and whether the
   file matches the last logged hash. A hand edit, a sync conflict or a restore shows as
-  "changed outside the scripts": review it, then `store accept` to log the current file as the
-  accepted state.
+  "changed outside the scripts": review it, then `store accept --confirm` to log the current
+  file as the accepted state, or restore the latest file from `backups/` over it. Until one of
+  those happens the gate is `degraded` and `doctor --repair` leaves the file and the manifest
+  alone: a repair never blesses a hand edit.
 - Every write ends by rewriting `MANIFEST.json`; `doctor` reports drift (a file changed behind
   the scripts) and `doctor --repair` rebuilds the manifest, recreates missing directories and
   permissions, truncates a broken changelog chain into `quarantine/` and logs each repair as a

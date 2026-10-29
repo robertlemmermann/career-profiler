@@ -21,6 +21,9 @@ node tests/live/interview-sim.mjs --persona electrician-journeyman --sim determi
 node tests/live/interview-sim.mjs --persona senior-swe --sim model
 ```
 
+The simulator drives Claude Code only; Copilot and Codex trigger runs use `run-trigger-set.mjs
+--host copilot|codex`, whose method confidence is recorded in each ledger row.
+
 Every runner appends rows to `evals/ledger/ledger.jsonl` (one row per case or query or
 persona per run: git sha, skill version, host, model, judge model, runner, score, passed, cost,
 `failure_class`). Rows are never deleted.
@@ -32,7 +35,7 @@ query behaves as labeled, and every simulated interview passes its grade. A fail
 classified before anything else happens: `skill` (fix the skill), `grader` (fix the grader, but
 never lower the bar), `fixture` (fix the fixture), `host-flake` (re-run once; a second failure is
 real), `model-drift` (pin the model and re-run). After the fix, re-run the failing case with
-`--runs 3`; a 2-of-3 pass is not a pass. Record the final run's rows and costs in `CHANGELOG.md`.
+`--runs 5`; anything short of 5 of 5 is not a pass. Record the final run's rows and costs in `CHANGELOG.md`.
 
 ## 4. Manual matrix
 

@@ -6,7 +6,7 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { CHECK_SCHEMA, nowIso, generatedBy, sha256, uniq, exists, writeFileAtomic, readText } from './core.mjs';
+import { CHECK_SCHEMA, nowIso, generatedBy, sha256, uniq, exists, writeFileAtomic, readText, usageError } from './core.mjs';
 import { indexProfile } from './schema.mjs';
 import { buildMatchers, findTerms } from './taxonomy.mjs';
 import { buildEvidenceIndex, entryText, isExpired } from './match.mjs';
@@ -15,7 +15,7 @@ import { tierOf } from './schema.mjs';
 
 const LEAD_CLAIM = /\b(?:led|lead|leading|managed|managing|manage|directed|directing|headed|heading|owned|owning|oversaw|overseeing|supervised|supervising|ran|running|spearheaded|founded|architected|established)\b/i;
 const LEAD_EVIDENCE = /\b(?:led|lead|leading|managed|managing|manage|directed|headed|owned|own(?:ing)?|oversaw|supervis\w*|ran|charge|spearheaded|founded|architected|established|tech lead|team lead|mentor\w*|precept\w*|coordinat\w*|responsible for|roadmap|designed)\b/i;
-const LEVEL_CLAIM = /\b(?:expert|expertise|mastery|master of|deep expertise|advanced)\b\s+(?:in|with|of|at)?\s*([A-Z][\w+#.]*(?:\s[A-Z][\w+#.]*){0,2})/g;
+const LEVEL_CLAIM = /\b(?:expert|expertise|mastery|master of|deep expertise|advanced)\b\s+(?:in|with|of|at)?\s*([A-Za-z][\w+#.]*(?:\s[A-Z][\w+#.]*){0,2})|\b([A-Z][\w+#.]*)\s+(?:expert|guru|specialist)\b/gi;
 const LEVEL_RANK = { beginner: 1, intermediate: 2, advanced: 3, expert: 4 };
 
 export const MARKER_RE = /<!--\s*facts?\s*:\s*([^>]*?)\s*-->/gi;
@@ -265,11 +265,12 @@ export function checkResume(text, profile, { job = null, match = null, kind = 'r
     if (!hits.length) continue;
     const verb = LEAD_CLAIM.exec(plain);
     if (verb && !/^###/.test(plain)) {
-      const evidenceText = hits.map((h) => `${entryText(h.kind, h.entry)} ${h.parent ? `${h.parent.scope || ''} ${(h.parent.responsibilities || []).join(' ')} ${h.parent.title || ''} ${h.parent.reports || ''}` : ''} ${h.entry.title || ''} ${(h.entry.responsibilities || []).join(' ')}`).join('\n');
-      if (!LEAD_EVIDENCE.test(evidenceText) && !hits.some((h) => h.kind === 'summary')) add('fail', 'exceeds', L.n, `"${verb[0]}" claims leadership or ownership that the cited facts (${ids.join(', ')}) do not record; use the fact's own verb or ask the user and record the scope first`);
+      // Leadership must be in the cited entry itself (or, for an achievement, its role's title or direct reports), not inherited from a role's prose.
+      const evidenceText = hits.map((h) => `${entryText(h.kind, h.entry)} ${h.entry.title || ''} ${(h.entry.responsibilities || []).join(' ')} ${h.parent ? `${h.parent.title || ''} ${Number(h.parent.reports) > 0 ? 'reports led' : ''}` : ''}`).join('\n');
+      if (!LEAD_EVIDENCE.test(evidenceText)) add('fail', 'exceeds', L.n, `"${verb[0]}" claims leadership or ownership that the cited facts (${ids.join(', ')}) do not record; use the fact's own verb or ask the user and record the scope first`);
     }
     for (const m of plain.matchAll(LEVEL_CLAIM)) {
-      const name = m[1];
+      const name = m[1] || m[2];
       const skill = (profile.skills || []).find((s) => s.name && name && (s.name.toLowerCase() === name.toLowerCase() || findTerms(name, matchers).some((x) => findTerms(s.name, matchers).some((y) => y.term === x.term))));
       if (skill && skill.level && (LEVEL_RANK[skill.level] || 0) < 3) add('fail', 'exceeds', L.n, `"${m[0].trim()}" is above the recorded level of ${skill.name} (${skill.level}, ${skill.id}); say what the fact supports`);
     }
@@ -516,16 +517,23 @@ export function pandocAvailable() {
 }
 
 /** Strip citations and write the deliverables next to the draft. Returns the files written. */
-export function finalize(draftPath, { formats = ['md', 'txt', 'html'], title, docx = false, profile = null, include = [] } = {}) {
+export function finalize(draftPath, { formats = ['md', 'txt', 'html'], title, docx = false, profile = null, include = [], kind = 'resume' } = {}) {
   const text = readText(draftPath);
   const plain = stripComments(text).replace(/\n{3,}/g, '\n\n').trim() + '\n';
   const base = draftPath.replace(/\.md$/i, '');
   const files = [];
   const name = title || (/^#\s*(.+)$/m.exec(plain) || [])[1] || path.basename(base);
-  if (formats.includes('md')) { writeFileAtomic(`${base}.final.md`, plain); files.push(`${base}.final.md`); }
-  if (formats.includes('txt')) { writeFileAtomic(`${base}.txt`, mdToText(plain)); files.push(`${base}.txt`); }
-  if (formats.includes('html')) { writeFileAtomic(`${base}.html`, mdToHtml(plain, name)); files.push(`${base}.html`); }
-  if (formats.includes('json') && profile) { writeFileAtomic(`${base}.json`, `${JSON.stringify(jsonResume(profile, text, { include }), null, 2)}\n`); files.push(`${base}.json`); }
+  // Every rendering is scanned before it is written; the JSON Resume pulls fields the draft never showed.
+  const outputs = [];
+  if (formats.includes('md')) outputs.push([`${base}.final.md`, plain]);
+  if (formats.includes('txt')) outputs.push([`${base}.txt`, mdToText(plain)]);
+  if (formats.includes('html')) outputs.push([`${base}.html`, mdToHtml(plain, name)]);
+  if (formats.includes('json') && profile) outputs.push([`${base}.json`, `${JSON.stringify(jsonResume(profile, text, { include }), null, 2)}\n`]);
+  if (profile) for (const [file, content] of outputs) {
+    const pii = scanText(content, { profileName: kind === 'resume' ? 'resume' : 'cover', profile, include });
+    if (pii.blocks) throw usageError(`${path.basename(file)} would carry personal data: ${pii.hits.filter((h) => h.severity === 'block').map((h) => h.label).join('; ')}; fix the facts or the draft first`, { pii });
+  }
+  for (const [file, content] of outputs) { writeFileAtomic(file, content, { mode: 0o600 }); files.push(file); }
   let docxResult = null;
   if (docx || formats.includes('docx')) {
     if (pandocAvailable()) {

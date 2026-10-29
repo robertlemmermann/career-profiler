@@ -11,8 +11,9 @@ Every fact has a tier (`professional` by default):
 | `never` | never, under no flag | anything the detectors recognise as date of birth, age, national id, street address, marital or family status, religion, health, ethnicity, bank details; anything the user marks `--tier never` |
 
 `fact add` and `fact commit` assign `never` automatically when a detector fires and say so;
-`store show`, `fact list` and `store export` mask restricted fields and hide never-tier facts
-unless `--tier restricted` (never-tier facts are shown only through `fact get <id>`).
+`store show --tier restricted` and `fact list --tier restricted` reveal restricted fields;
+nothing lists never-tier values (`fact list` shows them as `[never-tier fact]`; `fact get <id>`
+shows one when you need it); `store export` masks and releases only with `--include ... --confirm`.
 
 ## 2. The never-asked list
 

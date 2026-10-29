@@ -12,6 +12,9 @@ import { scanText, loadPolicy } from './pii.mjs';
 
 let catalog;
 export function loadCatalog() { if (!catalog) catalog = readJson(path.join(ASSETS_DIR, 'sources', 'catalog.json')); return catalog; }
+export const AUTOMATION_RANK = { off: 0, alert: 1, draft: 2, prepare: 3 };
+/** The mode a subscription runs in: never above the recorded preference. */
+export const effectiveMode = (subMode, automation) => (subMode === 'inherit' || AUTOMATION_RANK[subMode] > AUTOMATION_RANK[automation] ? automation : subMode);
 
 const subsFile = (paths) => path.join(paths.watch, 'subscriptions.json');
 const seenFile = (paths) => path.join(paths.watch, 'seen.json');
@@ -21,8 +24,9 @@ const readSeen = (paths) => (exists(seenFile(paths)) ? readJson(seenFile(paths))
 const writeSeen = (paths, seen) => writeJsonAtomic(seenFile(paths), seen, { mode: 0o600 });
 
 /** Validate and add a subscription. Refused families exit 1 with the alternative. */
-export function addSubscription(paths, { source, board, url, query, country, filePath, mode = 'inherit', minFit = 0.6 }) {
+export function addSubscription(paths, { source, board, url, query, country, filePath, mode = 'inherit', minFit = 0.6, automation = 'prepare' }) {
   const cat = loadCatalog();
+  if (mode !== 'inherit' && AUTOMATION_RANK[mode] > AUTOMATION_RANK[automation]) throw usageError(`--mode ${mode} is above the recorded preference "${automation}"; the preference is the ceiling (change it with gate record, with the user's words)`);
   const fam = String(source || '').toLowerCase();
   if (cat.refused[fam]) {
     const r = cat.refused[fam];
@@ -153,6 +157,7 @@ export async function poll(paths, profile, { automation, only = null, fixtures =
       }
     } catch (err) { row.error = err.message; report.errors.push({ id: sub.id, error: err.message }); report.subscriptions.push(row); continue; }
     row.fetched = listings.length;
+    if (!listings.length && !['email', 'file'].includes(sub.source)) row.warning = 'the response parsed to no listings (an empty board, or a changed response shape)';
     if (sub.query && ['arbeitnow', 'rss', 'email', 'file', 'hn'].includes(sub.source)) {
       const terms = sub.query.toLowerCase().split(/\s+/).filter(Boolean);
       listings = listings.filter((l) => { const t = `${l.title} ${l.text}`.toLowerCase(); return terms.every((x) => t.includes(x)); });
@@ -162,14 +167,14 @@ export async function poll(paths, profile, { automation, only = null, fixtures =
       if (seen.fingerprints[fp]) continue;
       row.new += 1;
       const job = parseJob(l.text, { source: l.url || l.file || sub.source, profile });
-      if (l.title && (!job.title || job.title.length < 4)) job.title = l.title;
-      if (l.company && !job.company) job.company = l.company;
+      if (l.title && (!job.title || job.title.length < 4 || sub.board)) job.title = l.title;
+      if (l.company) job.company = l.company; // the listing's own company beats the heuristic guess
       job.slug = slugify(`${job.company || sub.board || sub.source}-${job.title || 'role'}`);
       job.url = l.url || null;
       const m = matchJob(profile, job);
       const fit = m.fit == null ? 0 : m.fit;
       const matched = fit >= (sub.min_fit ?? 0.6);
-      const mode = sub.mode === 'inherit' ? automation : sub.mode;
+      const mode = effectiveMode(sub.mode, automation);
       const action = !matched ? 'skip' : mode === 'off' ? 'skip' : mode;
       seen.fingerprints[fp] = { sub: sub.id, at: nowIso(), fit, action, title: job.title, company: job.company };
       if (!matched) continue;
@@ -181,12 +186,13 @@ export async function poll(paths, profile, { automation, only = null, fixtures =
         if (action === 'draft' || action === 'prepare') {
           const dir = path.join(paths.applications, `${nowIso().slice(0, 10)}-${job.slug}`);
           fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
-          writeJsonAtomic(path.join(dir, 'job.json'), job);
-          writeJsonAtomic(path.join(dir, 'match.json'), m);
-          writeFileAtomic(path.join(dir, 'resume.md'), draftResume(profile, { job, match: m }));
-          writeFileAtomic(path.join(dir, 'cover-letter.md'), draftCoverLetter(profile, { job, match: m }));
-          writeFileAtomic(path.join(dir, 'posting.txt'), l.text);
-          if (action === 'prepare') writeFileAtomic(path.join(dir, 'answers.md'), screeningAnswers(profile, job, m));
+          const M = { mode: 0o600 };
+          writeJsonAtomic(path.join(dir, 'job.json'), job, M);
+          writeJsonAtomic(path.join(dir, 'match.json'), m, M);
+          writeFileAtomic(path.join(dir, 'resume.md'), draftResume(profile, { job, match: m }), M);
+          writeFileAtomic(path.join(dir, 'cover-letter.md'), draftCoverLetter(profile, { job, match: m }), M);
+          writeFileAtomic(path.join(dir, 'posting.txt'), l.text, M);
+          if (action === 'prepare') writeFileAtomic(path.join(dir, 'answers.md'), screeningAnswers(profile, job, m), M);
           const check = checkResume(fs.readFileSync(path.join(dir, 'resume.md'), 'utf8'), profile, { job, match: m });
           writeJsonAtomic(path.join(dir, 'resume.check.json'), { ...check, document: path.join(dir, 'resume.md'), note: 'skeleton draft from watch; rewrite with the model, then check and finalize' });
           item.application = dir;

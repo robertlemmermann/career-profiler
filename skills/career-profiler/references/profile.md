@@ -76,7 +76,7 @@ volume, people, quality or safety measure); ask which tools or skills were centr
 
 1. Read the document (pasted text or a file; a PDF or DOCX through the host's reader).
    Copy it into the store: `documents/<name>` under `node "$CP" store path`, then
-   `fact add documents --data '{"path":"documents/<name>","kind":"resume","added":"YYYY-MM-DD"}' --source document`.
+   `fact add documents --data '{"path":"documents/<name>","kind":"resume","added":"YYYY-MM-DD"}' --source document --confirm`.
 2. Extract candidate facts: roles (employer, title, dates), bullets as achievements, skills,
    education, certifications. Write them **unconfirmed**:
    `fact add experience --data '[...]' --source document --unconfirmed`.

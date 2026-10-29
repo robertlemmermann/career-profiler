@@ -23,6 +23,8 @@ San Francisco, CA (remote) · Jan 2021 – Present
 ### Software Engineer — Northwind Health <!-- fact: exp-02 -->
 Seattle, WA · Jun 2017 – Feb 2022
 - Containerized the scheduling services with Docker, cutting the build-and-deploy cycle from 2 hours to 20 minutes. <!-- fact: ach-02-02 -->
+- Led and owned the HIPAA compliance program across the company. <!-- fact: ach-02-03 -->
+- Redis expert. <!-- fact: skill-redis -->
 
 ## Education
 

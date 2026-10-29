@@ -33,13 +33,27 @@ test('every planted fabrication in the fixture is caught', () => {
   const r = checkResume(readFixture('resumes', 'fabricated.md'), p, { job: j, match: matchJob(p, j) });
   assert.equal(r.verdict, 'FAIL');
   const f = fails(r);
-  for (const code of ['contact-mismatch', 'number-unsupported', 'unsupported-term', 'skill-unsupported', 'unconfirmed-fact', 'title-mismatch', 'date-mismatch', 'misplaced-citation', 'uncited', 'unknown-fact', 'institution-mismatch']) {
+  for (const code of ['contact-mismatch', 'number-unsupported', 'unsupported-term', 'skill-unsupported', 'unconfirmed-fact', 'title-mismatch', 'date-mismatch', 'misplaced-citation', 'uncited', 'unknown-fact', 'institution-mismatch', 'exceeds']) {
     assert.ok(f.includes(code), `catches ${code}: ${f}`);
   }
   const byLine = (n) => r.findings.filter((x) => x.line === n).map((x) => x.code);
   assert.ok(byLine(18).includes('number-unsupported'), '0.9s is not the recorded 1.6s');
   assert.ok(byLine(6).includes('number-unsupported'), '12 years is invented');
   assert.ok(r.findings.some((x) => x.code === 'unsupported-term' && /Kubernetes/.test(x.message) && /job keyword/.test(x.message)));
+});
+
+test('exceeds: leadership verbs and expertise above the cited facts', () => {
+  const p = swe();
+  const base = ['# Jordan Rivera', 'jordan.rivera@example.com <!-- fact: identity -->', '', '## Experience', '', '### Software Engineer — Northwind Health <!-- fact: exp-02 -->', 'Jun 2017 – Feb 2022'];
+  let r = checkResume([...base, '- Led the scheduling platform team of 12 through the Docker migration. <!-- fact: ach-02-02 -->'].join('\n'), p);
+  assert.ok(fails(r).includes('exceeds'), 'ach-02-02 says "containerized", not led');
+  r = checkResume([...base, '- Containerized the scheduling services with Docker, cutting the build-and-deploy cycle from 2 hours to 20 minutes. <!-- fact: ach-02-02 -->'].join('\n'), p);
+  assert.ok(!fails(r).includes('exceeds'));
+  const lead = ['# Jordan Rivera', 'jordan.rivera@example.com <!-- fact: identity -->', '', '## Experience', '', '### Senior Software Engineer — Brightline Payments <!-- fact: exp-01 -->', 'Mar 2022 – Present', '- Led the migration of the merchant dashboard to React and TypeScript. <!-- fact: ach-01-01 -->'].join('\n');
+  assert.ok(!fails(checkResume(lead, p)).includes('exceeds'), 'the fact itself says Led');
+  const skills = ['# Jordan Rivera', 'jordan.rivera@example.com <!-- fact: identity -->', '', '## Skills', '', '- Redis expert; expert in Security <!-- fact: skill-redis, skill-security -->'].join('\n');
+  r = checkResume(skills, p);
+  assert.equal(fails(r).filter((c) => c === 'exceeds').length, 2, 'both intermediate skills claimed as expert');
 });
 
 test('numbers: units, scales, years and months', () => {

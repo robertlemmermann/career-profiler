@@ -95,7 +95,7 @@ me, never apply" is `setup`). **Read the mode's playbook before acting.**
 | `profile [build\|update\|review\|import <file>]` | Interview the user into a complete, confirmed fact store | [profile](references/profile.md) |
 | `resume <posting: pasted text\|file\|url> [--no-cover-letter]` | Tailored resume and cover letter from the store, checked and finalized | [resume](references/resume.md) |
 | `match <posting>` | Fit and gap analysis only: should they apply, what is missing | [resume](references/resume.md) §2 |
-| `watch [sources\|add\|list\|poll\|inbox\|schedule\|remove]` | Subscribe to job sources, poll them, review matches and drafts | [watch](references/watch.md) |
+| `watch [sources\|add\|list\|poll\|run\|inbox\|schedule\|remove]` | Subscribe to job sources, poll them, review matches and drafts | [watch](references/watch.md) |
 | `store [path\|show\|validate\|export\|import\|sync]` | Where the store is, what it holds, integrity and backups | [storage](references/storage.md) |
 | `doctor [--repair]` | Environment, store, gate, integrity; repair what a script can repair | [storage](references/storage.md) §5 |
 | `help` | Print this table and the resolved `cp.mjs` path | — |

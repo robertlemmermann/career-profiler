@@ -78,10 +78,29 @@ export function doctor({ store, cwd = process.cwd(), env = process.env, repair =
       appendChangelog(paths, { op: 'repair', ids: [], before_sha: null, after_sha: null, note: `changelog chain truncated to ${good} valid entries; ${tail.length - good} quarantined` });
       repairs.push(`changelog chain repaired (${tail.length - good} entries quarantined)`);
       push('changelog', 'repaired', `${good} valid entries kept`);
+      // The file itself is re-anchored only when the quarantined tail proves the scripts wrote it (an entry carries its sha);
+      // anything else is a hand edit and stays the user's decision below.
+      try {
+        const currentSha = exists(paths.profile) ? sha256(readText(paths.profile)) : null;
+        const lostWrite = tail.slice(good).map((l) => tryJson(l)).filter(Boolean).reverse().find((e) => e && e.after_sha === currentSha);
+        if (currentSha && lostWrite && verifyChangelog(paths).matches_file === false) {
+          acceptProfile(paths, `re-anchored after chain repair: profile.json matched quarantined entry seq ${lostWrite.seq} (${lostWrite.op})`);
+          repairs.push('profile.json re-anchored (it matched a quarantined changelog entry)');
+        }
+      } catch {}
     } else push('changelog', 'warn', chain.problems.join('; '));
+    // A profile changed behind the scripts is never blessed by a repair: the user decides (accept or restore).
+    const chainNow = verifyChangelog(paths);
+    let handEdited = chainNow.matches_file === false;
+    if (handEdited) {
+      let latestBackup = null;
+      try { latestBackup = fs.readdirSync(paths.backups).filter((f) => /^profile\..*\.json$/.test(f)).sort().pop() || null; } catch {}
+      push('profile-file', 'invalid', `profile.json differs from the last logged write; review it, then "store accept --confirm" to keep it or restore backups/${latestBackup || '<latest>'} over it (repairs leave it alone)`);
+    }
     // Manifest.
     const mv = verifyManifest(paths);
     if (mv.ok) push('manifest', 'ok', 'every file matches');
+    else if (repair && handEdited) push('manifest', 'warn', 'not rebuilt: profile.json must be accepted or restored first');
     else if (repair) { writeManifest(paths); appendChangelog(paths, { op: 'repair', ids: [], before_sha: null, after_sha: null, note: `manifest rebuilt (${mv.missing_manifest ? 'was missing' : mv.drift.join(', ')})` }); writeManifest(paths); repairs.push('manifest rebuilt'); push('manifest', 'repaired', mv.missing_manifest ? 'was missing' : `drift: ${mv.drift.join(', ')}`); }
     else push('manifest', 'warn', mv.missing_manifest ? 'missing (doctor --repair writes it)' : `drift: ${mv.drift.join(', ')} (doctor --repair rebuilds it)`);
     // Write probe.

@@ -30,8 +30,10 @@ exposes. Same rules in both.
   payment details (`interview next` prints the list as `never_asked`). City and region are
   enough for location. Work authorization and salary expectations are restricted facts: ask
   only when the user raises them or a posting requires them, and record them as such. When the
-  user volunteers an item from the list, say in one sentence that it is kept at tier `never`
-  and used only to respect their constraints; the scripts quarantine it automatically.
+  user volunteers an item from the list, say in one sentence that it is stored at tier `never`
+  (never exported, never cited) and used only to respect their constraints; the scripts assign
+  the tier automatically. A paraphrase that keeps the substance ("a health constraint on
+  shifts") is fine; the value itself is not repeated.
 
 ## 2. Getting to facts
 
