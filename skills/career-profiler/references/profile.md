@@ -72,6 +72,16 @@ volume, people, quality or safety measure); ask which tools or skills were centr
    used and attach evidence (`evidence: ["ach-.."]`) or a new achievement.
 5. Run the depth pass (§2) for the new role.
 
+### Removing a role or a fact
+
+"Remove the Northwind job, it is irrelevant now" is not yet a deletion. Removing history loses
+facts that a later posting may need, and tailoring already leaves irrelevant roles out of a
+resume. Say what would be removed (the entry id, its achievements, the skills whose only
+evidence they are), offer the alternative (keep it in the store, omit it from resumes; a
+`targets` note or a `tags: ["omit"]` extras fact records the wish), and run `fact remove <id>
+--confirm` only after an explicit yes to the removal itself. Without Node, the same: the edited
+file is handed over only after that yes.
+
 ## 4. Import (an old resume, LinkedIn export, portfolio)
 
 1. Read the document (pasted text or a file; a PDF or DOCX through the host's reader).

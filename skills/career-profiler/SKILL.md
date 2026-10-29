@@ -144,5 +144,8 @@ the current directory (a dedicated private repository), then `~/.career-profiler
   or street address in any document; `pii scan` runs inside every check, finalize and export.
 - Never submit an application, fill a form on a board, solve a CAPTCHA or log in anywhere;
   `prepare` produces cited answers the user pastes themselves.
-- Deleting facts, subscriptions or the store is the user's explicit call; `store` keeps a
-  backup of every write and `quarantine/` keeps what repairs moved aside.
+- Deleting facts, subscriptions or the store is the user's explicit call, and a one-line
+  request is not yet that call: say what would go (the ids, their achievements, the skill
+  evidence that points at them), offer to leave the role out of resumes instead (tailoring
+  already omits what a posting does not need), and remove only after they say yes to that.
+  `store` keeps a backup of every write and `quarantine/` keeps what repairs moved aside.

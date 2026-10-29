@@ -26,8 +26,10 @@ never solves a CAPTCHA, never logs in anywhere and never sends their data to a j
 
 `node "$CP" gate options --json` prints the same table. Ask: "Which of these do you want?
 You can change it any time." Accept their answer in their words; if they say "apply for me",
-explain that submission is refused in every mode (see [sources](sources.md) §3) and ask them to
-choose among the four.
+say that submission is refused in every mode and why, in one sentence (the boards' terms forbid
+bots and automated applying, logins and CAPTCHAs stand in the way, and a submission in their
+name is irreversible; see [sources](sources.md) §3), then ask them to choose among the four,
+with `prepare` as the closest.
 
 ## 2. Recording it
 

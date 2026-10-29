@@ -26,9 +26,12 @@ node "$CP" watch add --source email --json                        # job-alert em
 node "$CP" watch add --source file --path ~/postings --json       # a folder of pasted postings
 ```
 
-Families, their arguments and their terms are in [sources](sources.md). `--mode` overrides the
-preference for one subscription (never above what the user chose: ask before setting `draft`
-or `prepare` on an `alert` user); `--min-fit` (default 0.6) is the match score below which a
+Families, their arguments and their terms are in [sources](sources.md). `--mode` lowers the
+preference for one subscription (`alert` on a `draft` user); it never raises it. A subscription
+cannot be more automated than the recorded preference: `watch add --mode draft` on an `alert`
+user is refused by the script, and by you. When the user wants drafts for one board, the path
+is [setup](setup.md) first (their words, their yes, `gate record`), then the subscription;
+otherwise subscribe in `inherit` or `alert` mode; `--min-fit` (default 0.6) is the match score below which a
 listing is ignored. Keyed sources (Adzuna, USAJobs) read their keys from the environment and
 say so when they are missing.
 
@@ -92,4 +95,5 @@ Say this plainly when asked for it, once, and offer `prepare` (cited answers the
 
 Keep `watch/subscriptions.json` by hand in the shape `watch list --json` prints; read the
 source's JSON or feed in the browser; compare titles with the user's targets; for a match,
-follow [resume](resume.md) by hand. Write "guidance-only mode" in the inbox note.
+follow [resume](resume.md) by hand. Write "guidance-only mode" in your reply and in the inbox
+note.
