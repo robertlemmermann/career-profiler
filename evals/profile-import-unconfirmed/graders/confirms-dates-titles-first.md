@@ -2,7 +2,8 @@
 type: llm
 weight: 2
 ---
+You see only the assistant's final answer. The user pasted an old resume (Jordan Rivera; Senior Software Engineer at Brightline Payments 2022-present; Software Engineer at Northwind Health 2017-2022; B.S. Computer Science, University of Washington; skills React, TypeScript, Python) and asked for it to be imported. The skill extracts everything as unconfirmed and then confirms the roles' exact titles and dates before anything else.
 
-You see only the assistant's final answer. Check one thing: the answer starts the confirmation with the roles' exact titles and dates, asking whether they are exact for Senior Software Engineer at Brightline Payments 2022-present and Software Engineer at Northwind Health 2017-2022 (for example asking for the exact start and end months), before it asks about skills or bullets.
+Check one thing: among the questions the answer asks the user, the first ones are about the roles' exact titles and their start and end months (for example "is Senior Software Engineer the exact title, and which month in 2022 did you start?"), before any question about skills, skill levels, or achievement numbers. Only the questions count for this order: the answer may first write out the imported, unconfirmed profile or file contents (which naturally lists skills and bullets), and that is not a question.
 
-PASS if titles and dates are asked first. FAIL if skills or bullets are asked about before the titles and dates, or if titles and dates are not asked about.
+PASS if the first questions asked are about exact titles and dates. FAIL if the answer asks about skills, levels or bullets before titles and dates, or asks nothing about titles and dates.
