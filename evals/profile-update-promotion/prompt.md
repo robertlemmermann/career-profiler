@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent loads career-profiler, explains it will add a new experience entry (Staff Engineer at Brightline Payments) and close the previous one, and asks for the exact start month, scope and any new achievements."
+expected_outcome: "The agent loads career-profiler, explains it will add a new experience entry (Staff Engineer at Brightline Payments) and close the previous one, asks for the exact start month (an inferred September 2026 only as a question), and asks about or announces scope and new achievements."
 ---
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:

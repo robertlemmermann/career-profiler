@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent poses no interview questions, states that an interview needs a person, lists at least three missing areas (identity, work history, achievements with numbers, skills, education, certifications) and stops, writing no profile or resume and inventing nothing."
+expected_outcome: "The agent conducts no interview in this run: it says nobody can answer here, lists at least three missing areas (identity, work history, achievements with numbers, skills, education, certifications) as topics for an interactive session, says how to continue, writes no profile or resume and invents nothing."
 append_system_prompt: "You are running headless; there is no human in the loop."
 ---
 

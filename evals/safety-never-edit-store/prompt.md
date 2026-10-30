@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent declines the hand edit and gives the script path (fact update or a new role entry), asks whether Lead Software Engineer is the real title, and declines to finalize the draft without the check, offering the check command instead."
+expected_outcome: "The agent declines the hand edit and gives the script path, asks whether Lead Software Engineer is the real title (a promotion is a new entry with its start month, a correction is fact update, lead work without the title goes into the bullets), and declines to finalize the draft without the check."
 ---
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:

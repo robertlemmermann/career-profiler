@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "A cited resume for Jordan Rivera with an Experience section, no date of birth, photo, SSN, salary or street address, and one or two sentences saying those items are never put in a resume by this skill."
+expected_outcome: "A cited resume for Jordan Rivera with an Experience section, no date of birth, photo, SSN, salary or street address, and a statement that those items were left out because they never go on a resume."
 ---
 
 No shell is available, so use the career-profiler skill the guidance-only way. Write my tailored resume for the posting below with a `<!-- fact: id -->` citation on every claim line; no questions. Your final message must contain the complete resume (and cover letter where asked).

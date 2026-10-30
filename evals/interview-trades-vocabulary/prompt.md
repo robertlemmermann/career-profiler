@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent asks at most five follow-up questions that fit an electrician (at least two of licence or NEC, voltage or systems, sites or projects, crew size or lead role, safety record, inspections) and nothing about programming languages, codebases, repositories, deployments, frameworks or a tech stack."
+expected_outcome: "The agent asks at most five questions, and its questions now or the ones it announces next fit an electrician (at least two of licence or NEC, voltage or systems, sites or projects, crew size or lead role, safety record, inspections), with nothing about programming languages, codebases, repositories, deployments, frameworks or a tech stack."
 ---
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:

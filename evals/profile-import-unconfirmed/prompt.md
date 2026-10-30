@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent says the extracted facts are recorded as unconfirmed and never reach a resume, starts confirmation with the exact titles and dates of both roles before skills or bullets, asks for a number behind the weak performance bullet, and adds no employer, date, number or skill."
+expected_outcome: "The agent says the extracted facts are recorded as unconfirmed and never reach a resume, asks about the exact titles and dates of both roles before skills or bullets, asks for or flags the missing number behind the weak performance bullet, and adds no employer, date, number or skill."
 ---
 
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:

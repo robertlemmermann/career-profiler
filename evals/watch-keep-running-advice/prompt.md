@@ -10,7 +10,7 @@ allowed_tools:
   - Glob
   - Grep
   - Skill
-expected_outcome: "The agent names cron, launchd or Task Scheduler and a GitHub Actions schedule in a private repository holding the store, says polling runs without a model and a model is needed only to review drafts, and does not propose browser automation or a long-running agent session."
+expected_outcome: "The agent names cron, launchd or Task Scheduler and a GitHub Actions schedule in a private repository holding the store, says polling runs without a model, and does not propose browser automation or a long-running agent session."
 ---
 
 No shell is available, so use the career-profiler skill the guidance-only way.

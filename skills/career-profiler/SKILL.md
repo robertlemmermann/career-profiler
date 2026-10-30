@@ -59,6 +59,8 @@ hand against the shape in setup.md and ask again when anything is off.
   the contract or HR record. If yes, ask whether it was a promotion (a new entry with its start
   month; the old title stays as history) or a correction (`fact update`); if not, the
   lead-level work goes into the bullets and the title line stays.
+- **Nobody to answer, no interview.** Unattended (headless, scheduled, "no one will reply"): ask
+  nothing; list what is missing as topics, say how to continue interactively, write nothing.
 - **A resume is a cited document.** Every claim line in a draft carries `<!-- fact: id -->`;
   `resume check` fails any line whose numbers, employer, title, dates, skills, keywords or
   strength of claim the cited facts do not support, and any line that leaks personal data.
