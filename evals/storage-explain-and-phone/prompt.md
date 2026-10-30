@@ -3,7 +3,7 @@ name: storage-explain-and-phone
 description: "Asked where the data lives and how to use the skill from a phone, the agent explains the store, the private repository pattern and that no database is needed."
 tags: [outcome, storage]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

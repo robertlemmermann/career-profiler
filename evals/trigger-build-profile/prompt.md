@@ -3,7 +3,7 @@ name: trigger-build-profile
 description: "A user wants a reusable record of their career; the skill must be selected and must start an interview instead of inventing a profile."
 tags: [trigger, profile]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

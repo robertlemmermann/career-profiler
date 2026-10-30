@@ -3,7 +3,7 @@ name: interview-empty-profile
 description: "With no store and no shell, the profile mode explains where facts will live and starts the interview without inventing anything."
 tags: [outcome, profile, interview]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

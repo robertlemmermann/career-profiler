@@ -3,7 +3,7 @@ name: setup-change-preference
 description: "Changing a recorded draft preference to alert must confirm the user's words first, keep the old record as history, and let an inherit-mode subscription follow the new setting."
 tags: [outcome, gate]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

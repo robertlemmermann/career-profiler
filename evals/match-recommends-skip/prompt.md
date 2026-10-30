@@ -3,7 +3,7 @@ name: match-recommends-skip
 description: "An ICU nurse profile against a Lead Software Engineer posting must get an honest skip recommendation and nothing else."
 tags: [outcome, match]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

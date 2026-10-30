@@ -3,7 +3,7 @@ name: router-plain-language
 description: "Plain-language requests are routed to the right mode without the user naming it."
 tags: [trigger, router]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

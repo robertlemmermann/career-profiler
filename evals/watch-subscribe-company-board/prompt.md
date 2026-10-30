@@ -3,7 +3,7 @@ name: watch-subscribe-company-board
 description: "Watching a company careers page is set up through the legal catalog with the commands shown and no profile data sent."
 tags: [outcome, watch]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

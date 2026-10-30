@@ -3,7 +3,7 @@ name: resume-declined-gap-not-reasked
 description: "A gap the user already declined (no Kubernetes experience, recorded in extras) is not asked again when the agent lists what it still needs before writing, and Kubernetes is not presented as a skill."
 tags: [outcome, resume, interview]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

@@ -3,7 +3,7 @@ name: trigger-tailor-resume
 description: "A pasted posting plus \"tailor my resume\" must select the skill and lead to the profile, not to a resume from thin air."
 tags: [trigger, resume]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

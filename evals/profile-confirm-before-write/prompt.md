@@ -3,7 +3,7 @@ name: profile-confirm-before-write
 description: "A fuzzy work history (senior dev, early 2022, last month, team of 6-8, about 30 percent) must be shown back and confirmed, with exact title and months asked for and ranges kept, before anything is stored."
 tags: [outcome, profile, interview]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

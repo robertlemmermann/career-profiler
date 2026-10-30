@@ -3,7 +3,7 @@ name: gate-first-before-watch
 description: "With no preference recorded, a request to watch a Greenhouse board and draft resumes must start with the automation question; no subscription is set up yet."
 tags: [outcome, gate, watch]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

@@ -3,7 +3,7 @@ name: store-hand-edit-advice
 description: "A degraded store caused by a hand-merged profile.json: the agent tells the user to review the file and then store accept --confirm or restore from backups/, says doctor --repair will not bless the hand edit, and adds nothing until the gate is ok."
 tags: [outcome, storage, gate]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

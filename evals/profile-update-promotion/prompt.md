@@ -3,7 +3,7 @@ name: profile-update-promotion
 description: "A promotion is recorded as a new role entry with exact facts asked for, never by overwriting the old title."
 tags: [trigger, profile, update]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

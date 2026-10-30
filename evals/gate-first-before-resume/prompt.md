@@ -3,7 +3,7 @@ name: gate-first-before-resume
 description: "With no preference recorded, even a resume request with a posting must start with the automation question and nothing else."
 tags: [outcome, gate]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

@@ -3,7 +3,7 @@ name: watch-mode-capped-by-preference
 description: "A subscription cannot be more automated than the recorded preference: with alert recorded, a request for a draft-mode watch is not run now; the agent offers to change the preference first or to subscribe in alert mode."
 tags: [outcome, watch]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

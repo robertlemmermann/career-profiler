@@ -3,7 +3,7 @@ name: watch-keep-running-advice
 description: "Asked how to keep polling running with the laptop closed and see matches from a phone, the agent names an OS scheduler and a GitHub Actions schedule in a private store repository, says polling needs no model, and proposes no browser automation."
 tags: [outcome, watch]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

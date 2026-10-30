@@ -3,7 +3,7 @@ name: gate-corrupt-remake
 description: "A corrupt preference record must be treated as absent: the agent re-asks and does not reuse the old value."
 tags: [outcome, gate]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

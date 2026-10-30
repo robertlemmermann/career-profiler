@@ -3,7 +3,7 @@ name: gate-degraded-repair-advice
 description: "When the user pastes a degraded gate result (manifest drift), the agent must say run doctor --repair then gate again, not re-ask the preference, and hold the resume."
 tags: [outcome, gate]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

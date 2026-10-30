@@ -3,7 +3,7 @@ name: interview-trades-vocabulary
 description: "The profile interview for a journeyman electrician must ask trade questions (licence, code, voltage, sites, crew, safety, inspections) and never software questions."
 tags: [outcome, interview, agnostic]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

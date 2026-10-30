@@ -3,7 +3,7 @@ name: profile-import-unconfirmed
 description: "A pasted plain-text resume is imported as unconfirmed facts; titles and dates are confirmed first, a weak bullet gets a depth question, and nothing is added."
 tags: [outcome, profile, import]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

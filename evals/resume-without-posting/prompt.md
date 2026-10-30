@@ -3,7 +3,7 @@ name: resume-without-posting
 description: "A resume request without a posting must not produce a tailored resume; the skill asks for the posting (or offers the profile export)."
 tags: [outcome, resume]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

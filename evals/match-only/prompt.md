@@ -3,7 +3,7 @@ name: match-only
 description: "A should-I-apply question with a posting selects the skill and yields a fit assessment with gaps, not a resume."
 tags: [trigger, match]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read

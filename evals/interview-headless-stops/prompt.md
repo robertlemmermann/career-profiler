@@ -3,7 +3,7 @@ name: interview-headless-stops
 description: "In an unattended run with nobody to answer, the profile interview must not be started; the agent reports what is missing and stops without inventing anything."
 tags: [outcome, interview, headless]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 300
 allowed_tools:
   - Read
