@@ -99,7 +99,7 @@
     ]
   },
   "deterministic": {
-    "default": "That's everything for that.",
+    "default": "Nothing more on that one. What else do you need from me?",
     "confirm": "Yes, that's correct.",
     "answers": [
       {
@@ -140,7 +140,7 @@
       },
       {
         "match": "expir|still current|lapsed|valid until|renew",
-        "reply": "ACLS and BLS both expire in March 2026; the CCRN renews September 2027; the Wisconsin RN license renews February 2027. All current today."
+        "reply": "All current. I renewed ACLS and BLS in March 2026 and the new cards run to March 2028; I renewed the CCRN in September 2025 and it runs to September 2028; the Wisconsin RN license renews February 2027."
       },
       {
         "match": "project|open source|side",

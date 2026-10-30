@@ -214,7 +214,7 @@ node tests/selftest.mjs                 # footprint, playbooks, honeypots, ledge
 node --test "tests/unit/*.test.mjs"     # unit tests over fixtures: three profiles, five postings, resumes, feeds, stores
 node tests/run-evals.mjs                # paid: claude plugin eval on a temp copy of the skill (threshold 1, sonnet judge)
 node tests/run-trigger-set.mjs --dry-run   # the 32-query trigger set; drop --dry-run to run it (paid); --host copilot|codex
-node tests/live/interview-sim.mjs --persona icu-nurse --sim deterministic   # paid (12 turns): a scripted candidate is interviewed, the store is graded
+node tests/live/interview-sim.mjs --persona icu-nurse --sim deterministic   # paid (16 turns): a scripted candidate is interviewed, the store is graded
 ```
 
 The eval cases are under [`evals/`](evals/): thirty-eight shell-free `claude plugin eval` cases

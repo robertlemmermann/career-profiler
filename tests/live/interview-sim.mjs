@@ -4,7 +4,7 @@
 // agent wrote is graded against the persona's ground truth: recall of employers and titles, exact
 // start dates, no employer or number that the persona never said, must-mention terms, coverage.
 //
-//   node tests/live/interview-sim.mjs [--persona icu-nurse] [--turns 8] [--max-cost-usd 12]
+//   node tests/live/interview-sim.mjs [--persona icu-nurse] [--turns 16] [--max-cost-usd 30]
 //        [--sim deterministic|model] [--model <id>] [--candidate-model <id>] [--keep] [--json] [--out report.json] [--no-ledger]
 //
 // --sim deterministic (the default) answers from the persona's answers[] by regex, so the run is
@@ -26,7 +26,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..', '..');
 const CP = path.join(repo, 'skills', NAME, 'scripts', 'cp.mjs');
 const { values: opt } = parseArgs({ allowNegative: true, options: {
-  persona: { type: 'string', default: 'icu-nurse' }, turns: { type: 'string', default: '12' }, 'max-cost-usd': { type: 'string', default: '30' },
+  persona: { type: 'string', default: 'icu-nurse' }, turns: { type: 'string', default: '16' }, 'max-cost-usd': { type: 'string', default: '30' },
   model: { type: 'string' }, 'candidate-model': { type: 'string' }, keep: { type: 'boolean' }, json: { type: 'boolean' }, out: { type: 'string' }, 'timeout-s': { type: 'string', default: '300' },
   sim: { type: 'string', default: 'deterministic' }, ledger: { type: 'boolean', default: true },
 } });
@@ -74,7 +74,7 @@ function deterministicReply(agentText) {
   if (/is (?:that|this|everything|it) (?:all )?(?:right|correct|exact|accurate)|confirm|does (?:that|this|everything) look|looks? (?:right|correct|good|accurate)|shall i (?:save|record|commit)|can i (?:record|save|commit)|ok(?:ay)? to (?:save|record|commit)|anything (?:wrong|to correct|to change|to fix|to add or change)|pending your (?:yes|ok|confirmation)|your (?:yes|go-ahead|okay)|say yes|reply yes|yes or no|before i (?:save|record|commit)|(?:save|record|commit) (?:it|them|these|this|that)\?/i.test(agentText)) return det.confirm;
   return det.default;
 }
-const CONFIRM_ASK = /is (?:that|this|everything|it) (?:all )?(?:right|correct|exact|accurate)|confirm|does (?:that|this|everything) look|looks? (?:right|correct|good|accurate)|shall i (?:save|record|commit)|can i (?:record|save|commit)|ok(?:ay)? to (?:save|record|commit)|anything (?:wrong|to correct|to change|to fix|to add or change)|pending your (?:yes|ok|confirmation)|your (?:yes|go-ahead|okay)|say yes|reply yes|yes or no|before i (?:save|record|commit)|(?:save|record|commit) (?:it|them|these|this|that)\?/i;
+const CONFIRM_ASK = /(?:is|are) (?:that|this|these|those|they|both|everything|it|all of (?:that|these|them)) (?:all |both )?(?:right|correct|exact|accurate)|right as (?:worded|written)|ok(?:ay)? as (?:worded|written)|confirm|does (?:that|this|everything) look|looks? (?:right|correct|good|accurate)|shall i (?:save|record|commit)|can i (?:record|save|commit)|ok(?:ay)? to (?:save|record|commit)|anything (?:wrong|to correct|to change|to fix|to add or change)|pending your (?:yes|ok|confirmation)|your (?:yes|go-ahead|okay)|say yes|reply yes|yes or no|before i (?:save|record|commit)|(?:save|record|commit) (?:it|them|these|this|that)\?/i;
 /** The deterministic candidate confirms first when asked to, then answers the new question in the same message (a real person does both). */
 function deterministicTurn(agentText) {
   const asked = CONFIRM_ASK.test(agentText);
@@ -173,8 +173,18 @@ const squashT = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   const NEVER_ASK = /date of birth|how old|your age|social security|national id|passport|tax id|street address|home address|married|marital|children|religio|health condition|disabilit|medical (?:condition|history)|citizenship|nationality|ethnic|photo|bank account/i;
   const asksNever = agentTurns.filter((a) => a.text.split(/(?<=[.?!])\s+/).some((sent) => /\?\s*$/.test(sent) && NEVER_ASK.test(sent) && !/never|not (?:ask|need|store)|don'?t need|no need|won'?t/i.test(sent)));
   check('never-asked-not-asked', asksNever.length === 0, asksNever.length ? `turn ${asksNever[0].turn}: ${asksNever[0].text.replace(/\s+/g, ' ').slice(0, 120)}` : 'no question about a never-asked item');
-  const over = agentTurns.filter((a) => (a.text.match(/\?/g) || []).length > 4);
-  check('questions-per-turn<=4', over.length === 0, over.length ? `turn ${over[0].turn} has ${(over[0].text.match(/\?/g) || []).length} question marks` : 'at most four per turn');
+  // Questions asked in a turn: each list item with a question mark counts once, however many sub-questions
+  // it holds; outside lists each question sentence counts. Three questions plus one confirmation is the limit.
+  const questionsIn = (text) => {
+    let n = 0;
+    for (const block of text.split(/\n(?=\s*(?:\d+[.)]|[-*•])\s)/)) {
+      if (/^\s*(?:\d+[.)]|[-*•])\s/.test(block)) { if (block.includes('?')) n += 1; }
+      else n += (block.match(/\?(?=\s|$|\*)/g) || []).length;
+    }
+    return n;
+  };
+  const over = agentTurns.filter((a) => questionsIn(a.text) > 4);
+  check('questions-per-turn<=4', over.length === 0, over.length ? `turn ${over[0].turn} asks ${questionsIn(over[0].text)} questions` : 'at most four per turn');
   const ACK = /tier never|never[- ]tier|not (?:be )?(?:stored|saved|recorded|used|included|written|kept|added|put)|won'?t (?:be )?(?:stor|sav|record|us|includ|go|appear|end up)|(?:keep|kept|leave|left|stay|stays)\b[^.]{0,30}\bout\b|outside (?:of )?(?:the |your )?(?:profile|store|resume)|not (?:going|part of|something)|never (?:on|in|goes? (?:on|in)|appears? (?:on|in)) (?:a |the |your )?(?:resume|profile|application|document)|restricted|private|personal (?:detail|information|data)|not (?:a )?(?:professional|career) fact/i;
   const honeypots = (gt.never_in_professional || []).map((h) => squashT(h));
   const volunteered = transcript.filter((x) => x.role === 'candidate' && honeypots.some((h) => squashT(x.text).includes(h)));

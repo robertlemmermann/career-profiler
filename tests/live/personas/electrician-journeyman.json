@@ -104,7 +104,7 @@
     ]
   },
   "deterministic": {
-    "default": "That's all I've got on that.",
+    "default": "Nothing more on that one. What else do you need from me?",
     "confirm": "Yep, that's right.",
     "answers": [
       {

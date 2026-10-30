@@ -28,7 +28,7 @@
     "min_coverage": 60
   },
   "deterministic": {
-    "default": "That's everything I can think of for that one.",
+    "default": "Nothing more on that one. What else do you need from me?",
     "confirm": "Yes, that's right.",
     "answers": [
       {"match": "resume|linkedin|portfolio|document", "reply": "No resume and no LinkedIn export, we start from scratch."},
