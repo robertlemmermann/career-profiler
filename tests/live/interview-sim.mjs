@@ -84,7 +84,9 @@ function deterministicTurn(agentText) {
 }
 // Writes that need a prior yes: resume-bearing facts (experience, achievements, skills, education, certifications, projects,
 // awards). Identity details the user typed verbatim and never-tier extras (volunteered items quarantined on the spot) are exempt.
-const changelogOps = () => { try { return fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => { try { const e = JSON.parse(l); return e.op === 'add' && (e.ids || []).some((id) => !/^fact-/.test(id)) ? 'add' : e.op === 'add' ? 'add-exempt' : e.op; } catch { return null; } }); } catch { return []; } };
+// Every fact write counts (add, update, remove, confirm), identity and targets included; a write whose
+// ids are all `fact-*` extras (a volunteered item quarantined at tier never) and interview markers do not.
+const changelogOps = () => { try { return fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => { try { const e = JSON.parse(l); return ['add', 'update', 'remove', 'confirm'].includes(e.op) && (e.ids || []).some((id) => !/^fact-/.test(id)) ? 'add' : e.op; } catch { return null; } }); } catch { return []; } };
 const addsPerTurn = []; // { turn, adds, candidate_said_yes }
 let lastCandidate = null;
 
@@ -146,7 +148,8 @@ if (profile) {
   // Numbers the agent wrote into fact text and metrics (provenance timestamps, ids and dates excluded).
   const stripped = JSON.parse(JSON.stringify([profile.experience, profile.skills, profile.certifications, profile.education, profile.summary], (k, v) => (['provenance', 'id', 'at', 'start', 'end', 'date', 'expires', 'last_used', 'added', 'evidence', 'skills'].includes(k) ? undefined : v)));
   const text = JSON.stringify(stripped);
-  const numbers = new Set((text.match(/(?<![\w.-])\d+(?:\.\d+)?(?![\w.])/g) || []).map(Number).filter((n) => n < 1900 || n > 2100 || gt.numbers.includes(n)));
+  // Thousands separators are one number ("40,000" is 40000, not 40 and 000).
+  const numbers = new Set((text.match(/(?<![\w.,-])\d{1,3}(?:,\d{3})+(?:\.\d+)?(?![\w.,]\d)|(?<![\w.,-])\d+(?:\.\d+)?(?![\w.]|,\d{3})/g) || []).map((x) => Number(x.replace(/,/g, ''))).filter((n) => n < 1900 || n > 2100 || gt.numbers.includes(n)));
   const unknown = [...numbers].filter((n) => !gt.numbers.includes(n) && !(n >= 1900 && n <= 2100));
   check('no-invented-numbers', unknown.length === 0, unknown.join(', ') || 'none');
   for (const m of gt.must_mention) check(`mentions:${m}`, new RegExp(`\\b${m}\\b`, 'i').test(text), '');

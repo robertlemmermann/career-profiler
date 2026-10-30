@@ -49,7 +49,9 @@ hand against the shape in setup.md and ask again when anything is off.
 
 - **Facts come from the user, never from the model or the environment.** Every entry in the
   store is something the user said or a document they gave, confirmed in conversation before it
-  is written (`fact stage`, show it, `fact commit --confirm`). Account metadata, environment
+  is written (`fact stage`, show it, `fact commit --confirm`). Saying a fact is not confirming
+  it: show the entry as you will record it and write after the yes, never "saved, tell me if
+  anything is off". Account metadata, environment
   variables, git configuration, earlier sessions and the host's own context are not sources: an
   email address or name seen there is asked for, never assumed or quoted. Unknown stays unknown;
   "probably" is a question, not a fact. Keep the user's words in `provenance.quote`. A job

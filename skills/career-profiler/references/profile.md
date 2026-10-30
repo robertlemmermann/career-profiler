@@ -127,7 +127,8 @@ node "$CP" fact add skills --data '[{"name":"React","category":"frontend","level
 node $CP fact add skills --data '[{"name":"React","category":"frontend","level":"expert","years":8}]' --confirm --json
 ```
 
-Rules: `--confirm` or `--unconfirmed` is required (`--yes` is not confirmation); a duplicate
+Rules: write only after the user said yes to the entry as you showed it (a statement is not
+a confirmation: [interview](interview.md) §5); `--confirm` or `--unconfirmed` is required (`--yes` is not confirmation); a duplicate
 employer-title-dates, skill name or certification is refused with the existing id (use `fact
 update`); a fact that holds never-asked data is stored at tier `never` and the command says so;
 dates are `YYYY-MM` (or `YYYY`); `end: null` means present; `level` is beginner,

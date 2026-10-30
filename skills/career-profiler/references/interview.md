@@ -77,10 +77,19 @@ one short list ("Recording: Senior Software Engineer at Brightline Payments, Mar
 present, San Francisco (remote), full-time"); anything inferred or rounded gets an explicit "is
 that exact?"; on their yes, `fact commit T-001 --confirm`. `--confirm` is your assertion that
 they said yes in this conversation; `--yes` is not accepted. `fact add --confirm` is the
-one-shot form for a single fact the user just confirmed; facts extracted from a document are
+one-shot form for a single fact whose shown wording the user just said yes to; facts extracted from a document are
 written `fact add --unconfirmed` and confirmed section by section with `fact confirm`. Keep up
 to 300 characters of the user's own words in `--quote`: it is the evidence the fact rests on.
 Read the returned ids back to yourself for later citations.
+
+Stating a fact is not confirming it. The user told you what happened; they have not yet seen how
+you will record it (your wording, the dates and numbers you derived, the section you chose).
+So every write follows a yes to the entry as shown, in every section, `identity` and `targets`
+included. Never write first and invite corrections afterwards ("I saved these; tell me if any
+wording is off"): show, ask, and write in the turn after the yes. Two writes need no yes: an
+`interview done <key>` marker for a topic the user said is empty, and a volunteered
+never-asked item the scripts store at tier `never` because the user asked you to keep it in mind
+(say so in the same turn). Batch the confirmations: one short list, one question.
 
 ## 6. Stopping and resuming
 
