@@ -5,7 +5,8 @@
 // run's workspace. When the harness itself runs as root (common in containers and CI images) it
 // cannot seal that workspace and mounts it read-only, so the skill's scripts cannot write the
 // application folder and the case fails for an environment reason. This runner gives the agent the
-// same prompt, scaffold, tools and turn limit in a throwaway temp workspace, then applies the same
+// same prompt, scaffold and turn limit in a throwaway temp workspace, with Bash limited to node, cat,
+// ls and diff and file edits limited to that workspace, then applies the same
 // graders: tool_used and tool_order on the Bash commands it ran, file_exists on the outputs, and the
 // llm criteria judged by a second `claude -p` (three votes, majority).
 //
@@ -86,7 +87,9 @@ function runAgent(work) {
   if (scaffold.status !== 0) return { error: `scaffold failed: ${(scaffold.stderr || scaffold.stdout).slice(0, 300)}` };
   fs.cpSync(path.join(repo, 'skills', NAME), path.join(work, '.claude', 'skills', NAME), { recursive: true });
   const args = ['--output-format', 'stream-json', '--verbose', '--max-turns', String(maxTurns),
-    '--allowedTools', 'Bash', 'Read', 'Glob', 'Grep', 'Skill', 'Write', 'Edit', '--permission-mode', 'dontAsk',
+    // Least privilege outside a sandbox: Bash only for node (the skill's scripts) and read-only listing,
+    // file edits only inside the throwaway workspace; anything else is denied, not prompted.
+    '--allowedTools', 'Bash(node *)', 'Bash(cat *)', 'Bash(ls *)', 'Bash(diff *)', 'Read', 'Glob', 'Grep', 'Skill', 'Edit(./**)', '--permission-mode', 'dontAsk',
     '--max-budget-usd', String(Math.max(2, cap / runs)), ...(opt.model ? ['--model', opt.model] : []), '--', promptBody];
   const r = claude(args, { cwd: work });
   const events = (r.stdout || '').split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
