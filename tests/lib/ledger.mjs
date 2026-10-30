@@ -36,6 +36,9 @@ export function subjectHash(root = ROOT) {
   return h.digest('hex').slice(0, 16);
 }
 
+// Captured when a runner starts, so rows name the tree the run actually used even if files change meanwhile.
+export const SUBJECT_AT_START = subjectHash();
+
 export function claudeVersion() {
   const r = spawnSync('claude', ['--version'], { encoding: 'utf8' });
   return r.status === 0 ? r.stdout.trim().split(/\s+/)[0] : null;
@@ -44,7 +47,7 @@ export function claudeVersion() {
 /** Append rows; every row gets at, git_sha, skill_version and claude_version. Returns the rows written. */
 export function appendRows(rows, { file = LEDGER } = {}) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  const base = { at: new Date().toISOString(), git_sha: gitSha(), subject: subjectHash(), skill_version: skillVersion(), claude_version: claudeVersion() };
+  const base = { at: new Date().toISOString(), git_sha: gitSha(), subject: SUBJECT_AT_START, skill_version: skillVersion(), claude_version: claudeVersion() };
   const out = rows.map((r) => ({ ...base, ...r }));
   fs.appendFileSync(file, out.map((r) => JSON.stringify(r)).join('\n') + '\n');
   return out;
