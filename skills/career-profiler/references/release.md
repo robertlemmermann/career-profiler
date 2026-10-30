@@ -24,12 +24,20 @@ node tests/run-evals.mjs --tag trigger $M
 node tests/run-evals.mjs --tag pii --tag safety --tag storage --tag watch $M
 node tests/run-evals.mjs --tag interview --tag profile $M
 node tests/run-evals.mjs --tag resume --tag match $M   # the long cases (12 turns, 6-9 judge calls each)
-node tests/run-evals.mjs --tag shell --scaffold --allow-tools "Bash(node *)" "Bash(cd *)" "Bash(cat *)" Read Write Edit $M   # needs bubblewrap + socat on Linux
+node tests/run-evals.mjs --tag shell --scaffold --allow-tools Bash Write Edit $M   # needs bubblewrap + socat on Linux, and a non-root harness
+node tests/live/pipeline-sim.mjs --model <agent-model-id> --judge-model <judge-model-id>   # the same shell case where the eval sandbox cannot write
 node tests/run-trigger-set.mjs --runs 3 --model <agent-model-id>   # (--host copilot|codex where installed)
 node tests/live/interview-sim.mjs --persona icu-nurse --sim deterministic --model <agent-model-id>
 node tests/live/interview-sim.mjs --persona electrician-journeyman --sim deterministic --model <agent-model-id>
-node tests/live/interview-sim.mjs --persona senior-swe --sim model --model <agent-model-id>
+node tests/live/interview-sim.mjs --persona senior-swe --sim deterministic --model <agent-model-id>
+node tests/live/interview-sim.mjs --persona senior-swe --sim model --model <agent-model-id> --candidate-model <id>   # reported, never decides
 ```
+
+`claude plugin eval` runs Bash in an OS sandbox that writes only to the run's workspace; when the
+harness runs as root (containers, some CI images) it mounts that workspace read-only and the shell
+case fails for an environment reason. `tests/live/pipeline-sim.mjs` runs the same case (prompt,
+scaffold, tools, turn limit) as a headless session in a temp workspace and applies the same graders;
+its rows (`runner: pipeline-sim`) satisfy the release gate for `scripts-pipeline`.
 
 If the pinned agent model becomes unavailable mid-campaign (out of credits, retired), that is
 `model-drift`: triage the refused rows, re-pin, and re-run the whole suite on the new model, so

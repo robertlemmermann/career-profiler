@@ -223,7 +223,7 @@ write, headless runs, no fabrication or overclaiming, gap questions, declined ga
 credentials, a nurse and an electrician, promotion updates, match-only and skip advice, no
 posting, refused auto-apply and the preference ceiling, board subscriptions and schedulers,
 volunteered PII and posting bait, never editing or dumping the store, storage questions,
-plain-language routing) and one shell case (`scripts-pipeline`, needs `--scaffold`,
+plain-language routing) and one shell case (`scripts-pipeline`, run by `claude plugin eval --scaffold` or, where its OS sandbox cannot write, by `tests/live/pipeline-sim.mjs`; plugin eval needs `--scaffold`,
 `--allow-tools` and the OS sandbox). Every
 runner appends to the results ledger in [`evals/ledger/`](evals/ledger/README.md); the release
 rule is in [release](skills/career-profiler/references/release.md).

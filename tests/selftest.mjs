@@ -130,34 +130,41 @@ area('ledger', (p, n) => {
   rows.forEach((r, i) => {
     for (const k of ['at', 'git_sha', 'skill_version', 'runner', 'host', 'item', 'passed']) if (!(k in r)) p.push(`row ${i + 1}: missing ${k}`);
     if (!classes.has(r.failure_class ?? null)) p.push(`row ${i + 1}: bad failure_class ${r.failure_class}`);
-    if (!['plugin-eval', 'trigger-set', 'interview-sim', 'triage'].includes(r.runner)) p.push(`row ${i + 1}: bad runner ${r.runner}`);
+    if (!['plugin-eval', 'pipeline-sim', 'trigger-set', 'interview-sim', 'triage'].includes(r.runner)) p.push(`row ${i + 1}: bad runner ${r.runner}`);
     if (r.runner === 'triage' && (!r.refers_to || !r.failure_class)) p.push(`row ${i + 1}: triage row without refers_to or failure_class`);
   });
   const sha = (spawnSync('git', ['-C', ROOT, 'rev-parse', '--short=12', 'HEAD'], { encoding: 'utf8' }).stdout || '').trim();
   const results = rows.filter((r) => r.runner !== 'triage');
   const triaged = new Set(rows.filter((r) => r.runner === 'triage').map((r) => `${r.refers_to.runner}|${r.refers_to.item}|${r.refers_to.run}|${r.refers_to.at}`));
-  const latest = new Map();
-  for (const r of results) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
-  const current = [...latest.values()];
+  // An item's result is its newest invocation (rows written together share `at`): it passes only when
+  // every run in that invocation passed. A model-played simulation is reported but never decides.
+  const keyOf = (r) => `${r.runner}|${r.host}|${r.item}${r.runner === 'interview-sim' ? `|${r.sim || 'deterministic'}` : ''}`;
+  const newest = (list) => {
+    const by = new Map();
+    for (const r of list) { const k = keyOf(r); const cur = by.get(k); if (!cur || r.at > cur.at) by.set(k, { at: r.at, rows: [r] }); else if (r.at === cur.at) cur.rows.push(r); }
+    return [...by.values()].map(({ rows: rs }) => ({ ...rs[0], runs: rs.length, passed: rs.every((x) => x.passed === true) ? true : rs.some((x) => x.passed === false) ? false : null }));
+  };
+  const current = newest(results);
   const failing = current.filter((r) => r.passed === false);
   const unclassified = results.filter((r) => r.passed === false && !triaged.has(`${r.runner}|${r.item}|${r.run}|${r.at}`));
-  n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row, ${unclassified.length} failing row(s) not yet triaged${sha ? `, HEAD ${sha}` : ''}`);
+  n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their newest run, ${unclassified.length} failing row(s) not yet triaged${sha ? `, HEAD ${sha}` : ''}`);
   if (opt.release && unclassified.length) p.push(`${unclassified.length} failing ledger row(s) have no triage row (node tests/ledger-triage.mjs)`);
   if (failing.length) n.push(`failing: ${failing.map((r) => r.item).join(', ')}`);
   const subject = subjectHash(ROOT);
-  const atSubject = current.filter((r) => r.subject === subject);
-  n.push(`subject ${subject}: ${atSubject.length} items with rows, ${atSubject.filter((r) => r.passed === true).length} passing`);
+  // "At HEAD" means: produced against the same skill, cases, personas and runners as the work tree now
+  // holds (the subject hash), so committing the ledger rows does not orphan them.
+  const atHead = newest(results.filter((r) => r.subject === subject));
+  const deciding = atHead.filter((r) => !(r.runner === 'interview-sim' && r.sim === 'model'));
+  n.push(`subject ${subject}: ${deciding.length} items with rows, ${deciding.filter((r) => r.passed === true).length} passing`);
   if (opt.release) {
-    // "At HEAD" means: produced against the same skill, cases, personas and runners as the work tree now
-    // holds (the subject hash), so committing the ledger rows does not orphan them.
-    const atHead = atSubject;
     if (!atHead.length) p.push(`no ledger rows for subject ${subject}`);
-    for (const r of atHead) if (r.passed !== true) p.push(`${r.runner} ${r.item} is not passing at HEAD`);
+    for (const r of deciding) if (r.passed !== true) p.push(`${r.runner} ${r.item} is not passing at HEAD (${r.runs} run(s) in its newest invocation)`);
     const cases = fs.readdirSync(path.join(ROOT, 'evals'), { withFileTypes: true }).filter((e) => e.isDirectory() && e.name !== 'ledger').map((e) => e.name);
-    for (const c of cases) if (!atHead.some((r) => r.runner === 'plugin-eval' && r.item === c)) p.push(`no plugin-eval row at HEAD for case ${c}`);
+    // The shell case may be proven by plugin eval or, where its OS sandbox cannot write (a root harness), by pipeline-sim.
+    for (const c of cases) if (!deciding.some((r) => (r.runner === 'plugin-eval' || (r.runner === 'pipeline-sim' && c === 'scripts-pipeline')) && r.item === c)) p.push(`no plugin-eval row at HEAD for case ${c}`);
     const set = JSON.parse(read(path.join(ROOT, 'evals', 'trigger-set.json')));
-    for (const q of set.queries) if (!atHead.some((r) => r.runner === 'trigger-set' && r.item === q.id)) p.push(`no trigger-set row at HEAD for ${q.id}`);
-    for (const per of fs.readdirSync(path.join(ROOT, 'tests', 'live', 'personas')).filter((x) => x.endsWith('.json'))) { const name = per.replace(/\.json$/, ''); if (!atHead.some((r) => r.runner === 'interview-sim' && r.item === name)) p.push(`no interview-sim row at HEAD for ${name}`); }
+    for (const q of set.queries) if (!deciding.some((r) => r.runner === 'trigger-set' && r.item === q.id)) p.push(`no trigger-set row at HEAD for ${q.id}`);
+    for (const per of fs.readdirSync(path.join(ROOT, 'tests', 'live', 'personas')).filter((x) => x.endsWith('.json'))) { const name = per.replace(/\.json$/, ''); if (!deciding.some((r) => r.runner === 'interview-sim' && r.item === name)) p.push(`no deterministic interview-sim row at HEAD for ${name}`); }
   }
 });
 

@@ -58,11 +58,16 @@ export function readRows(file = LEDGER) {
 /** Result rows only (triage rows classify a result and are not results themselves). */
 export const isResult = (r) => r.runner !== 'triage';
 
-/** The newest run per (runner, host, item) for a subject hash: what the release rule looks at. */
+/** The newest invocation per (runner, host, item[, sim]) for a subject hash: what the release rule looks at.
+ * Rows written together share `at`; the item passes only when every run of that invocation passed. */
 export function latestFor(subject, rows = readRows()) {
-  const latest = new Map();
-  for (const r of rows.filter((x) => isResult(x) && x.subject === subject)) latest.set(`${r.runner}|${r.host}|${r.item}`, r);
-  return [...latest.values()];
+  const by = new Map();
+  for (const r of rows.filter((x) => isResult(x) && x.subject === subject)) {
+    const k = `${r.runner}|${r.host}|${r.item}${r.runner === 'interview-sim' ? `|${r.sim || 'deterministic'}` : ''}`;
+    const cur = by.get(k);
+    if (!cur || r.at > cur.at) by.set(k, { at: r.at, rows: [r] }); else if (r.at === cur.at) cur.rows.push(r);
+  }
+  return [...by.values()].map(({ rows: rs }) => ({ ...rs[0], runs: rs.length, passed: rs.every((x) => x.passed === true) }));
 }
 
 /** Triage rows: `{ runner: 'triage', refers_to: { runner, host, item, run, at }, failure_class, note }`, appended after a failing
