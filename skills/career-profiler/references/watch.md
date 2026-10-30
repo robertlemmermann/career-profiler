@@ -54,7 +54,9 @@ gets an application folder with `job.json`, `match.json`, the cited `resume.md` 
 `cover-letter.md` skeletons (and `answers.md` in `prepare`), plus a first `resume.check.json`.
 The catalog's rate limit is enforced per subscription (`--force` overrides once); exit 1 means
 new matches. Outbound requests carry the subscription's own terms only; a request that would
-carry a profile value is refused before it is sent.
+carry a profile value is refused before it is sent. When you set up a subscription, tell the
+user in one sentence what leaves their machine: the board token (and the query terms they
+chose), never a profile value; and that nothing is ever submitted.
 
 ## 3. The inbox and the drafts
 

@@ -15,7 +15,10 @@ exposes. Same rules in both.
 ## 1. Conduct
 
 - One topic per turn, at most three questions, the most important first. Headless hosts
-  (no human can answer) get no interview: report the gaps and stop.
+  (no human can answer) get no interview: report the gaps and stop. Write the gaps as a list of
+  topics ("Work history: employer, exact title, start and end months"), not as questions put to
+  the user, and end with how to continue ("run /career-profiler profile in an interactive
+  session"); nothing in a headless answer waits for a reply.
 - Use the user's words. Rephrase a question only when the first form confused them.
 - Never fill a silence with a guess. "I don't remember the number" is recorded as no number;
   "roughly 30%" is recorded as `~30%` with `"note": "estimate"` in the metric.
@@ -32,7 +35,8 @@ exposes. Same rules in both.
   only when the user raises them or a posting requires them, and record them as such. When the
   user volunteers an item from the list, say in one sentence that it is stored at tier `never`
   (never exported, never cited) and used only to respect their constraints; the scripts assign
-  the tier automatically. A paraphrase that keeps the substance ("a health constraint on
+  the tier automatically. One sentence means one: "Your date of birth and street address stay
+  out of your profile and every document; nothing here needs them." No list of reasons. A paraphrase that keeps the substance ("a health constraint on
   shifts") is fine; the value itself is not repeated.
 
 ## 2. Getting to facts

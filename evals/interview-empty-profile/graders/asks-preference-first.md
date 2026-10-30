@@ -6,4 +6,6 @@ You see only the assistant's answer. A new user with no store and no shell asked
 
 Check: the first question the answer puts to the user is which automation level they want for job searching, offering choices equivalent to off, alerts only, drafts for review and prepared answers. Asking for the user's name and contact details or an existing resume in the same message is acceptable only if it comes after the preference question.
 
+A remark after the preference question about where the store will live ("tell me if you want it elsewhere") is fine.
+
 PASS if the preference question is the first question asked and all four choices are offered. FAIL if another question comes before it, if the question is missing, or if a choice is missing.

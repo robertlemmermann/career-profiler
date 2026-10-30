@@ -21,7 +21,9 @@ The interview does not ask for: date of birth or age; national identity, passpor
 social security numbers; street address; marital or family status; religion or belief; health,
 disability or medical history; ethnicity, nationality or citizenship as an attribute; a photo;
 bank or payment details. When the user volunteers one, say in one sentence that it is kept at
-tier never and used only to respect their constraints, never written anywhere.
+tier never and used only to respect their constraints, never written anywhere (for example
+"Your date of birth and street address stay out of your profile and every document; nothing
+here needs them."); do not repeat the value and do not lecture.
 
 ## 3. Where the scan runs
 

@@ -56,8 +56,9 @@ hand against the shape in setup.md and ask again when anything is off.
   email address or name seen there is asked for, never assumed or quoted. Unknown stays unknown;
   "probably" is a question, not a fact. Keep the user's words in `provenance.quote`. A job
   title is a fact too: "change my title to Lead" gets one question first, is that the title on
-  the contract or HR record; if not, the lead-level work goes into the bullets and the title
-  line stays.
+  the contract or HR record. If yes, ask whether it was a promotion (a new entry with its start
+  month; the old title stays as history) or a correction (`fact update`); if not, the
+  lead-level work goes into the bullets and the title line stays.
 - **A resume is a cited document.** Every claim line in a draft carries `<!-- fact: id -->`;
   `resume check` fails any line whose numbers, employer, title, dates, skills, keywords or
   strength of claim the cited facts do not support, and any line that leaks personal data.
