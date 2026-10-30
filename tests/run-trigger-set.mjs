@@ -75,8 +75,14 @@ function runOnce(query, dir) {
   if (costMatch) cost = Number(costMatch[1]);
   // A refused or failed run is an error, never a "did not trigger": the host's usage limit, an API error or a
   // non-zero exit all land here, so the row is re-run instead of counted against the description.
-  const refusal = /hit your .{0,20}limit|"is_error":\s*true|rate limit|overloaded|api error/i.exec(`${text}\n${r.stderr || ''}`);
-  const error = r.error ? r.error.message : r.status !== 0 ? `exit ${r.status}: ${(r.stderr || text).replace(/\s+/g, ' ').slice(0, 200)}` : refusal ? `api error: ${refusal[0]}` : null;
+  // Only the host's own result record decides: the agent's text may legitimately talk about rate limits.
+  let refusal = null;
+  for (const line of text.split(/\r?\n/).reverse()) {
+    if (!line.includes('"type":"result"')) continue;
+    try { const res = JSON.parse(line); if (res.is_error || /hit your .{0,20}limit/i.test(String(res.result || ''))) refusal = String(res.result || res.error || 'is_error').replace(/\s+/g, ' ').slice(0, 160); } catch {}
+    break;
+  }
+  const error = r.error ? r.error.message : r.status !== 0 ? `exit ${r.status}: ${(r.stderr || text).replace(/\s+/g, ' ').slice(0, 200)}` : refusal ? `api error: ${refusal}` : null;
   const triggered = error ? null : m.triggered(text, dir);
   return { triggered, cost_usd: cost, error, ms: Date.now() - started };
 }
