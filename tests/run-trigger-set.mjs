@@ -70,11 +70,14 @@ function runOnce(query, dir) {
   const r = spawnSync(m.bin, args, { cwd: dir, env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: Number(opt['timeout-s']) * 1000, maxBuffer: 64 * 1024 * 1024 });
   if (r.error && r.error.code === 'ENOENT') { console.error(`${m.bin} is not installed`); process.exit(3); }
   const text = r.stdout || '';
-  const triggered = m.triggered(text, dir);
   let cost = null;
   const costMatch = /"total_cost_usd":\s*([0-9.]+)/.exec(text);
   if (costMatch) cost = Number(costMatch[1]);
-  const error = r.error ? r.error.message : (r.status !== 0 && !text ? `exit ${r.status}: ${(r.stderr || '').slice(0, 200)}` : null);
+  // A refused or failed run is an error, never a "did not trigger": the host's usage limit, an API error or a
+  // non-zero exit all land here, so the row is re-run instead of counted against the description.
+  const refusal = /hit your .{0,20}limit|"is_error":\s*true|rate limit|overloaded|api error/i.exec(`${text}\n${r.stderr || ''}`);
+  const error = r.error ? r.error.message : r.status !== 0 ? `exit ${r.status}: ${(r.stderr || text).replace(/\s+/g, ' ').slice(0, 200)}` : refusal ? `api error: ${refusal[0]}` : null;
+  const triggered = error ? null : m.triggered(text, dir);
   return { triggered, cost_usd: cost, error, ms: Date.now() - started };
 }
 
