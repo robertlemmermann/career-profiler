@@ -103,8 +103,11 @@ for (const q of queries) {
     process.stderr.write(`${q.id} run ${i + 1}: ${r.error ? `error (${r.error})` : r.triggered ? 'triggered' : 'not triggered'}${r.cost_usd != null ? ` $${r.cost_usd.toFixed(3)}` : ''}\n`);
   }
   const good = row.runs.filter((r) => !r.error && r.triggered === q.should_trigger).length;
-  row.pass_rate = opt['dry-run'] ? null : good / runs;
-  row.passed = opt['dry-run'] ? null : good / runs > (set.query_threshold ?? 0.5);
+  const answered = row.runs.filter((r) => !r.error).length;
+  // Errors count against a query (a flaky host is not a pass), but a query whose every run errored is
+  // inconclusive (passed null): it says nothing about the description and must simply be re-run.
+  row.pass_rate = opt['dry-run'] || !answered ? null : good / runs;
+  row.passed = opt['dry-run'] || !answered ? null : good / runs > (set.query_threshold ?? 0.5);
   results.push(row);
 }
 const scored = results.filter((r) => r.passed != null);

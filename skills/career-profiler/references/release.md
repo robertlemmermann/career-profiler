@@ -31,6 +31,10 @@ node tests/live/interview-sim.mjs --persona electrician-journeyman --sim determi
 node tests/live/interview-sim.mjs --persona senior-swe --sim model --model <agent-model-id>
 ```
 
+If the pinned agent model becomes unavailable mid-campaign (out of credits, retired), that is
+`model-drift`: triage the refused rows, re-pin, and re-run the whole suite on the new model, so
+the release rows never mix two agent models.
+
 When every batch is green on the same sha, run the whole shell-free suite once more on that
 sha (`node tests/run-evals.mjs $M`), then the shell case, the trigger set and the simulations,
 so the newest ledger rows for the release sha are one coherent set. `-j <n>` runs cases in

@@ -48,7 +48,10 @@ function claude(args, { cwd = work, label }) {
   try { json = JSON.parse(r.stdout); } catch {}
   if (!json) return { error: `${label}: ${r.error ? r.error.message : `exit ${r.status}`}: ${(r.stderr || r.stdout || '').slice(0, 300)}` };
   spent += json.total_cost_usd || 0;
-  return { text: json.result || '', session: json.session_id, error: json.is_error ? `${label}: ${(json.errors || []).join('; ') || json.subtype}` : null, raw: json };
+  // A refused turn (usage limit, out of credits, rate limit, API error) ends the run as INCOMPLETE; it is never graded.
+  const apiError = !!json.is_error && (json.api_error_status != null || json.terminal_reason === 'api_error' || /hit your .{0,20}limit|usage credits|rate limit/i.test(String(json.result || '')));
+  return { text: json.result || '', session: json.session_id, apiError,
+    error: apiError ? `${label}: api error ${json.api_error_status ?? ''} ${String(json.result || json.api_error || '').slice(0, 160)}`.trim() : json.is_error ? `${label}: ${(json.errors || []).join('; ') || json.subtype}` : null, raw: json };
 }
 
 // --allowedTools is variadic: one argument per rule (a comma-joined list is read as one unknown tool).
@@ -92,7 +95,7 @@ let failure = null;
 for (let t = 1; t <= turns; t++) {
   if (spent >= cap) { failure = `cost cap $${cap} reached after ${t - 1} turns`; break; }
   const a = claude([...(agentSession ? ['--resume', agentSession] : []), ...agentArgs(!agentSession), '--', userMessage], { label: `agent turn ${t}` });
-  if (a.error && !a.text) { failure = a.error; break; }
+  if (a.apiError || (a.error && !a.text)) { failure = a.error; break; }
   agentSession = a.session || agentSession;
   transcript.push({ turn: t, role: 'agent', text: a.text });
   process.stderr.write(`agent ${t}: ${a.text.replace(/\s+/g, ' ').slice(0, 160)}\n`);
@@ -104,7 +107,7 @@ for (let t = 1; t <= turns; t++) {
   else {
     const c = claude([...(candidateSession ? ['--resume', candidateSession] : ['--system-prompt', candidateSystem]), '--tools', '', '--max-budget-usd', '0.5',
       ...(opt['candidate-model'] ? ['--model', opt['candidate-model']] : []), '--', a.text], { label: `candidate turn ${t}`, cwd: os.tmpdir() });
-    if (c.error && !c.text) { failure = c.error; break; }
+    if (c.apiError || (c.error && !c.text)) { failure = c.error; break; }
     candidateSession = c.session || candidateSession;
     reply = c.text;
   }
