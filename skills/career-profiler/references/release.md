@@ -37,7 +37,7 @@ the release rows never mix two agent models.
 
 When every batch is green on the same sha, run the whole shell-free suite once more on that
 sha (`node tests/run-evals.mjs $M`), then the shell case, the trigger set and the simulations,
-so the newest ledger rows for the release sha are one coherent set. `-j <n>` runs cases in
+so the newest ledger rows for the release subject are one coherent set. `-j <n>` runs cases in
 parallel on one credential (shared rate limit).
 
 The simulator drives Claude Code only; Copilot and Codex trigger runs use `run-trigger-set.mjs
@@ -49,7 +49,8 @@ persona per run: git sha, skill version, host, model, judge model, runner, score
 
 ## 3. The 100 % rule
 
-A version is releasable when the newest ledger rows for its sha pass every case, every trigger
+A version is releasable when the newest ledger rows for its subject (a hash of the skill, the eval
+cases, the personas, the simulator and the runners, recorded in every row) pass every case, every trigger
 query behaves as labeled, and every simulated interview passes its grade. A failing row is
 classified before anything else happens: `skill` (fix the skill), `grader` (fix the grader, but
 never lower the bar), `fixture` (fix the fixture), `host-flake` (re-run once; a second failure is

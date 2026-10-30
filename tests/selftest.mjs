@@ -5,6 +5,7 @@
 // area passes, 1 otherwise. Development tooling: never installed with the skill.
 
 import { spawnSync } from 'node:child_process';
+import { subjectHash } from './lib/ledger.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -143,9 +144,14 @@ area('ledger', (p, n) => {
   n.push(`${rows.length} rows, ${current.length} items, ${failing.length} failing in their latest row, ${unclassified.length} failing row(s) not yet triaged${sha ? `, HEAD ${sha}` : ''}`);
   if (opt.release && unclassified.length) p.push(`${unclassified.length} failing ledger row(s) have no triage row (node tests/ledger-triage.mjs)`);
   if (failing.length) n.push(`failing: ${failing.map((r) => r.item).join(', ')}`);
+  const subject = subjectHash(ROOT);
+  const atSubject = current.filter((r) => r.subject === subject);
+  n.push(`subject ${subject}: ${atSubject.length} items with rows, ${atSubject.filter((r) => r.passed === true).length} passing`);
   if (opt.release) {
-    const atHead = current.filter((r) => r.git_sha === sha);
-    if (!atHead.length) p.push(`no ledger rows for HEAD ${sha}`);
+    // "At HEAD" means: produced against the same skill, cases, personas and runners as the work tree now
+    // holds (the subject hash), so committing the ledger rows does not orphan them.
+    const atHead = atSubject;
+    if (!atHead.length) p.push(`no ledger rows for subject ${subject}`);
     for (const r of atHead) if (r.passed !== true) p.push(`${r.runner} ${r.item} is not passing at HEAD`);
     const cases = fs.readdirSync(path.join(ROOT, 'evals'), { withFileTypes: true }).filter((e) => e.isDirectory() && e.name !== 'ledger').map((e) => e.name);
     for (const c of cases) if (!atHead.some((r) => r.runner === 'plugin-eval' && r.item === c)) p.push(`no plugin-eval row at HEAD for case ${c}`);

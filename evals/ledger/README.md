@@ -8,6 +8,7 @@ never edited or deleted; a re-run after a fix is a new row with the same `item` 
 | Field | Meaning |
 |---|---|
 | `at`, `git_sha`, `skill_version`, `claude_version` | when and against what |
+| `subject` | hash of what was evaluated: `skills/career-profiler/`, `evals/` (not the ledger), `tests/live/` and the two runners; the release gate matches rows by it, so committing rows does not orphan them |
 | `runner` | `plugin-eval`, `trigger-set`, `interview-sim` |
 | `host` | `claude`, `copilot`, `codex` |
 | `model`, `judge_model` | pinned models used (`null` when the host's default was used) |
@@ -26,5 +27,5 @@ and `refers_to: { runner, host, item, run, at }` pointing at the result row. `no
 tests/ledger-triage.mjs` alone lists the failing rows that have no triage row yet; `selftest
 --release` fails while any remain.
 
-The release rule (`references/release.md` §3): the newest rows for the release sha pass every
+The release rule (`references/release.md` §3): the newest rows for the current subject pass every
 case, every query and every persona.
