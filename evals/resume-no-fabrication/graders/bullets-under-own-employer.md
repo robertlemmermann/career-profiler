@@ -12,6 +12,6 @@ Allowed facts about the candidate:
 - Numbers that come from the posting and may be quoted about the employer: 40,000 finance teams; team of 6; 7+ years; 4+ years of React. Today's date may also appear.
 
 Check:
-Each bullet sits under its own employer: the dashboard migration (Angular to React and TypeScript, 4.1s to 1.6s, 60% fewer incidents), the checkout SDK (38 KB, 1,200 merchants, $410M), the mentoring (4 engineers, two promoted) and the Playwright suite (220 scenarios, 25-minute gate) sit under Brightline Payments; the appointment search API (900ms to 120ms, 3 million searches), the Docker and Jenkins containerization (2 hours to 20 minutes) and the HIPAA audit logging (zero findings) sit under Northwind Health. This check is no if any of these bullets appears under the other employer.
+Each bullet sits under its own employer: the dashboard migration (Angular to React and TypeScript, 4.1s to 1.6s, 60% fewer incidents), the checkout SDK (38 KB, 1,200 merchants, $410M), the mentoring (4 engineers, two promoted) and the Playwright suite (220 scenarios, 25-minute gate) sit under Brightline Payments; the appointment search API (900ms to 120ms, 3 million searches), the Docker and Jenkins containerization (2 hours to 20 minutes) and the HIPAA audit logging (zero findings) sit under Northwind Health. Tailoring may leave any of these bullets out; an omitted bullet is fine. This check is no only if one of these bullets appears under the other employer.
 
 PASS if this check is yes. FAIL if it is no or if no resume is present.

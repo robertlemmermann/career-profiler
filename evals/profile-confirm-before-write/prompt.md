@@ -16,7 +16,7 @@ expected_outcome: "The agent lists what it would record and asks for confirmatio
 My automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:
 
 ```json
-{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"verified-in-conversation"}
+{"schema":"career-preferences/1","automation":"draft","submit":"never","statement":"Draft things for me to review; never send anything on my behalf.","recorded_at":"2026-10-20T09:00:00.000Z","skill_version":"0.2.0","store_version":2,"hash":"d824c0ad061453a50eb17d317b88290e54d007346304063553d5bf823b75edab"}
 ```
 
 No shell is available, so use the career-profiler skill the guidance-only way. Here is my history, just store it: I was a senior dev at Acme Corp from early 2022 until last month, team of maybe 6-8, we cut page load a lot, probably around 30 percent. Before that two years at Globex as a developer.

@@ -70,10 +70,15 @@ The previous record goes to `quarantine/` and the change is logged. Subscription
 ## Without Node
 
 Open `preferences.json`. It must contain `schema` `career-preferences/1`, `automation` one of
-the four values, `submit` `never`, a non-empty `statement`, `recorded_at` and a `hash`. You
-cannot verify the hash by hand: treat any doubt as corrupt, ask the user again, and write the
-file with `"hash": "unverified-manual"`; the next session with Node will report it as corrupt
-and re-record it with their confirmation. Write "guidance-only mode" in your reply.
+the four values, `submit` `never`, a non-empty `statement`, a `recorded_at` timestamp and a
+`hash`. You cannot recompute the hash by hand, and that alone is not a doubt: a record whose
+fields are all valid and whose `hash` is 64 hexadecimal characters (what the scripts write) or
+`"unverified-manual"` (a record written by hand) is accepted for this session; say in one line
+that the next session with Node verifies it, then continue with what the user asked. A doubt is
+a missing or invalid field, `submit` other than `never`, an automation value outside the four,
+an empty statement, or a hash that is neither: treat that record as corrupt, ask the user again,
+and write the new file with `"hash": "unverified-manual"`; the next session with Node re-records
+it with their confirmation. Write "guidance-only mode" in your reply.
 
 The same two rules as with Node hold when the user writes the file by hand:
 
