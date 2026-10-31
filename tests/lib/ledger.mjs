@@ -23,8 +23,13 @@ export function skillVersion() {
  * personas, the simulator and the two runners. Committing ledger rows or docs does not change it, so the
  * release gate can match rows to the tree they tested even after the rows themselves are committed. */
 export const SUBJECT_PATHS = ['skills/career-profiler', 'evals', 'tests/live', 'tests/run-evals.mjs', 'tests/run-trigger-set.mjs'];
+// release.md is the maintainers' release checklist; no case reads it, so editing it re-runs nothing.
+const NOT_TESTED = (f) => f.startsWith('evals/ledger/') || /(^|\/)results\//.test(f); // the whole-tree subject, as recorded in rows
+const IGNORED = (f) => NOT_TESTED(f) || f === 'skills/career-profiler/references/release.md'; // per-item hashes
+
 /** The paths one result row depends on: the skill, its runner, and its own case, query set or persona. */
 export function itemPaths(runner, item) {
+  // release.md is the maintainers' release checklist; no case reads it, so editing it re-runs nothing.
   const base = ['skills/career-profiler'];
   if (runner === 'plugin-eval') return [...base, `evals/${item}`, 'tests/run-evals.mjs'];
   if (runner === 'pipeline-sim') return [...base, 'evals/scripts-pipeline', 'tests/live/pipeline-sim.mjs'];
@@ -39,10 +44,41 @@ export function itemSubject(runner, item, root = ROOT) {
   if (!itemCache.has(k)) itemCache.set(k, subjectHash(root, itemPaths(runner, item)));
   return itemCache.get(k);
 }
-export function subjectHash(root = ROOT, paths = SUBJECT_PATHS) {
+/** The same hash as subjectHash, computed from a commit instead of the work tree (git objects only). */
+const commitCache = new Map();
+export function subjectHashAtCommit(sha, paths = SUBJECT_PATHS, root = ROOT, skip = paths === SUBJECT_PATHS ? NOT_TESTED : IGNORED) {
+  const key = `${sha}|${paths.join(',')}|${skip === IGNORED}`;
+  if (commitCache.has(key)) return commitCache.get(key);
+  let out = null;
+  const ls = spawnSync('git', ['-C', root, 'ls-tree', '-r', '-z', sha, '--', ...paths], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  if (ls.status === 0) {
+    const entries = ls.stdout.split('\0').filter(Boolean).map((l) => { const [meta, f] = l.split('\t'); return { f, id: meta.split(' ')[2] }; })
+      .filter((e) => !skip(e.f)).sort((a, b) => (a.f < b.f ? -1 : a.f > b.f ? 1 : 0));
+    const h = createHash('sha256');
+    for (const e of entries) {
+      const b = spawnSync('git', ['-C', root, 'cat-file', 'blob', e.id], { maxBuffer: 64 * 1024 * 1024 });
+      if (b.status !== 0) continue;
+      h.update(e.f); h.update('\0'); h.update(createHash('sha256').update(b.stdout).digest('hex')); h.update('\n');
+    }
+    out = h.digest('hex').slice(0, 16);
+  }
+  commitCache.set(key, out);
+  return out;
+}
+
+/** What a row tested. A row whose recorded subject equals the tree hash at its recorded commit (it ran on
+ * committed files) is hashed from that commit with today's item paths; otherwise its stored item_subject is
+ * used, and a row with neither does not count. */
+export function rowItemSubject(r, root = ROOT) {
+  // Verified against its commit: hash what it tested at that commit with today's definition of "what it tested".
+  if (r.git_sha && r.subject && subjectHashAtCommit(r.git_sha, SUBJECT_PATHS, root) === r.subject) return subjectHashAtCommit(r.git_sha, itemPaths(r.runner, r.item), root);
+  return r.item_subject || null;
+}
+
+export function subjectHash(root = ROOT, paths = SUBJECT_PATHS, skip = paths === SUBJECT_PATHS ? NOT_TESTED : IGNORED) {
   const r = spawnSync('git', ['-C', root, 'ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', ...paths], { encoding: 'utf8' });
   if (r.status !== 0) return null;
-  const files = r.stdout.split('\0').filter((f) => f && !f.startsWith('evals/ledger/') && !/(^|\/)results\//.test(f)).sort();
+  const files = r.stdout.split('\0').filter((f) => f && !skip(f)).sort();
   const h = createHash('sha256');
   for (const f of files) {
     let body;
@@ -76,12 +112,16 @@ export function readRows(file = LEDGER) {
 
 /** Result rows only (triage rows classify a result and are not results themselves). */
 export const isResult = (r) => r.runner !== 'triage';
+/** A run the host refused (usage window, out of credits, rate limit, API error): nothing was graded, so it is
+ * neither a pass nor a fail and never supersedes an earlier graded run. */
+export const isRefusal = (r) => r.passed !== true && /hit your .{0,20}limit|usage credits|rate limit|api error|judge call failed|cost cap/i.test(`${r.note || ''} ${JSON.stringify(r.checks || [])}`) && !(r.graders || []).some((g) => g.passed === true && !/judge call failed/.test(g.name || ''));
+export const isGraded = (r) => isResult(r) && !isRefusal(r);
 
 /** The newest invocation per (runner, host, item[, sim]) for a subject hash: what the release rule looks at.
  * Rows written together share `at`; the item passes only when every run of that invocation passed. */
 export function latestFor(subject, rows = readRows()) {
   const by = new Map();
-  for (const r of rows.filter((x) => isResult(x) && x.subject === subject)) {
+  for (const r of rows.filter((x) => isGraded(x) && x.subject === subject)) {
     const k = `${r.runner}|${r.host}|${r.item}${r.runner === 'interview-sim' ? `|${r.sim || 'deterministic'}` : ''}`;
     const cur = by.get(k);
     if (!cur || r.at > cur.at) by.set(k, { at: r.at, rows: [r] }); else if (r.at === cur.at) cur.rows.push(r);

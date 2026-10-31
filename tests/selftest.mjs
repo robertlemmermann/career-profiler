@@ -5,7 +5,7 @@
 // area passes, 1 otherwise. Development tooling: never installed with the skill.
 
 import { spawnSync } from 'node:child_process';
-import { subjectHash, itemSubject } from './lib/ledger.mjs';
+import { subjectHash, itemSubject, rowItemSubject, isRefusal } from './lib/ledger.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -135,6 +135,7 @@ area('ledger', (p, n) => {
   });
   const sha = (spawnSync('git', ['-C', ROOT, 'rev-parse', '--short=12', 'HEAD'], { encoding: 'utf8' }).stdout || '').trim();
   const results = rows.filter((r) => r.runner !== 'triage');
+  const graded = results.filter((r) => !isRefusal(r));
   const triaged = new Set(rows.filter((r) => r.runner === 'triage').map((r) => `${r.refers_to.runner}|${r.refers_to.item}|${r.refers_to.run}|${r.refers_to.at}`));
   // An item's result is its newest invocation (rows written together share `at`): it passes only when
   // every run in that invocation passed. A model-played simulation is reported but never decides.
@@ -154,7 +155,7 @@ area('ledger', (p, n) => {
   // "At HEAD" means: produced against the same skill, cases, personas and runners as the work tree now
   // holds (the subject hash), so committing the ledger rows does not orphan them.
   // A row counts when what it tested (the skill, its runner, its own case, query set or persona) is unchanged.
-  const atHead = newest(results.filter((r) => r.item_subject && r.item_subject === itemSubject(r.runner, r.item, ROOT)));
+  const atHead = newest(graded.filter((r) => { const x = rowItemSubject(r, ROOT); return x && x === itemSubject(r.runner, r.item, ROOT); }));
   const deciding = atHead.filter((r) => !(r.runner === 'interview-sim' && r.sim === 'model'));
   n.push(`current: ${deciding.length} items with rows, ${deciding.filter((r) => r.passed === true).length} passing`);
   if (opt.release) {
