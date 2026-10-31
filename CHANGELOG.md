@@ -61,9 +61,34 @@ referenced with 0.1.0, and the common denominator built (`plans` repository,
   echoes, restricted fields out of the default export); `evals/ledger/ledger.jsonl` appended by every runner;
   `tests/manual-matrix.md`; a CI workflow on Linux, macOS and Windows with Node 22 and 24.
 
+### Live evaluation
+
+Every case, query and persona has a passing, current run in `evals/ledger/ledger.jsonl`
+(`evals/ledger/STATUS.md`); the agent model is pinned (Opus 5.5 after the earlier pin ran out of
+credits), the judge is Sonnet 5.5. A case passes only when all its runs pass every grader.
+
+| Suite | Result |
+|---|---|
+| `claude plugin eval` cases | 38 of 38, 3 runs each |
+| Shell pipeline (`tests/live/pipeline-sim.mjs`) | 2 of 2 runs |
+| Trigger set | 32 of 32 queries, 3 runs each (train 1.0, validation 1.0) |
+| Simulated interviews (deterministic candidate) | see STATUS.md |
+
+Failures found by the live runs and fixed in the skill: a valid preference record was rejected
+without Node; facts were written as soon as the user stated them ("saved; tell me if anything is
+off"); a one-line "remove that job" deleted the role; a subscription could be set above the
+recorded preference; a title change offered only an overwrite; an unattended run asked
+questions; polling did not say what leaves the machine; volunteered personal data got a lecture.
+Each failing row is classified by a `triage` row (`tests/ledger-triage.mjs`).
+
 ### Changed
 
 - `threshold 1` and a Sonnet judge by default in `tests/run-evals.mjs`.
+- The ledger keys each row to what it tested (the skill, its runner, its own case, query set or
+  persona), refused runs are not results, `tests/run-pending.sh` runs only what is not yet
+  passing and waits through usage windows, and `tests/ledger-status.mjs` writes STATUS.md.
+- `tests/live/pipeline-sim.mjs` runs the shell case where the eval sandbox cannot write (a root
+  harness mounts the workspace read-only), with Bash limited to `node`, `cat`, `ls` and `diff`.
 - Node 22+ stated in `compatibility`; the version guard matches.
 
 ## [0.1.0] - 2026-10-29
