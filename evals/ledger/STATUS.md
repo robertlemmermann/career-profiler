@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-10-31T18:52:54Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-10-31T18:56:14Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**68 of 74 release items passing.** case profile-import-unconfirmed failed twice; set aside for triage. Recorded spend in the ledger: $419.08. Last refusal: 2026-10-31T11:18:09.465Z.
+**69 of 74 release items passing.** case resume-without-posting passing. Recorded spend in the ledger: $419.79. Last refusal: 2026-10-31T11:18:09.465Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 35/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 36/38 passing
 
-- profile-import-unconfirmed: FAIL (re-run or fix)
-- resume-without-posting: FAIL (re-run or fix)
+- profile-import-unconfirmed: to run
 - watch-subscribe-company-board: to run
 
 ## Shell pipeline (2 runs): 1/1 passing
