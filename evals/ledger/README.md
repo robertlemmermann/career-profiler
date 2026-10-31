@@ -8,7 +8,8 @@ never edited or deleted; a re-run after a fix is a new row with the same `item` 
 | Field | Meaning |
 |---|---|
 | `at`, `git_sha`, `skill_version`, `claude_version` | when and against what |
-| `subject` | hash of what was evaluated: `skills/career-profiler/`, `evals/` (not the ledger), `tests/live/` and the two runners; the release gate matches rows by it, so committing rows does not orphan them |
+| `item_subject` | hash of exactly what the row tested: the skill, its runner, and its own case, query set or persona; the release gate counts a row only while that hash is unchanged, so a fix to one case re-runs only that case |
+| `subject` | hash of the whole evaluated tree (informational): `skills/career-profiler/`, `evals/` (not the ledger), `tests/live/` and the two runners; the release gate matches rows by it, so committing rows does not orphan them |
 | `runner` | `plugin-eval`, `trigger-set`, `interview-sim` |
 | `host` | `claude`, `copilot`, `codex` |
 | `model`, `judge_model` | pinned models used (`null` when the host's default was used) |

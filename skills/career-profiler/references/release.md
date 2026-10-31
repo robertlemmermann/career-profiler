@@ -57,8 +57,8 @@ persona per run: git sha, skill version, host, model, judge model, runner, score
 
 ## 3. The 100 % rule
 
-A version is releasable when the newest ledger rows for its subject (a hash of the skill, the eval
-cases, the personas, the simulator and the runners, recorded in every row) pass every case, every trigger
+A version is releasable when the newest ledger rows still current for it (each row records
+`item_subject`, a hash of the skill, its runner and its own case, query set or persona) pass every case, every trigger
 query behaves as labeled, and every simulated interview passes its grade. A failing row is
 classified before anything else happens: `skill` (fix the skill), `grader` (fix the grader, but
 never lower the bar), `fixture` (fix the fixture), `host-flake` (re-run once; a second failure is

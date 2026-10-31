@@ -23,8 +23,24 @@ export function skillVersion() {
  * personas, the simulator and the two runners. Committing ledger rows or docs does not change it, so the
  * release gate can match rows to the tree they tested even after the rows themselves are committed. */
 export const SUBJECT_PATHS = ['skills/career-profiler', 'evals', 'tests/live', 'tests/run-evals.mjs', 'tests/run-trigger-set.mjs'];
-export function subjectHash(root = ROOT) {
-  const r = spawnSync('git', ['-C', root, 'ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', ...SUBJECT_PATHS], { encoding: 'utf8' });
+/** The paths one result row depends on: the skill, its runner, and its own case, query set or persona. */
+export function itemPaths(runner, item) {
+  const base = ['skills/career-profiler'];
+  if (runner === 'plugin-eval') return [...base, `evals/${item}`, 'tests/run-evals.mjs'];
+  if (runner === 'pipeline-sim') return [...base, 'evals/scripts-pipeline', 'tests/live/pipeline-sim.mjs'];
+  if (runner === 'trigger-set') return [...base, 'evals/trigger-set.json', 'tests/run-trigger-set.mjs'];
+  if (runner === 'interview-sim') return [...base, 'tests/live/interview-sim.mjs', `tests/live/personas/${item}.json`];
+  return SUBJECT_PATHS;
+}
+const itemCache = new Map();
+/** Hash of exactly what one row tested; a fix to one case invalidates only that case's rows. */
+export function itemSubject(runner, item, root = ROOT) {
+  const k = `${runner}|${item}`;
+  if (!itemCache.has(k)) itemCache.set(k, subjectHash(root, itemPaths(runner, item)));
+  return itemCache.get(k);
+}
+export function subjectHash(root = ROOT, paths = SUBJECT_PATHS) {
+  const r = spawnSync('git', ['-C', root, 'ls-files', '--cached', '--others', '--exclude-standard', '-z', '--', ...paths], { encoding: 'utf8' });
   if (r.status !== 0) return null;
   const files = r.stdout.split('\0').filter((f) => f && !f.startsWith('evals/ledger/') && !/(^|\/)results\//.test(f)).sort();
   const h = createHash('sha256');
@@ -48,7 +64,7 @@ export function claudeVersion() {
 export function appendRows(rows, { file = LEDGER } = {}) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
   const base = { at: new Date().toISOString(), git_sha: gitSha(), subject: SUBJECT_AT_START, skill_version: skillVersion(), claude_version: claudeVersion() };
-  const out = rows.map((r) => ({ ...base, ...r }));
+  const out = rows.map((r) => ({ ...base, ...(r.runner && r.runner !== 'triage' ? { item_subject: itemSubject(r.runner, r.item) } : {}), ...r }));
   fs.appendFileSync(file, out.map((r) => JSON.stringify(r)).join('\n') + '\n');
   return out;
 }

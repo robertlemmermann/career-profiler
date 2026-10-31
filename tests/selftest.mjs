@@ -5,7 +5,7 @@
 // area passes, 1 otherwise. Development tooling: never installed with the skill.
 
 import { spawnSync } from 'node:child_process';
-import { subjectHash } from './lib/ledger.mjs';
+import { subjectHash, itemSubject } from './lib/ledger.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -153,9 +153,10 @@ area('ledger', (p, n) => {
   const subject = subjectHash(ROOT);
   // "At HEAD" means: produced against the same skill, cases, personas and runners as the work tree now
   // holds (the subject hash), so committing the ledger rows does not orphan them.
-  const atHead = newest(results.filter((r) => r.subject === subject));
+  // A row counts when what it tested (the skill, its runner, its own case, query set or persona) is unchanged.
+  const atHead = newest(results.filter((r) => r.item_subject && r.item_subject === itemSubject(r.runner, r.item, ROOT)));
   const deciding = atHead.filter((r) => !(r.runner === 'interview-sim' && r.sim === 'model'));
-  n.push(`subject ${subject}: ${deciding.length} items with rows, ${deciding.filter((r) => r.passed === true).length} passing`);
+  n.push(`current: ${deciding.length} items with rows, ${deciding.filter((r) => r.passed === true).length} passing`);
   if (opt.release) {
     if (!atHead.length) p.push(`no ledger rows for subject ${subject}`);
     for (const r of deciding) if (r.passed !== true) p.push(`${r.runner} ${r.item} is not passing at HEAD (${r.runs} run(s) in its newest invocation)`);
