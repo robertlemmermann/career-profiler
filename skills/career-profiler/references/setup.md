@@ -1,0 +1,92 @@
+# Setup: the automation preference
+
+The first thing the skill does for a new user, and the first check in every session. Nothing
+else runs until the record exists and verifies: the scripts refuse (`GATE_REQUIRED`), and the
+playbooks say so. It takes one question.
+
+## Contents
+
+- [1. The four values](#1-the-four-values)
+- [2. Recording it](#2-recording-it)
+- [3. Missing, corrupt or degraded](#3-missing-corrupt-or-degraded)
+- [4. Changing it later](#4-changing-it-later)
+- [Without Node](#without-node)
+
+## 1. The four values
+
+Say them in plain words and say, in every case, that the skill never submits an application,
+never solves a CAPTCHA, never logs in anywhere and never sends their data to a job board:
+
+| Value | What the skill does with job sources |
+|---|---|
+| `off` | nothing automatic: profile and tailored applications on request only |
+| `alert` | polls the sources they subscribe to and puts matches in the inbox; drafts only when asked |
+| `draft` | polls and, for each match, drafts a cited resume and cover letter for their review |
+| `prepare` | drafts, and also prepares cited answers to common screening questions; the user pastes what they choose |
+
+`node "$CP" gate options --json` prints the same table. Ask: "Which of these do you want?
+You can change it any time." Accept their answer in their words; if they say "apply for me",
+say that submission is refused in every mode and why, in one sentence (the boards' terms forbid
+bots and automated applying, logins and CAPTCHAs stand in the way, and a submission in their
+name is irreversible; see [sources](sources.md) §3), then ask them to choose among the four,
+with `prepare` as the closest.
+
+## 2. Recording it
+
+```bash
+node "$CP" gate record --automation draft --statement "Draft things for me to look at, but never send anything." --confirm --json
+```
+
+`--statement` is their own words (quoted back to them first), `--confirm` is your assertion
+that they confirmed it in this conversation (`--yes` is not accepted). The record is written to
+`preferences.json` with a hash, echoed into `changelog.jsonl` and `MANIFEST.json`, then
+verified end to end. `gate --json` now prints `"state": "ok"` and every other mode is open.
+
+Then continue with whatever the user originally asked for.
+
+## 3. Missing, corrupt or degraded
+
+`gate --json` reports one of:
+
+- `missing`: no record yet (or no store: run `store init` first). Ask and record.
+- `corrupt` with `remake_reason` (`parse`, `schema`, `enum`, `hash`, `journal`): the file did
+  not verify; it was moved to `quarantine/`. Tell the user, show the quarantined statement
+  only as a hint ("last time you said ..."), ask again and record a fresh statement. Never
+  re-record the old value without their yes.
+- `degraded` with `required_action: doctor --repair`: the storing process failed (manifest
+  drift, a failed write probe, a store from a newer version). Run `node "$CP" doctor --repair
+  --json`, read `repairs[]` and `after-repair`, tell the user in one line what was repaired, then
+  run `gate` again. `repaired_but_unverified` means the preference itself must be re-recorded.
+
+The gate also runs a write-fsync-read probe once a day; a failing probe flips the store to
+`degraded` before any data write is attempted, so degradation is found at the next use.
+
+## 4. Changing it later
+
+"Only alert me from now on" is `setup` again: confirm, then `gate record` with the new value.
+The previous record goes to `quarantine/` and the change is logged. Subscriptions with
+`mode: inherit` follow the new value at the next poll.
+
+## Without Node
+
+Open `preferences.json`. It must contain `schema` `career-preferences/1`, `automation` one of
+the four values, `submit` `never`, a non-empty `statement`, a `recorded_at` timestamp and a
+`hash`. You cannot recompute the hash by hand, and that alone is not a doubt: a record whose
+fields are all valid and whose `hash` is 64 hexadecimal characters (what the scripts write) or
+`"unverified-manual"` (a record written by hand) is accepted for this session; say in one line
+that the next session with Node verifies it, then continue with what the user asked. A doubt is
+a missing or invalid field, `submit` other than `never`, an automation value outside the four,
+an empty statement, or a hash that is neither: treat that record as corrupt, ask the user again,
+and write the new file with `"hash": "unverified-manual"`; the next session with Node re-records
+it with their confirmation. Write "guidance-only mode" in your reply.
+
+The same two rules as with Node hold when the user writes the file by hand:
+
+- **Their words, then their yes, then the file.** Quote the statement back and ask "shall I
+  record that?"; give them the file contents (or the `gate record` command for a later session
+  with Node) only after they say yes in this conversation, never in the same message as the
+  question.
+- **The old record is kept, never overwritten.** When a record already exists (a change of
+  preference), tell them to move it to `quarantine/preferences-previous.<date>.json` first, so
+  the change stays traceable, and say that `mode: inherit` subscriptions follow the new value at
+  the next poll.
