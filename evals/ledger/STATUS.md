@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-10-31T19:19:23Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-10-31T19:25:26Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**72 of 74 release items passing.** persona senior-swe failed once; re-running. Recorded spend in the ledger: $451.17. Last refusal: 2026-10-31T11:18:09.465Z.
+**72 of 74 release items passing.** persona senior-swe failed twice; set aside for triage. Recorded spend in the ledger: $460.75. Last refusal: 2026-10-31T11:18:09.465Z.
 
 ## Eval cases (claude plugin eval, 3 runs each): 37/38 passing
 
