@@ -115,6 +115,8 @@ for (let t = 1; t <= turns; t++) {
   }
   // A candidate that signs off ends the interview; the agent's previous turn is its closing turn.
   if (/^\W*(?:bye|goodbye|thanks?,? bye|i'?m done|that'?s all|nothing else)\b/i.test(reply.trim()) && reply.length < 120) { transcript.push({ turn: t, role: 'candidate', text: reply }); break; }
+  // The last reply asks the agent to close, so every run ends with a closing turn that can be graded.
+  if (t === turns - 1) reply = "Let's stop here for today. What did we cover, and what is still missing?";
   transcript.push({ turn: t, role: 'candidate', text: reply });
   process.stderr.write(`candidate ${t}: ${reply.replace(/\s+/g, ' ').slice(0, 160)}\n`);
   userMessage = reply;
