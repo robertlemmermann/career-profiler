@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-10-31T18:33:39Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-10-31T18:35:45Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**65 of 74 release items passing.** Recorded spend in the ledger: $414.61. Last refusal: 2026-10-31T11:18:09.465Z.
+**65 of 74 release items passing.** runner started. Recorded spend in the ledger: $414.61. Last refusal: 2026-10-31T11:18:09.465Z.
 
 ## Eval cases (claude plugin eval, 3 runs each): 32/38 passing
 
