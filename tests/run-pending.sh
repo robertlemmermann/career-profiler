@@ -60,7 +60,7 @@ while :; do
     case) KEY="case:$ARG"; env -u CLAUDECODE node tests/run-evals.mjs --case "$ARG" --model "$AGENT" --judge-model "$JUDGE" -j 3 --max-cost-usd 250 > "$LOG" 2>&1 ;;
     pipeline) KEY="pipeline"; env -u CLAUDECODE node tests/live/pipeline-sim.mjs --model "$AGENT" --judge-model "$JUDGE" > "$LOG" 2>&1 ;;
     queries) KEY="queries"; env -u CLAUDECODE node tests/run-trigger-set.mjs --runs 3 --model "$AGENT" --only "$ARG" > "$LOG" 2>&1 ;;
-    persona) KEY="persona:$ARG"; env -u CLAUDECODE node tests/live/interview-sim.mjs --persona "$ARG" --sim deterministic --model "$AGENT" > "$LOG" 2>&1 ;;
+    persona) KEY="persona:$ARG"; T=$(node -pe "JSON.parse(require('fs').readFileSync('tests/live/personas/$ARG.json','utf8')).turns || 16"); env -u CLAUDECODE node tests/live/interview-sim.mjs --persona "$ARG" --sim deterministic --turns "$T" --model "$AGENT" > "$LOG" 2>&1 ;;
   esac
   if refused "$LOG"; then wait_for_reset "$LOG"; continue; fi
   STILL=$(node tests/ledger-status.mjs --json --no-write | head -1 | KIND="$KIND" ARG="$ARG" node -e '
