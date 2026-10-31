@@ -136,10 +136,11 @@ test('the write probe runs, records itself and fails loudly on an unwritable sto
   assert.deepEqual(r.json.steps, ['mkdir', 'write', 'read', 'verify', 'delete']);
   const m = JSON.parse(fs.readFileSync(path.join(store, 'MANIFEST.json'), 'utf8'));
   assert.ok(m.last_probe_at && m.last_probe_ok === true);
-  if (process.getuid && process.getuid() === 0) return; // root ignores modes
-  fs.chmodSync(path.join(store, '.probe'), 0o500);
+  // Unwritable on every OS and as root: the probe directory's path is taken by a plain file.
+  fs.rmSync(path.join(store, '.probe'), { recursive: true, force: true });
+  fs.writeFileSync(path.join(store, '.probe'), 'not a directory');
   r = cp(['gate', 'probe', '--json'], { store });
-  fs.chmodSync(path.join(store, '.probe'), 0o700);
+  fs.rmSync(path.join(store, '.probe'), { force: true });
   assert.equal(r.status, 1);
   assert.equal(r.json.ok, false);
 });

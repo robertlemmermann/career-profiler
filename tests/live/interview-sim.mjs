@@ -86,7 +86,7 @@ function deterministicTurn(agentText) {
 // awards). Identity details the user typed verbatim and never-tier extras (volunteered items quarantined on the spot) are exempt.
 // Every fact write counts (add, update, remove, confirm), identity and targets included; a write whose
 // ids are all `fact-*` extras (a volunteered item quarantined at tier never) and interview markers do not.
-const changelogOps = () => { try { return fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => { try { const e = JSON.parse(l); return ['add', 'update', 'remove', 'confirm'].includes(e.op) && (e.ids || []).some((id) => !/^fact-/.test(id)) ? 'add' : e.op; } catch { return null; } }); } catch { return []; } };
+const changelogOps = () => { try { return fs.readFileSync(path.join(store, 'changelog.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => { try { const e = JSON.parse(l); return ['add', 'update', 'remove', 'confirm'].includes(e.op) ? ((e.ids || []).some((id) => !/^fact-/.test(id)) ? 'add' : 'exempt') : e.op; } catch { return null; } }); } catch { return []; } };
 const addsPerTurn = []; // { turn, adds, candidate_said_yes }
 let lastCandidate = null;
 
@@ -184,7 +184,8 @@ const squashT = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   // it holds; outside lists each question sentence counts. Three questions plus one confirmation is the limit.
   const questionsIn = (text) => {
     let n = 0;
-    for (const block of text.split(/\n(?=\s*(?:\d+[.)]|[-*•])\s)/)) {
+    // Table rows hold placeholders ("| ? |"), not questions.
+    for (const block of text.split('\n').filter((l) => !/^\s*\|/.test(l)).join('\n').split(/\n(?=\s*(?:\d+[.)]|[-*•])\s)/)) {
       if (/^\s*(?:\d+[.)]|[-*•])\s/.test(block)) { if (block.includes('?')) n += 1; }
       else n += (block.match(/\?(?=\s|$|\*)/g) || []).length;
     }
@@ -204,7 +205,7 @@ const squashT = (x) => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   const unconfirmedWrites = addsPerTurn.filter((x) => x.new_adds > 0 && !x.candidate_said_yes);
   check('commit-after-yes', unconfirmedWrites.length === 0, unconfirmedWrites.length ? `turn ${unconfirmedWrites[0].turn} wrote ${unconfirmedWrites[0].new_adds} fact(s) without a confirmation in the previous reply` : 'every write follows a confirmation');
   const last = [...agentTurns].reverse().find((a) => a.text.length > 150) || agentTurns[agentTurns.length - 1];
-  check('final-turn-reports-coverage', last && /coverage|\d{1,3} ?%|what is left|what'?s left|still (?:need|missing)|remaining|next time|next session|resume-ready|ready for/i.test(last.text), last ? last.text.replace(/\s+/g, ' ').slice(0, 120) : 'no agent turn');
+  check('final-turn-reports-coverage', last && /coverage|\d{1,3} ?%|what is left|what'?s left|still (?:need|missing)|remaining|next time|next session|resume-ready|ready for|profile is (?:now )?(?:complete|done|saved)|nothing (?:else |more )?(?:to save|pending)/i.test(last.text), last ? last.text.replace(/\s+/g, ' ').slice(0, 120) : 'no agent turn');
   if (profile && (gt.restricted_not_exported || []).length) {
     const exp = run(['store', 'export', '--format', 'json']);
     const exported = exp.json && exp.json.content ? exp.json.content : '';

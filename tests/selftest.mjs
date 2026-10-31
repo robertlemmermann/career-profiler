@@ -269,7 +269,7 @@ area('release', (p, n) => {
 
 area('unit', (p, n) => {
   const files = fs.readdirSync(path.join(ROOT, 'tests', 'unit')).filter((f) => f.endsWith('.test.mjs')).map((f) => path.join(ROOT, 'tests', 'unit', f));
-  const r = spawnSync(process.execPath, ['--test', ...files], { encoding: 'utf8', cwd: ROOT, timeout: 600_000 });
+  const r = spawnSync(process.execPath, ['--test', '--test-reporter=tap', ...files], { encoding: 'utf8', cwd: ROOT, timeout: 600_000 });
   const tests = /^# tests (\d+)/m.exec(r.stdout);
   const fail = /^# fail (\d+)/m.exec(r.stdout);
   if (r.status !== 0 || !fail || fail[1] !== '0') {
