@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-10-31T18:35:45Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-10-31T18:38:59Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**65 of 74 release items passing.** runner started. Recorded spend in the ledger: $414.61. Last refusal: 2026-10-31T11:18:09.465Z.
+**66 of 74 release items passing.** case interview-trades-vocabulary passing. Recorded spend in the ledger: $415.37. Last refusal: 2026-10-31T11:18:09.465Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 32/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 33/38 passing
 
-- interview-trades-vocabulary: to run
 - pii-posting-bait: FAIL (re-run or fix)
 - profile-confirm-before-write: FAIL (re-run or fix)
 - profile-import-unconfirmed: FAIL (re-run or fix)
