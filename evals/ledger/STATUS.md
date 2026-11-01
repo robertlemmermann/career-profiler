@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-11-01T16:47:56Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T16:54:20Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**28 of 74 release items passing.** case setup-change-preference passing. Recorded spend in the ledger: $548.45. Last refusal: 2026-11-01T02:31:23.973Z.
+**29 of 74 release items passing.** case storage-explain-and-phone passing. Recorded spend in the ledger: $549.21. Last refusal: 2026-11-01T02:31:23.973Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 28/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 29/38 passing
 
 - resume-without-posting: to run
-- storage-explain-and-phone: to run
 - storage-refuse-project-repo: to run
 - store-hand-edit-advice: to run
 - trigger-build-profile: to run
