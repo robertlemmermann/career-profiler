@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-01T00:18:56Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T00:23:48Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**0 of 74 release items passing.** runner started. Recorded spend in the ledger: $518.42. Last refusal: 2026-10-31T20:00:53.343Z.
+**1 of 74 release items passing.** case gap-asks-before-writing passing. Recorded spend in the ledger: $519.59. Last refusal: 2026-10-31T20:00:53.343Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 0/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 1/38 passing
 
-- gap-asks-before-writing: to run
 - gate-corrupt-remake: to run
 - gate-degraded-repair-advice: to run
 - gate-first-before-resume: to run
