@@ -27,7 +27,8 @@ publish() { # $1 = note for STATUS.md
 
 wait_for_reset() { # $1 = log file holding the refusal
   local t h m ap now target
-  t=$(grep -o -E 'resets [0-9]{1,2}(:[0-9]{2})?(am|pm) \(UTC\)' "$1" | tail -1)
+  # The eval tool's log does not always print the limit message; the ledger rows it just wrote do.
+  t=$( { cat "$1"; tail -n 20 evals/ledger/ledger.jsonl; } | grep -o -E 'resets [0-9]{1,2}(:[0-9]{2})?(am|pm) \(UTC\)' | tail -1)
   h=$(echo "$t" | grep -o -E '[0-9]{1,2}' | head -1); m=$(echo "$t" | grep -o -E ':[0-9]{2}' | tr -d ':'); m=${m:-0}
   ap=$(echo "$t" | grep -o -E 'am|pm')
   if [ -z "$h" ]; then target=$(( $(date -u +%s) + 3600 )); else
@@ -40,7 +41,14 @@ wait_for_reset() { # $1 = log file holding the refusal
   while [ "$(date -u +%s)" -lt "$target" ]; do sleep 60; done
 }
 
-refused() { grep -q -E "hit your .{0,20}limit|out of usage credits|model_requires_usage_credits" "$1"; }
+# Refused when the run's log or the ledger rows it just wrote carry a usage-limit or credits refusal.
+refused() {
+  grep -q -E "hit your .{0,20}limit|out of usage credits|model_requires_usage_credits" "$1" && return 0
+  node -e '
+    const fs = require("fs"); const since = process.argv[1];
+    const rows = fs.readFileSync("evals/ledger/ledger.jsonl", "utf8").trim().split("\n").slice(-40).map((l) => JSON.parse(l)).filter((r) => r.at >= since && r.runner !== "triage");
+    process.exit(rows.length && rows.every((r) => /hit your .{0,20}limit|usage credits/i.test(`${r.note || ""} ${JSON.stringify(r.checks || [])}`)) ? 0 : 1);' "$STARTED"
+}
 
 publish "runner started"
 while :; do
@@ -55,6 +63,7 @@ while :; do
   [ "$NEXT" = none ] && break
   KIND=${NEXT%% *}; ARG=${NEXT#* }
   LOG="$LOGDIR/$(date -u +%Y%m%dT%H%M%S)-$KIND.log"
+  STARTED=$(date -u +%Y-%m-%dT%H:%M:%S)
   echo "$(date -u +%FT%TZ) running $NEXT"
   case "$KIND" in
     case) KEY="case:$ARG"; env -u CLAUDECODE node tests/run-evals.mjs --case "$ARG" --model "$AGENT" --judge-model "$JUDGE" -j 3 --max-cost-usd 250 > "$LOG" 2>&1 ;;
