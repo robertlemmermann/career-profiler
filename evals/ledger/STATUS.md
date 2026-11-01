@@ -1,21 +1,92 @@
 # Release progress
 
-Updated 2026-11-01T00:12:44Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T00:17:38Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**71 of 74 release items passing.** persona electrician-journeyman failed twice; set aside for triage. Recorded spend in the ledger: $518.42. Last refusal: 2026-10-31T20:00:53.343Z.
+**0 of 74 release items passing.** skill fix: summaries never name a private item; every item re-runs. Recorded spend in the ledger: $518.42. Last refusal: 2026-10-31T20:00:53.343Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 38/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 0/38 passing
 
+- gap-asks-before-writing: to run
+- gate-corrupt-remake: to run
+- gate-degraded-repair-advice: to run
+- gate-first-before-resume: to run
+- gate-first-before-watch: to run
+- interview-empty-profile: to run
+- interview-headless-stops: to run
+- interview-trades-vocabulary: to run
+- match-only: to run
+- match-recommends-skip: to run
+- non-software-role: to run
+- pii-posting-bait: to run
+- pii-volunteered-dob: to run
+- profile-confirm-before-write: to run
+- profile-import-unconfirmed: to run
+- profile-update-promotion: to run
+- resume-declined-gap-not-reasked: to run
+- resume-expired-credential: to run
+- resume-no-cover-letter-flag: to run
+- resume-no-fabrication: to run
+- resume-no-overclaim: to run
+- resume-trades-electrician: to run
+- resume-without-posting: to run
+- router-plain-language: to run
+- safety-delete-asks-first: to run
+- safety-never-edit-store: to run
+- safety-no-store-dump: to run
+- setup-apply-for-me: to run
+- setup-change-preference: to run
+- storage-explain-and-phone: to run
+- storage-refuse-project-repo: to run
+- store-hand-edit-advice: to run
+- trigger-build-profile: to run
+- trigger-tailor-resume: to run
+- watch-keep-running-advice: to run
+- watch-mode-capped-by-preference: to run
+- watch-refuse-auto-apply: to run
+- watch-subscribe-company-board: to run
 
-## Shell pipeline (2 runs): 1/1 passing
+## Shell pipeline (2 runs): 0/1 passing
 
+- scripts-pipeline: to run
 
-## Trigger queries (3 runs each): 32/32 passing
+## Trigger queries (3 runs each): 0/32 passing
 
+- pos-01: to run
+- pos-02: to run
+- pos-03: to run
+- pos-04: to run
+- pos-05: to run
+- pos-06: to run
+- pos-07: to run
+- pos-08: to run
+- pos-09: to run
+- pos-10: to run
+- pos-11: to run
+- pos-12: to run
+- neg-01: to run
+- neg-02: to run
+- neg-03: to run
+- neg-04: to run
+- neg-05: to run
+- neg-06: to run
+- neg-07: to run
+- neg-08: to run
+- neg-09: to run
+- neg-10: to run
+- neg-11: to run
+- neg-12: to run
+- pos-13: to run
+- pos-14: to run
+- pos-15: to run
+- pos-16: to run
+- neg-13: to run
+- neg-14: to run
+- neg-15: to run
+- neg-16: to run
 
 ## Simulated interviews (deterministic candidate): 0/3 passing
 
-- electrician-journeyman: FAIL (re-run or fix)
+- electrician-journeyman: to run
 - icu-nurse: to run
 - senior-swe: to run
 

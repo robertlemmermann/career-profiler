@@ -98,5 +98,7 @@ never-asked item the scripts store at tier `never` because the user asked you to
 ## 6. Stopping and resuming
 
 The user may stop at any moment; every confirmed fact is already on disk. Close with the
-coverage score and the first question of the next session. Resuming is `interview next` again:
+coverage score and the first question of the next session. A summary of what was saved never
+names a never-tier or restricted item: count it instead ("one private constraint, kept out of
+every document"). Each volunteered item is acknowledged once, when it is given, and not again. Resuming is `interview next` again:
 the store remembers what was asked (`interview done`) and what is thin.

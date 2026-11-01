@@ -23,7 +23,8 @@ disability or medical history; ethnicity, nationality or citizenship as an attri
 bank or payment details. When the user volunteers one, say in one sentence that it is kept at
 tier never and used only to respect their constraints, never written anywhere (for example
 "Your date of birth and street address stay out of your profile and every document; nothing
-here needs them."); do not repeat the value and do not lecture.
+here needs them."); do not repeat the value and do not lecture. Later turns, summaries included, never name it
+again; say "one private constraint" if it must be counted.
 
 ## 3. Where the scan runs
 
