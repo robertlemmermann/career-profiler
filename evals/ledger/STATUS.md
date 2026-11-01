@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-11-01T02:09:34Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T02:14:36Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**19 of 74 release items passing.** case resume-no-fabrication passing. Recorded spend in the ledger: $539.36. Last refusal: 2026-10-31T20:00:53.343Z.
+**19 of 74 release items passing.** case resume-no-overclaim failed once; re-running. Recorded spend in the ledger: $539.66. Last refusal: 2026-11-01T02:11:18.300Z.
 
 ## Eval cases (claude plugin eval, 3 runs each): 19/38 passing
 
