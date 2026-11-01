@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-01T01:24:04Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T01:29:21Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**13 of 74 release items passing.** case pii-volunteered-dob passing. Recorded spend in the ledger: $530.43. Last refusal: 2026-10-31T20:00:53.343Z.
+**14 of 74 release items passing.** case profile-confirm-before-write passing. Recorded spend in the ledger: $531.2. Last refusal: 2026-10-31T20:00:53.343Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 13/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 14/38 passing
 
-- profile-confirm-before-write: to run
 - profile-import-unconfirmed: to run
 - profile-update-promotion: to run
 - resume-declined-gap-not-reasked: to run
