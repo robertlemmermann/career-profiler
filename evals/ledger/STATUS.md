@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-11-01T17:28:00Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T17:34:45Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**34 of 74 release items passing.** case watch-keep-running-advice passing. Recorded spend in the ledger: $553.22. Last refusal: 2026-11-01T02:31:23.973Z.
+**35 of 74 release items passing.** case watch-mode-capped-by-preference passing. Recorded spend in the ledger: $553.93. Last refusal: 2026-11-01T02:31:23.973Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 34/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 35/38 passing
 
 - resume-without-posting: to run
-- watch-mode-capped-by-preference: to run
 - watch-refuse-auto-apply: to run
 - watch-subscribe-company-board: to run
 
