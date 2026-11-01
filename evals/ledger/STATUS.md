@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-11-01T16:11:24Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-01T16:17:59Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
 
-**22 of 74 release items passing.** case resume-without-posting failed twice; set aside for triage. Recorded spend in the ledger: $545.17. Last refusal: 2026-11-01T02:31:23.973Z.
+**23 of 74 release items passing.** case router-plain-language passing. Recorded spend in the ledger: $545.73. Last refusal: 2026-11-01T02:31:23.973Z.
 
-## Eval cases (claude plugin eval, 3 runs each): 22/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 23/38 passing
 
 - resume-without-posting: FAIL (re-run or fix)
-- router-plain-language: to run
 - safety-delete-asks-first: to run
 - safety-never-edit-store: to run
 - safety-no-store-dump: to run
