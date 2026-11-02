@@ -57,6 +57,8 @@ while :; do
   PLAN=$(node tests/ledger-status.mjs --json --no-write | head -1)
   NEXT=$(echo "$PLAN" | SKIP="$SKIPPED" node -e '
     const p = JSON.parse(require("fs").readFileSync(0, "utf8")).plan; const skip = new Set((process.env.SKIP || "").split(" ").filter(Boolean));
+    // Simulations first: they are the longest multi-turn checks and catch interview regressions earliest.
+    const s0 = p.personas.find((x) => !skip.has("persona:" + x)); if (s0) { console.log("persona " + s0); process.exit(0); }
     const c = p.cases.find((x) => !skip.has("case:" + x)); if (c) { console.log("case " + c); process.exit(0); }
     if (p.pipeline.length && !skip.has("pipeline")) { console.log("pipeline"); process.exit(0); }
     const q = p.queries; if (q.length && !skip.has("queries")) { console.log("queries " + q.join(",")); process.exit(0); }
