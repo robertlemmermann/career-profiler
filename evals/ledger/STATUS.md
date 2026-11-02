@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-11-02T07:53:33Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-02T08:00:59Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**71 of 74 release items passing.** persona electrician-journeyman failed once; re-running. Recorded spend in the ledger: $584.16.
+**71 of 74 release items passing.** paused by the usage window until 11:43 UTC; resumes on its own. Recorded spend in the ledger: $591.11.
 
 ## Eval cases (claude plugin eval, 3 runs each): 38/38 passing
 
