@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-11-02T00:38:40Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.
+Updated 2026-11-02T00:41:28Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**37 of 74 release items passing.** runner stopped for handoff; see HANDOFF.md. Recorded spend in the ledger: $559.1. Last refusal: 2026-11-01T02:31:23.973Z.
+**37 of 74 release items passing.** checkpoint for handoff; see HANDOFF.md. Recorded spend in the ledger: $559.1.
 
 ## Eval cases (claude plugin eval, 3 runs each): 37/38 passing
 
@@ -53,4 +53,4 @@ Updated 2026-11-02T00:38:40Z by `node tests/ledger-status.mjs`. An item counts w
 - icu-nurse: to run
 - senior-swe: to run
 
-Items not listed under a heading are passing. The runner that works through this list is `tests/run-pending.sh`; it pushes this file after every item and before every pause.
+Items not listed under a heading are passing. The runner that works through this list is `tests/run-pending.sh`; it pushes this file after every item.

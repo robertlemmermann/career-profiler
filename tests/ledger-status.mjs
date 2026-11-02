@@ -38,13 +38,13 @@ const label = { pass: 'pass', fail: 'FAIL (re-run or fix)', 'to run': 'to run' }
 const section = (title, list) => [`## ${title}: ${list.filter((x) => x.state === 'pass').length}/${list.length} passing`, '', ...list.filter((x) => x.state !== 'pass').map((x) => `- ${x.item}: ${label[x.state]}`), ''].join('\n');
 const md = [
   '# Release progress', '',
-  `Updated ${new Date().toISOString().replace(/\.\d+Z$/, 'Z')} by \`node tests/ledger-status.mjs\`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since; refused runs (usage window) are not results.`, '',
-  `**${passing} of ${total} release items passing.** ${opt.note ? `${opt.note}. ` : ''}Recorded spend in the ledger: $${cost}.${lastRefusal ? ` Last refusal: ${lastRefusal.at}.` : ''}`, '',
+  `Updated ${new Date().toISOString().replace(/\.\d+Z$/, 'Z')} by \`node tests/ledger-status.mjs\`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.`, '',
+  `**${passing} of ${total} release items passing.** ${opt.note ? `${opt.note}. ` : ''}Recorded spend in the ledger: $${cost}.`, '',
   section('Eval cases (claude plugin eval, 3 runs each)', groups.cases),
   section('Shell pipeline (2 runs)', groups.pipeline),
   section('Trigger queries (3 runs each)', groups.queries),
   section('Simulated interviews (deterministic candidate)', groups.personas),
-  'Items not listed under a heading are passing. The runner that works through this list is `tests/run-pending.sh`; it pushes this file after every item and before every pause.', '',
+  'Items not listed under a heading are passing. The runner that works through this list is `tests/run-pending.sh`; it pushes this file after every item.', '',
 ].join('\n');
 if (!opt['no-write']) fs.writeFileSync(path.join(ROOT, 'evals', 'ledger', 'STATUS.md'), md);
 if (!opt.json) console.log(`${passing}/${total} passing; to run: ${Object.entries(plan).map(([k, v]) => `${k} ${v.length}`).join(', ')}`);

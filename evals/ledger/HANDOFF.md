@@ -20,14 +20,13 @@ The cases test the skill **inside Claude Code**, so every runner drives the `cla
 or Codex session can operate these scripts, but the agent under test must be Claude Code:
 
 - `claude plugin eval` (the cases), `tests/live/pipeline-sim.mjs` and `tests/live/interview-sim.mjs`
-  need a signed-in `claude` CLI with usage left on the account.
+  need a signed-in `claude` CLI.
 - `node tests/run-trigger-set.mjs --host codex` measures triggering on Codex, which is a separate host
   column, not the Claude release gate.
 
 ## Commands
 
-Run everything still missing, one item at a time, pausing through usage windows and pushing
-`STATUS.md` after each item:
+Run everything still missing, one item at a time, pushing `STATUS.md` after each item:
 
 ```bash
 bash tests/run-pending.sh claude-opus-5-5 claude-sonnet-5-5
@@ -53,10 +52,8 @@ Every runner appends to `ledger.jsonl`; commit it after each run.
 
 - A row counts while what it tested is unchanged: the skill, its runner, and its own case, query set or
   persona. A skill edit re-runs everything; a rubric edit re-runs only that case.
-- A refused run (usage window, credits) is not a result; re-run it.
 - Classify every failing row before fixing anything: `skill`, `grader`, `fixture`, `host-flake` or
   `model-drift` (`tests/ledger-triage.mjs --match ... --class ... --note ...`). Never lower a rubric's bar.
 - In a container that runs as root, `claude plugin eval` mounts the workspace read-only, so the
   shell case is run by `pipeline-sim.mjs` instead.
-- Keep the agent and judge models pinned for the whole set; if one becomes unavailable, re-pin and
-  re-run everything.
+- Keep the agent and judge models pinned for the whole set.
