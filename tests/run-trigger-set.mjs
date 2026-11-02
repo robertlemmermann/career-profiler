@@ -82,7 +82,9 @@ function runOnce(query, dir) {
     try { const res = JSON.parse(line); if (res.is_error || /hit your .{0,20}limit/i.test(String(res.result || ''))) refusal = String(res.result || res.error || 'is_error').replace(/\s+/g, ' ').slice(0, 160); } catch {}
     break;
   }
-  const error = r.error ? r.error.message : r.status !== 0 ? `exit ${r.status}: ${(r.stderr || text).replace(/\s+/g, ' ').slice(0, 200)}` : refusal ? `api error: ${refusal}` : null;
+  // On a non-zero exit the limit message may sit anywhere in the stream; keep it so the row reads as a refusal.
+  const limit = /You(?:'|’)ve hit your [^"\\]{0,60}|out of usage credits[^"\\]{0,40}/i.exec(`${text}\n${r.stderr || ''}`);
+  const error = r.error ? r.error.message : r.status !== 0 ? (limit ? `exit ${r.status}: ${limit[0]}` : `exit ${r.status}: ${(r.stderr || text).replace(/\s+/g, ' ').slice(0, 200)}`) : refusal ? `api error: ${refusal}` : null;
   const triggered = error ? null : m.triggered(text, dir);
   return { triggered, cost_usd: cost, error, ms: Date.now() - started };
 }

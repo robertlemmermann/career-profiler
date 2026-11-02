@@ -57,7 +57,7 @@ while :; do
     const p = JSON.parse(require("fs").readFileSync(0, "utf8")).plan; const skip = new Set((process.env.SKIP || "").split(" ").filter(Boolean));
     const c = p.cases.find((x) => !skip.has("case:" + x)); if (c) { console.log("case " + c); process.exit(0); }
     if (p.pipeline.length && !skip.has("pipeline")) { console.log("pipeline"); process.exit(0); }
-    const q = p.queries.filter((x) => !skip.has("query:" + x)); if (q.length) { console.log("queries " + q.join(",")); process.exit(0); }
+    const q = p.queries; if (q.length && !skip.has("queries")) { console.log("queries " + q.join(",")); process.exit(0); }
     const s = p.personas.find((x) => !skip.has("persona:" + x)); if (s) { console.log("persona " + s); process.exit(0); }
     console.log("none");')
   [ "$NEXT" = none ] && break
@@ -67,7 +67,7 @@ while :; do
   echo "$(date -u +%FT%TZ) running $NEXT"
   case "$KIND" in
     case) KEY="case:$ARG"; env -u CLAUDECODE node tests/run-evals.mjs --case "$ARG" --model "$AGENT" --judge-model "$JUDGE" -j 3 --max-cost-usd 250 > "$LOG" 2>&1 ;;
-    pipeline) KEY="pipeline"; env -u CLAUDECODE node tests/live/pipeline-sim.mjs --model "$AGENT" --judge-model "$JUDGE" > "$LOG" 2>&1 ;;
+    pipeline) KEY="pipeline"; env -u CLAUDECODE node tests/live/pipeline-sim.mjs --model "$AGENT" --judge-model "$JUDGE" --out "${LOG%.log}.json" > "$LOG" 2>&1 ;;
     queries) KEY="queries"; env -u CLAUDECODE node tests/run-trigger-set.mjs --runs 3 --model "$AGENT" --only "$ARG" > "$LOG" 2>&1 ;;
     persona) KEY="persona:$ARG"; T=$(node -pe "JSON.parse(require('fs').readFileSync('tests/live/personas/$ARG.json','utf8')).turns || 16"); env -u CLAUDECODE node tests/live/interview-sim.mjs --persona "$ARG" --sim deterministic --turns "$T" --model "$AGENT" --out "${LOG%.log}.json" > "$LOG" 2>&1 ;;
   esac

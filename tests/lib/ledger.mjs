@@ -115,7 +115,8 @@ export const isResult = (r) => r.runner !== 'triage';
 /** A run the host refused (usage window, out of credits, rate limit, API error): nothing was graded, so it is
  * neither a pass nor a fail and never supersedes an earlier graded run. */
 export const isRefusal = (r) => r.passed !== true && /hit your .{0,20}limit|usage credits|rate limit|api error|judge call failed|cost cap/i.test(`${r.note || ''} ${JSON.stringify(r.checks || [])}`) && !(r.graders || []).some((g) => g.passed === true && !/judge call failed/.test(g.name || ''));
-export const isGraded = (r) => isResult(r) && !isRefusal(r);
+// A row whose every run errored (passed null) graded nothing either.
+export const isGraded = (r) => isResult(r) && !isRefusal(r) && r.passed !== null && r.passed !== undefined;
 
 /** The newest invocation per (runner, host, item[, sim]) for a subject hash: what the release rule looks at.
  * Rows written together share `at`; the item passes only when every run of that invocation passed. */

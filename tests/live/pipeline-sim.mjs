@@ -89,7 +89,7 @@ function runAgent(work) {
   const args = ['--output-format', 'stream-json', '--verbose', '--max-turns', String(maxTurns),
     // Least privilege outside a sandbox: Bash only for node (the skill's scripts) and read-only listing,
     // file edits only inside the throwaway workspace; anything else is denied, not prompted.
-    '--allowedTools', 'Bash(node *)', 'Bash(cat *)', 'Bash(ls *)', 'Bash(diff *)', 'Read', 'Glob', 'Grep', 'Skill', 'Edit(./**)', '--permission-mode', 'dontAsk',
+    '--allowedTools', 'Bash(node *)', 'Bash(cd *)', 'Bash(export *)', 'Bash(cat *)', 'Bash(ls *)', 'Bash(diff *)', 'Read', 'Glob', 'Grep', 'Skill', 'Edit(./**)', '--permission-mode', 'dontAsk',
     '--max-budget-usd', String(Math.max(2, cap / runs)), ...(opt.model ? ['--model', opt.model] : []), '--', promptBody];
   const r = claude(args, { cwd: work });
   const events = (r.stdout || '').split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
