@@ -22,6 +22,8 @@ publish() { # $1 = note for STATUS.md
   git add evals/ledger/ledger.jsonl evals/ledger/STATUS.md
   git -c user.name="${GIT_AUTHOR_NAME:-Robert Lemmermann}" -c user.email="${GIT_AUTHOR_EMAIL:-robert@lemmermann.me}" commit -q -m "test(ledger): $1" \
     -m "Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" -m "Claude-Session: https://claude.ai/code/session_01S6yqEe1ggFm36UwTy1hFfD" 2>/dev/null || true
+  # Others may push to the branch too: rebase onto it first; on a conflict keep local work and retry later.
+  git pull -q --rebase origin "$BRANCH" 2>/dev/null || git rebase --abort 2>/dev/null
   for i in 1 2 3 4; do git push -q -u origin "$BRANCH" 2>/dev/null && break; sleep $((2 ** i)); done
 }
 
