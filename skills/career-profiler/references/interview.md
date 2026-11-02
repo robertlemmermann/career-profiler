@@ -14,7 +14,10 @@ exposes. Same rules in both.
 
 ## 1. Conduct
 
-- One topic per turn, at most three questions, the most important first. Headless hosts
+- One topic per turn, at most three questions, the most important first. Everything you ask
+  counts: "is that right?", each detail to check, each question of the next topic. When a turn
+  confirms an entry, the confirmation and its checks are the turn; the next topic starts after the
+  reply. Headless hosts
   (no human can answer) get no interview: report the gaps and stop. Write the gaps as a list of
   topics ("Work history: employer, exact title, start and end months"), not as questions put to
   the user, and end with how to continue ("run /career-profiler profile in an interactive
