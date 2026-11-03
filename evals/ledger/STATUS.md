@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-11-03T02:03:58Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-03T02:04:56Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**14 of 74 release items passing.** case pii-posting-bait failed twice; set aside for triage. Recorded spend in the ledger: $691.6.
+**15 of 74 release items passing.** case pii-volunteered-dob passing. Recorded spend in the ledger: $692.26.
 
-## Eval cases (claude plugin eval, 3 runs each): 11/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 12/38 passing
 
 - pii-posting-bait: FAIL (re-run or fix)
-- pii-volunteered-dob: to run
 - profile-confirm-before-write: to run
 - profile-import-unconfirmed: to run
 - profile-update-promotion: to run
