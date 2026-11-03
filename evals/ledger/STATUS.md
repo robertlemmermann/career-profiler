@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-03T01:54:52Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-03T01:55:47Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**9 of 74 release items passing.** case interview-headless-stops failed once; re-running. Recorded spend in the ledger: $683.14.
+**10 of 74 release items passing.** case interview-headless-stops passing. Recorded spend in the ledger: $683.87.
 
-## Eval cases (claude plugin eval, 3 runs each): 6/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 7/38 passing
 
-- interview-headless-stops: FAIL (re-run or fix)
 - interview-trades-vocabulary: to run
 - match-only: to run
 - match-recommends-skip: to run
