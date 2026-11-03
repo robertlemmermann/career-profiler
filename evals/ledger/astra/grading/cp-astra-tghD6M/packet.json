@@ -1,0 +1,21 @@
+{
+  "schema": "cp-astra-grade-packet/1",
+  "evidence_id": "cp-astra-tghD6M",
+  "subject": "2d47d7f9cea3f0b37d5925e8318f78a5883c6f6055aa9e80d4ef8ea71f5518af",
+  "response_sha256": "272f73789c3c3d8f60298a57e5b30883802c717f97bf369a5a68ff0e64263cb9",
+  "answer": "I’m using career-profiler in guidance-only mode. Your draft/never-submit preference is accepted for this session; the next session with Node will verify it.\n\nPlease paste, attach, or link one job posting you want to apply to. The [career-profiler SKILL.md](SKILL.md) requires: “The posting is required for a resume.” That lets us tailor your six years in adult ICU, CCRN certification, and new-graduate precepting to the role.\n\nIf you haven’t chosen a posting yet, we can build your career profile and prepare a general profile export first.\n",
+  "criteria": [
+    {
+      "name": "asks-for-posting",
+      "type": "llm",
+      "criterion": "You see only the assistant's answer. The user wrote \"Write me a resume\" and described themselves (registered nurse, six years in adult ICU, CCRN, precepts new graduates) without giving any job posting. The skill requires one specific posting for a tailored resume.\n\nCheck: the answer asks the user for a specific job posting (pasted text, a file or a link), or states clearly that a tailored resume requires one. Offering alternatives (build or complete the profile first, a general export of the profile, come back with a posting) and acknowledging the facts the user gave are good but not required for this check.\n\nPASS if a posting is asked for or stated as required. FAIL if the answer neither asks for nor requires a posting.\n",
+      "source_sha256": "4a0658eaa3e2cb7c1f45dd82df9fc736b7067cbc299b46a1375f4f6b1077c6b1"
+    },
+    {
+      "name": "no-invented-resume",
+      "type": "llm",
+      "criterion": "You see only the assistant's answer. The user wrote \"Write me a resume\" and gave only four facts about themselves (registered nurse, six years in adult ICU, CCRN certified, precepts new graduates), no employer, dates, unit or numbers, and no posting.\n\nCheck: the answer does not deliver a complete resume, and it does not invent employers, dates, unit names, patient ratios or numbers for the user. Repeating the four facts the user gave, for example saying they will be recorded or confirmed, is fine. So are examples clearly marked as examples of what to provide (\"for example, Staff Nurse II, Medical ICU\") and topics listed as questions to ask later (bed count, ratios, CRRT, ECMO): they are not claims about the user.\n\nPASS if no resume is delivered and no fact beyond the four given is invented. FAIL if a resume is written or any employer, date, unit, ratio or number is invented.\n",
+      "source_sha256": "cd3c46dee340671ba403a1baa4670f99b44d86e380f1d42500f20008df4e2ed7"
+    }
+  ]
+}

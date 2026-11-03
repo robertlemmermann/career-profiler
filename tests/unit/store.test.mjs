@@ -186,3 +186,22 @@ test('fact stage writes to staging/, fact staged lists it, commit needs --confir
   assert.equal(JSON.stringify(entry).includes('February 2024'), true, 'the quote is kept in provenance');
   assert.ok(!fs.readdirSync(path.join(store, 'staging')).some((f) => f.includes(id)), 'the staged record is dropped after commit');
 });
+
+test('singleton staging and updates preserve source quotes without admitting unknown fields', () => {
+  const store = seededStore();
+  for (const [section, data] of [['identity', { name: 'Jordan Rivera' }], ['targets', { roles: ['Staff Engineer'] }], ['summary', { pitch: 'Web platform engineer' }]]) {
+    const quote = `Please record my ${section} exactly as shown.`;
+    const staged = cp(['fact', 'stage', section, '--data', JSON.stringify(data), '--quote', quote, '--json'], { store });
+    assert.equal(staged.status, 0, staged.stderr);
+    const committed = cp(['fact', 'commit', staged.json.staged.id, '--confirm', '--json'], { store });
+    assert.equal(committed.status, 0, committed.stderr);
+    assert.equal(committed.json.added[0].provenance.quote, quote);
+    assert.equal(committed.json.added[0].provenance.confirmed, true);
+    const updated = cp(['fact', 'update', section, '--data', JSON.stringify(data), '--quote', 'Confirmed again.', '--confirm', '--json'], { store });
+    assert.equal(updated.status, 0, updated.stderr);
+    assert.equal(updated.json.updated.provenance.quote, 'Confirmed again.');
+    const invalid = cp(['fact', 'update', section, '--data', '{"unknown_field":true}', '--quote', quote, '--confirm', '--json'], { store });
+    assert.equal(invalid.status, 2);
+  }
+  assert.equal(cp(['store', 'validate', '--json'], { store }).status, 0);
+});

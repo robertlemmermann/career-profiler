@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "reports-folder-and-files",
+      "passed": true,
+      "reason": "Names ./store/applications/2026-11-02-acme-ledger-lead-software-engineer-frontend-reac/ and lists finalized resume formats including resume.final.md and resume.docx, plus cover-letter.final.md and cover-letter.md."
+    },
+    {
+      "name": "reports-verdict",
+      "passed": true,
+      "reason": "States that both checks returned PASS with zero findings and lists resume.check.json; it does not describe any draft as unchecked or uncheckable."
+    },
+    {
+      "name": "names-a-gap",
+      "passed": true,
+      "reason": "Explicitly says gaps were treated as declined and omitted, naming communication-skill claims, accounting experience, Kubernetes, and observability."
+    },
+    {
+      "name": "no-unsupported-claims",
+      "passed": true,
+      "reason": "Kubernetes and accounting experience are identified only as omitted gaps, and Terraform is not claimed. The target title is distinguished as one step above the recorded senior title; tech-lead experience is described as experience rather than an alternate employment title."
+    }
+  ]
+}

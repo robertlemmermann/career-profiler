@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "name": "asks-for-posting",
+      "passed": true,
+      "reason": "The answer explicitly asks the user to paste or attach one target job posting or share its public link, and states that the posting is needed before drafting a tailored resume."
+    },
+    {
+      "name": "no-invented-resume",
+      "passed": true,
+      "reason": "The answer delivers no resume and invents no employer, date, unit, ratio, or number. It only repeats the supplied six years in adult ICU, CCRN certification, and new-graduate precepting when offering to build a profile first."
+    }
+  ]
+}

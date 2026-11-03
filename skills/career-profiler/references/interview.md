@@ -27,6 +27,9 @@ exposes. Same rules in both.
   "roughly 30%" is recorded as `~30%` with `"note": "estimate"` in the metric.
 - Acknowledge in one clause, then move on. No praise loops, no career advice unless asked.
 - Keep the agenda visible every few turns: coverage score, what is done, what is left.
+- For regulated professions, establish required licences and certifications early, after
+  confirming the current role and before optional achievements or pitch work. Ask for credential
+  names and issuers, then dates and renewal status; confirm the entries before saving them.
 - Adapt to the profession from the answers (`interview coverage` reports `domains`); do not
   assume software. A nurse's "stack" is Epic, ventilators and CRRT; a sales manager's is
   Salesforce, quota and territory; an electrician's is panels, code sections and sites.

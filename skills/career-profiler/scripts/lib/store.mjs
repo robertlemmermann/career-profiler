@@ -272,8 +272,10 @@ export function addFact(profile, kindName, data, { parent, source = 'interview',
   const { kind, type } = resolveKind(kindName);
   if (type === 'singleton') {
     const allowed = SINGLETONS[kind];
-    for (const k of Object.keys(data)) if (!allowed.includes(k)) throw usageError(`${kind}.${k} is not a field; fields: ${allowed.join(', ')}`);
-    profile[kind] = { ...(profile[kind] || {}), ...data, provenance: defaultProvenance(source, { confirmed: confirmed ?? true }) };
+    const { provenance: _provenance, ...fields } = data;
+    for (const k of Object.keys(fields)) if (!allowed.includes(k)) throw usageError(`${kind}.${k} is not a field; fields: ${allowed.join(', ')}`);
+    const { provenance } = stripUnknownProvenance(data, source, confirmed);
+    profile[kind] = { ...(profile[kind] || {}), ...fields, provenance };
     return { id: kind, ...profile[kind] };
   }
   const { rest, provenance } = stripUnknownProvenance(data, source, confirmed);

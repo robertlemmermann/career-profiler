@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "reports-folder-and-files",
+      "passed": true,
+      "reason": "Names the application folder under store/applications/ and lists finalized resume files including resume.docx and resume.final.md plus cover-letter.final.md and other cover-letter formats."
+    },
+    {
+      "name": "reports-verdict",
+      "passed": true,
+      "reason": "Reports \"Both checks: PASS, with zero failures or findings\" and lists both .check.json reports; does not say either draft was unchecked."
+    },
+    {
+      "name": "names-a-gap",
+      "passed": true,
+      "reason": "Explicitly says communication excellence, accounting experience, Kubernetes, and observability were treated as declined and omitted; also says GraphQL federation was omitted as unsupported."
+    },
+    {
+      "name": "no-unsupported-claims",
+      "passed": true,
+      "reason": "Does not claim Kubernetes, Terraform, or accounting-software experience as candidate skills or assign changed employment titles. Lead Software Engineer is identified as the target posting and the lead title as a step up, not an existing candidate title."
+    }
+  ]
+}

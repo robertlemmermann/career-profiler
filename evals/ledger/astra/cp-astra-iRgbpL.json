@@ -1,0 +1,89 @@
+{
+  "schema": "cp-astra-evidence/1",
+  "id": "cp-astra-iRgbpL",
+  "at": "2026-11-02T16:32:52.332Z",
+  "host": "chatgpt-work-fresh-thread",
+  "model": "gpt-6-astra",
+  "effort": "high",
+  "kind": "case",
+  "item": "resume-without-posting",
+  "run": 3,
+  "subject": "2d47d7f9cea3f0b37d5925e8318f78a5883c6f6055aa9e80d4ef8ea71f5518af",
+  "workspace": "/tmp/cp-astra-iRgbpL",
+  "agent_id": "/root/missing_posting4c",
+  "reads": [
+    {
+      "path": "SKILL.md",
+      "sha256": "924787ec52110e498929df417b76c6042bff798cc74d19c39272340cc4d62743",
+      "at": "2026-11-02T16:33:15.401Z"
+    },
+    {
+      "path": "references/resume.md",
+      "sha256": "e5e450c80f058b9b07863cb140ef2814a34969a8e721767cee42fbd120b690a0",
+      "at": "2026-11-02T16:33:20.511Z"
+    },
+    {
+      "path": "references/setup.md",
+      "sha256": "303e3993001fdd8a936a6950f3ad77b4d24db28605aeaf592e8f87361c512907",
+      "at": "2026-11-02T16:33:20.841Z"
+    }
+  ],
+  "transcript": [
+    {
+      "role": "user",
+      "text": "No shell is available, so use the career-profiler skill the guidance-only way.\n\nMy automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:\n\n```json\n{\"schema\":\"career-preferences/1\",\"automation\":\"draft\",\"submit\":\"never\",\"statement\":\"Draft things for me to review; never send anything on my behalf.\",\"recorded_at\":\"2026-10-20T09:00:00.000Z\",\"skill_version\":\"0.2.0\",\"store_version\":2,\"hash\":\"d824c0ad061453a50eb17d317b88290e54d007346304063553d5bf823b75edab\"}\n```\n\nWrite me a resume. I am a registered nurse with six years in adult ICU, CCRN certified, and I\nprecept new graduates. I want to start applying next week.\n",
+      "turn": 0
+    },
+    {
+      "role": "agent",
+      "text": "I’m using career-profiler in guidance-only mode. Your draft-only preference is valid for this session; the next session with Node will verify its hash.\n\nPlease send one job posting as pasted text, an attachment, or a public link. The skill’s [SKILL.md](SKILL.md) requires: “No posting, no tailored resume: ask for the text, file or link.” I need that target before drafting your resume.\n\nIf you haven’t picked a posting yet, we can build your career profile and prepare a general profile export instead, starting with your adult ICU experience, CCRN certification, and new-graduate precepting.\n",
+      "turn": 1
+    }
+  ],
+  "snapshots": [],
+  "used": [],
+  "status": "completed",
+  "grade": null,
+  "cost_usd": null,
+  "initial_prompt": "Workspace: /tmp/cp-astra-iRgbpL. Use only this workspace and the supplied read/reply bridge. Do not browse other directories or inspect the bridge implementation.\nSkill reads: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs read /tmp/cp-astra-iRgbpL SKILL.md (or a relative references/ or assets/ path). This logs the consulted document. Use the bridge for skill-document reads.\nThe task environment supports document reads only: do not execute career-profiler scripts or create user artifacts. Shell tools may be used solely to call the read/reply bridge and write the response transport file.\nWrite your exact user-facing response to /tmp/cp-astra-iRgbpL/reply.txt, then call: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs reply /tmp/cp-astra-iRgbpL /tmp/cp-astra-iRgbpL/reply.txt. Return the same response as your final message after submitting it.\n\nAvailable optional skill: career-profiler\nCareer fact store, tailored job applications and job-board watching. Use when someone\n  wants to build or update a career profile by interview (work history, achievements with\n  numbers, skills, education, certifications), import facts from an old resume or LinkedIn\n  export, write a resume, CV or cover letter tailored to one specific job posting (pasted,\n  attached or linked), check how well they match a posting before applying, prove that a\n  resume contains no claim the profile does not support, watch a company careers page,\n  applicant-tracking board, feed or job-alert emails for matching postings with drafts\n  ready for review, or set how much of that is automated (alerts only, drafts, never\n  submitting). Works for any profession or role type, not only software. Not for interview\n  coaching, salary negotiation, generic resume templates without a profile and a posting,\n  or submitting applications on anyone's behalf.\nTo consult it, use the read bridge below. Select skills by relevance to the user's task.\n\nUser request:\nNo shell is available, so use the career-profiler skill the guidance-only way.\n\nMy automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:\n\n```json\n{\"schema\":\"career-preferences/1\",\"automation\":\"draft\",\"submit\":\"never\",\"statement\":\"Draft things for me to review; never send anything on my behalf.\",\"recorded_at\":\"2026-10-20T09:00:00.000Z\",\"skill_version\":\"0.2.0\",\"store_version\":2,\"hash\":\"d824c0ad061453a50eb17d317b88290e54d007346304063553d5bf823b75edab\"}\n```\n\nWrite me a resume. I am a registered nurse with six years in adult ICU, CCRN certified, and I\nprecept new graduates. I want to start applying next week.\n",
+  "judgments": [
+    {
+      "at": "2026-11-03T01:41:42.041Z",
+      "agent_id": "/root/missing_judge5c",
+      "model": "gpt-6-astra",
+      "packet": {
+        "schema": "cp-astra-grade-packet/1",
+        "evidence_id": "cp-astra-iRgbpL",
+        "subject": "2d47d7f9cea3f0b37d5925e8318f78a5883c6f6055aa9e80d4ef8ea71f5518af",
+        "response_sha256": "c4e9464d26975cfa6f0e2e15c9b4627e4ec9c1cbb7a88c4f7298f0f80d842e5f",
+        "answer": "I’m using career-profiler in guidance-only mode. Your draft-only preference is valid for this session; the next session with Node will verify its hash.\n\nPlease send one job posting as pasted text, an attachment, or a public link. The skill’s [SKILL.md](SKILL.md) requires: “No posting, no tailored resume: ask for the text, file or link.” I need that target before drafting your resume.\n\nIf you haven’t picked a posting yet, we can build your career profile and prepare a general profile export instead, starting with your adult ICU experience, CCRN certification, and new-graduate precepting.\n",
+        "criteria": [
+          {
+            "name": "asks-for-posting",
+            "type": "llm",
+            "criterion": "You see only the assistant's answer. The user wrote \"Write me a resume\" and described themselves (registered nurse, six years in adult ICU, CCRN, precepts new graduates) without giving any job posting. The skill requires one specific posting for a tailored resume.\n\nCheck: the answer asks the user for a specific job posting (pasted text, a file or a link), or states clearly that a tailored resume requires one. Offering alternatives (build or complete the profile first, a general export of the profile, come back with a posting) and acknowledging the facts the user gave are good but not required for this check.\n\nPASS if a posting is asked for or stated as required. FAIL if the answer neither asks for nor requires a posting.\n",
+            "source_sha256": "4a0658eaa3e2cb7c1f45dd82df9fc736b7067cbc299b46a1375f4f6b1077c6b1"
+          },
+          {
+            "name": "no-invented-resume",
+            "type": "llm",
+            "criterion": "You see only the assistant's answer. The user wrote \"Write me a resume\" and gave only four facts about themselves (registered nurse, six years in adult ICU, CCRN certified, precepts new graduates), no employer, dates, unit or numbers, and no posting.\n\nCheck: the answer does not deliver a complete resume, and it does not invent employers, dates, unit names, patient ratios or numbers for the user. Repeating the four facts the user gave, for example saying they will be recorded or confirmed, is fine. So are examples clearly marked as examples of what to provide (\"for example, Staff Nurse II, Medical ICU\") and topics listed as questions to ask later (bed count, ratios, CRRT, ECMO): they are not claims about the user.\n\nPASS if no resume is delivered and no fact beyond the four given is invented. FAIL if a resume is written or any employer, date, unit, ratio or number is invented.\n",
+            "source_sha256": "cd3c46dee340671ba403a1baa4670f99b44d86e380f1d42500f20008df4e2ed7"
+          }
+        ]
+      },
+      "checks": [
+        {
+          "name": "asks-for-posting",
+          "passed": true,
+          "reason": "The answer explicitly asks: 'Please send one job posting as pasted text, an attachment, or a public link,' and states that the target is needed before drafting the resume."
+        },
+        {
+          "name": "no-invented-resume",
+          "passed": true,
+          "reason": "The answer delivers no resume and invents no employment details, dates, unit names, ratios, or numbers. It only references the provided adult ICU experience, CCRN certification, and new-graduate precepting while offering profile preparation."
+        }
+      ]
+    }
+  ]
+}

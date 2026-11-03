@@ -34,7 +34,7 @@ export function itemPaths(runner, item) {
   if (runner === 'plugin-eval') return [...base, `evals/${item}`, 'tests/run-evals.mjs'];
   if (runner === 'pipeline-sim') return [...base, 'evals/scripts-pipeline', 'tests/live/pipeline-sim.mjs'];
   if (runner === 'trigger-set') return [...base, 'evals/trigger-set.json', 'tests/run-trigger-set.mjs'];
-  if (runner === 'interview-sim') return [...base, 'tests/live/interview-sim.mjs', `tests/live/personas/${item}.json`];
+  if (runner === 'interview-sim') return [...base, 'tests/live/interview-sim.mjs', 'tests/lib/interview-candidate.mjs', 'tests/lib/interview-grade.mjs', `tests/live/personas/${item}.json`];
   return SUBJECT_PATHS;
 }
 const itemCache = new Map();

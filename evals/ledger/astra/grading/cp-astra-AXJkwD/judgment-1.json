@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "reports-folder-and-files",
+      "passed": true,
+      "reason": "Names an application folder under /store/applications/2026-11-02-acme-ledger-lead-software-engineer-frontend-reac and lists resume.docx, resume.final.md, resume.txt, resume.html, resume.json, and cover-letter.final.md, cover-letter.txt, cover-letter.html."
+    },
+    {
+      "name": "reports-verdict",
+      "passed": true,
+      "reason": "Reports 'Both checks: PASS, with zero failures or findings' and names both .check.json reports; it never says either draft was unchecked or could not be checked."
+    },
+    {
+      "name": "names-a-gap",
+      "passed": true,
+      "reason": "Explicitly lists communication excellence, accounting experience, Kubernetes, and observability as gaps 'treated as declined and omitted'; also says unsupported GraphQL federation was omitted."
+    },
+    {
+      "name": "no-unsupported-claims",
+      "passed": true,
+      "reason": "Kubernetes and accounting experience are identified only as omitted gaps; Terraform is not claimed. Lead Software Engineer is identified as the target role and a step up, not as a title already held by the candidate, and no alternative employment titles are assigned."
+    }
+  ]
+}
