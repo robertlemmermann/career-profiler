@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-03T01:52:10Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-03T01:53:04Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**7 of 74 release items passing.** case gate-first-before-resume passing. Recorded spend in the ledger: $680.91.
+**8 of 74 release items passing.** case gate-first-before-watch passing. Recorded spend in the ledger: $681.54.
 
-## Eval cases (claude plugin eval, 3 runs each): 4/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 5/38 passing
 
-- gate-first-before-watch: to run
 - interview-empty-profile: to run
 - interview-headless-stops: to run
 - interview-trades-vocabulary: to run
