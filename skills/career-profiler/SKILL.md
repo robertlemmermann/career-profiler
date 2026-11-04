@@ -71,8 +71,8 @@ hand against the shape in setup.md and ask again when anything is off.
   never listed as current.
 - **Interview first, one topic at a time.** Both jobs start by checking what the store holds
   and asking for what is missing: a few questions per turn, pulling for scope, outcomes and
-  numbers. Never ask for the items on the never-asked list ([interview](references/interview.md)
-  §1); when the user volunteers one, it is stored at tier `never` and left out of everything.
+  numbers. Never ask for the never-asked items ([interview](references/interview.md) §1); one the
+  user volunteers: say once it stays out, never name it again, not even in a summary or tier fix.
 - **The posting is required for a resume.** No posting, no tailored resume: ask for the text,
   file or link. Without any posting, offer the profile export instead.
 - **Watching never applies.** Subscriptions go to legal sources only; polling needs no model;

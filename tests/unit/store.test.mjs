@@ -205,3 +205,23 @@ test('singleton staging and updates preserve source quotes without admitting unk
   }
   assert.equal(cp(['store', 'validate', '--json'], { store }).status, 0);
 });
+
+test('a restricted field\'s source quote stays out of the default view and export', () => {
+  const store = seededStore();
+  const quote = 'I am a US citizen, no sponsorship needed.';
+  const r = cp(['fact', 'update', 'identity', '--data', JSON.stringify({ work_authorization: 'Authorized to work in the US' }), '--quote', quote, '--confirm', '--json'], { store });
+  assert.equal(r.status, 0, r.stderr);
+  const exp = cp(['store', 'export', '--format', 'json', '--json'], { store });
+  assert.equal(exp.status, 0, exp.stderr);
+  const text = JSON.stringify(exp.json);
+  assert.ok(!text.includes('US citizen'), 'the quote behind a restricted field is not exported');
+  assert.ok(!text.includes('Authorized to work'), 'the restricted value is not exported');
+  const md = cp(['store', 'export', '--format', 'md'], { store });
+  assert.ok(!md.stdout.includes('US citizen'), 'nor in the markdown export');
+  const show = cp(['store', 'show'], { store });
+  assert.ok(!show.stdout.includes('US citizen'), 'nor in store show');
+  assert.ok(!JSON.stringify(cp(['store', 'show', '--json'], { store }).json).includes('US citizen'), 'nor in store show --json');
+  const all = cp(['store', 'show', '--tier', 'restricted', '--json'], { store });
+  assert.equal(all.status, 0, all.stderr);
+  assert.ok(JSON.stringify(all.json).includes('US citizen'), 'the explicit restricted view keeps it');
+});

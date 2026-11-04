@@ -128,7 +128,7 @@
     {
       "id": "health",
       "label": "health, disability or medical condition about the candidate",
-      "pattern": "\\b(?:my (?:disability|diagnosis|condition|illness|medication|therapy|surgery)|i (?:have|was diagnosed with|suffer from) (?:[a-z]+ ){0,2}(?:disorder|disease|cancer|diabetes|depression|anxiety|adhd|autism|epilepsy|ptsd|ms)\\b|sick leave|medical leave|disability leave)",
+      "pattern": "\\b(?:my (?:disability|diagnosis|condition|illness|medication|therapy|surgery|injury)|i (?:have|was diagnosed with|suffer from) (?:[a-z]+ ){0,2}(?:disorder|disease|cancer|diabetes|depression|anxiety|adhd|autism|epilepsy|ptsd|ms)\\b|i have (?:a |an )?(?:[a-z]+ ){0,2}(?:condition|injury|disability|illness)\\b|(?:back|knee|shoulder|neck|hip|wrist|spine|spinal|heart) (?:condition|injury|injuries|problems?|pain|surgery)\\b|medical (?:restriction|condition)s?\\b|sick leave|medical leave|disability leave)",
       "flags": "i",
       "severity": "review",
       "profiles": [

@@ -130,3 +130,8 @@ test('logs hold no values: a never-tier value is absent from the changelog and m
   assert.ok(!log.includes(statement), 'the statement is not copied into the log');
   assert.ok(fs.readFileSync(path.join(store, 'preferences.json'), 'utf8').includes(statement));
 });
+
+test('tierForFact treats a volunteered physical condition or work restriction as never', () => {
+  for (const t of ['I have a back condition, so no sustained overhead work past 8 hours', 'Back condition: no overhead work past 8 hours', 'knee injury in 2020, light duty since', 'Medical restriction on lifting over 50 lb']) assert.equal(tierForFact({ text: t }).tier, 'never', t);
+  for (const t of ['Reduced back-end latency 40%', 'Health and safety lead for a crew of 6', 'Heart of the commissioning team', 'I have a CDL and a forklift card']) assert.equal(tierForFact({ text: t }), null, t);
+});

@@ -424,11 +424,13 @@ export function maskProfile(p, { tiers = ['professional'], include = [] } = {}) 
   const q = JSON.parse(JSON.stringify(p));
   const show = (t) => tiers.includes(t || 'professional');
   const released = (f) => show('restricted') || include.includes(f);
-  for (const [name, fields] of Object.entries(RESTRICTED_FIELDS)) if (q[name]) for (const f of fields) if (q[name][f] != null && q[name][f] !== '' && !released(f)) q[name][f] = MASK;
+  // A record's quote is the user's words for all of its fields, so masking a field masks the quote too.
+  const maskQuote = (o) => { if (o.provenance && o.provenance.quote) o.provenance = { ...o.provenance, quote: MASK }; };
+  for (const [name, fields] of Object.entries(RESTRICTED_FIELDS)) if (q[name]) for (const f of fields) if (q[name][f] != null && q[name][f] !== '' && !released(f)) { q[name][f] = MASK; maskQuote(q[name]); }
   for (const name of Object.keys(SECTIONS)) {
     q[name] = (q[name] || []).filter((e) => show(tierOf(e))).map((e) => {
       const copy = { ...e };
-      for (const f of RESTRICTED_ENTRY_FIELDS[name] || []) if (copy[f] != null && !released(f)) copy[f] = MASK;
+      for (const f of RESTRICTED_ENTRY_FIELDS[name] || []) if (copy[f] != null && !released(f)) { copy[f] = MASK; maskQuote(copy); }
       if (Array.isArray(copy.achievements)) copy.achievements = copy.achievements.filter((a) => show(tierOf(a)));
       return copy;
     });
