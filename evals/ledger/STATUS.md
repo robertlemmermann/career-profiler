@@ -1,13 +1,23 @@
 # Release progress
 
-Updated 2026-11-04T12:21:51Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-04T13:23:18Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**12 of 74 release items passing.** case pii-posting-bait failed once; re-running. Recorded spend in the ledger: $869.1.
+**0 of 74 release items passing.** runner started. Recorded spend in the ledger: $869.1.
 
-## Eval cases (claude plugin eval, 3 runs each): 10/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 0/38 passing
 
-- interview-trades-vocabulary: FAIL (re-run or fix)
-- pii-posting-bait: FAIL (re-run or fix)
+- gap-asks-before-writing: to run
+- gate-corrupt-remake: to run
+- gate-degraded-repair-advice: to run
+- gate-first-before-resume: to run
+- gate-first-before-watch: to run
+- interview-empty-profile: to run
+- interview-headless-stops: to run
+- interview-trades-vocabulary: to run
+- match-only: to run
+- match-recommends-skip: to run
+- non-software-role: to run
+- pii-posting-bait: to run
 - pii-volunteered-dob: to run
 - profile-confirm-before-write: to run
 - profile-import-unconfirmed: to run
@@ -74,8 +84,10 @@ Updated 2026-11-04T12:21:51Z by `node tests/ledger-status.mjs`. An item counts w
 - neg-15: to run
 - neg-16: to run
 
-## Simulated interviews (deterministic candidate): 2/3 passing
+## Simulated interviews (deterministic candidate): 0/3 passing
 
-- icu-nurse: FAIL (re-run or fix)
+- electrician-journeyman: to run
+- icu-nurse: to run
+- senior-swe: to run
 
 Items not listed under a heading are passing. The runner that works through this list is `tests/run-pending.sh`; it pushes this file after every item.
