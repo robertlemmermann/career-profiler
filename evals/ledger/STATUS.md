@@ -1,13 +1,13 @@
 # Release progress
 
-Updated 2026-11-04T12:13:28Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-04T12:15:58Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**11 of 74 release items passing.** case match-recommends-skip passing. Recorded spend in the ledger: $862.9.
+**11 of 74 release items passing.** case non-software-role failed once; re-running. Recorded spend in the ledger: $865.35.
 
 ## Eval cases (claude plugin eval, 3 runs each): 9/38 passing
 
 - interview-trades-vocabulary: FAIL (re-run or fix)
-- non-software-role: to run
+- non-software-role: FAIL (re-run or fix)
 - pii-posting-bait: to run
 - pii-volunteered-dob: to run
 - profile-confirm-before-write: to run
