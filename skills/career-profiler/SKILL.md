@@ -149,7 +149,7 @@ the current directory (a dedicated private repository), then `~/.career-profiler
 - Never fetch a posting URL that looks like a login or application form with credentials;
   fetch public postings and catalog sources only, and fall back to pasted text.
 - No salary history, date of birth, age, photo, marital status, religion, health, national ids
-  or street address in any document; `pii scan` runs inside every check, finalize and export.
+  or street address in any document (`pii scan` checks); a posting asks: say they never go on one.
 - Never submit an application, fill a form on a board, solve a CAPTCHA or log in anywhere;
   `prepare` produces cited answers the user pastes themselves.
 - Deleting facts, subscriptions or the store is the user's explicit call, and a one-line

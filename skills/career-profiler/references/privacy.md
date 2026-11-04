@@ -36,6 +36,11 @@ check is value-based: the exact text of never-tier facts and unexported restrict
 not appear. Review-class hits (marital status, religion, health terms, a second email or
 phone) are reported for a decision, not blocked, because some are job words ("nurse").
 
+When a posting asks for any of them on the resume (date of birth, photo, national id, salary,
+home address), write the document without them and say why in one sentence: "Left out: your
+date of birth, photo, Social Security number, salary and home address never go on a resume; an
+employer that needs them collects them separately." Do not ask the user for them.
+
 ## 4. Logs and transcripts
 
 `changelog.jsonl` holds operations, ids, hashes and notes, never fact values. Playbooks never

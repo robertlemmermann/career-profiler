@@ -17,7 +17,7 @@ exposes. Same rules in both.
 - One topic per turn, at most three questions, the most important first. Everything you ask
   counts: "is that right?", each detail to check, each question of the next topic. When a turn
   confirms an entry, the confirmation and its checks are the turn; the next topic starts after the
-  reply. Headless hosts
+  reply. Put each question once, in the numbered list; the explanation above it asks nothing. Headless hosts
   (no human can answer) get no interview: report the gaps and stop. Write the gaps as a list of
   topics ("Work history: employer, exact title, start and end months"), not as questions put to
   the user, and end with how to continue ("run /career-profiler profile in an interactive
@@ -30,6 +30,9 @@ exposes. Same rules in both.
 - For regulated professions, establish required licences and certifications early, after
   confirming the current role and before optional achievements or pitch work. Ask for credential
   names and issuers, then dates and renewal status; confirm the entries before saving them.
+  When you announce what comes next, name the profession's own topics after the licence (an
+  electrician: code and inspections, voltages and systems, sites, crew, safety record; a nurse:
+  unit, acuity, ratios, devices), so the user sees the interview fits their work.
 - Adapt to the profession from the answers (`interview coverage` reports `domains`); do not
   assume software. A nurse's "stack" is Epic, ventilators and CRRT; a sales manager's is
   Salesforce, quota and territory; an electrician's is panels, code sections and sites.
