@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-04T01:18:12Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-04T01:19:26Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**3 of 74 release items passing.** persona senior-swe passing. Recorded spend in the ledger: $754.99.
+**4 of 74 release items passing.** case gap-asks-before-writing passing. Recorded spend in the ledger: $756.23.
 
-## Eval cases (claude plugin eval, 3 runs each): 0/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 1/38 passing
 
-- gap-asks-before-writing: to run
 - gate-corrupt-remake: to run
 - gate-degraded-repair-advice: to run
 - gate-first-before-resume: to run
