@@ -44,6 +44,23 @@ export function itemSubject(runner, item, root = ROOT) {
   if (!itemCache.has(k)) itemCache.set(k, subjectHash(root, itemPaths(runner, item)));
   return itemCache.get(k);
 }
+/** sha256 of each blob's content, by blob id (an id fixes the content); missing ones are read in one batch. */
+const blobCache = new Map();
+function blobHashes(ids, root) {
+  const missing = [...new Set(ids)].filter((id) => !blobCache.has(id));
+  if (!missing.length) return;
+  const b = spawnSync('git', ['-C', root, 'cat-file', '--batch'], { input: missing.join('\n') + '\n', maxBuffer: 1024 * 1024 * 1024 });
+  if (b.status !== 0) return;
+  const buf = b.stdout; let i = 0;
+  while (i < buf.length) {
+    const nl = buf.indexOf(10, i); if (nl < 0) break;
+    const [id, type, size] = buf.subarray(i, nl).toString('utf8').split(' ');
+    if (type === 'missing' || size === undefined) { i = nl + 1; continue; }
+    const n = Number(size), body = buf.subarray(nl + 1, nl + 1 + n);
+    if (type === 'blob') blobCache.set(id, createHash('sha256').update(body).digest('hex'));
+    i = nl + 1 + n + 1;
+  }
+}
 /** The same hash as subjectHash, computed from a commit instead of the work tree (git objects only). */
 const commitCache = new Map();
 export function subjectHashAtCommit(sha, paths = SUBJECT_PATHS, root = ROOT, skip = paths === SUBJECT_PATHS ? NOT_TESTED : IGNORED) {
@@ -54,11 +71,12 @@ export function subjectHashAtCommit(sha, paths = SUBJECT_PATHS, root = ROOT, ski
   if (ls.status === 0) {
     const entries = ls.stdout.split('\0').filter(Boolean).map((l) => { const [meta, f] = l.split('\t'); return { f, id: meta.split(' ')[2] }; })
       .filter((e) => !skip(e.f)).sort((a, b) => (a.f < b.f ? -1 : a.f > b.f ? 1 : 0));
+    blobHashes(entries.map((e) => e.id), root);
     const h = createHash('sha256');
     for (const e of entries) {
-      const b = spawnSync('git', ['-C', root, 'cat-file', 'blob', e.id], { maxBuffer: 64 * 1024 * 1024 });
-      if (b.status !== 0) continue;
-      h.update(e.f); h.update('\0'); h.update(createHash('sha256').update(b.stdout).digest('hex')); h.update('\n');
+      const d = blobCache.get(e.id);
+      if (!d) continue;
+      h.update(e.f); h.update('\0'); h.update(d); h.update('\n');
     }
     out = h.digest('hex').slice(0, 16);
   }
