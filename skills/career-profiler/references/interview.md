@@ -24,7 +24,10 @@ exposes. Same rules in both.
   session"); nothing in a headless answer waits for a reply.
 - Use the user's words. Rephrase a question only when the first form confused them.
 - Never fill a silence with a guess. "I don't remember the number" is recorded as no number;
-  "roughly 30%" is recorded as `~30%` with `"note": "estimate"` in the metric.
+  "roughly 30%" is recorded as `~30%` with `"note": "estimate"` in the metric. A range stays a
+  range ("a team of 6-8" is recorded as 6-8); never ask the user to pick one number from it. A
+  relative date ("last month", "early 2022") is not a date: turn it into a month from today's date
+  where you can and ask it as a question ("Did you leave in October 2026?"), else ask for the month.
 - Acknowledge in one clause, then move on. No praise loops, no career advice unless asked.
 - Keep the agenda visible every few turns: coverage score, what is done, what is left.
 - For regulated professions, establish required licences and certifications early, after

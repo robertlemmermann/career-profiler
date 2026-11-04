@@ -120,7 +120,7 @@
         "reply": "ICU registered nurse or charge nurse roles, hospital setting, Madison."
       },
       {
-        "match": "scope|team size|report|owned|tools|stack|technolog|equipment|unit",
+        "match": "scope|team size|report|owned|tools|stack|technolog|equipment|unit|which (?:job|employer)|were (?:any|all|they|these)",
         "reply": "St. Anselm: night-shift staff nurse in a 20-bed medical ICU, relief charge nurse since 2024, preceptor for new graduates; Epic, mechanical ventilation, CRRT, vasoactive infusions, Impella. Dane County: 5 to 6 telemetry patients per shift on a 32-bed med-surg unit; Cerner and telemetry."
       },
       {

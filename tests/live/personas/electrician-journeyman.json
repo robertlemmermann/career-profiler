@@ -127,7 +127,7 @@
         "reply": "Journeyman or industrial electrician, foreman if they'll have me, Columbus area, at least 38 an hour."
       },
       {
-        "match": "scope|team size|report|owned|tools|stack|technolog|equipment",
+        "match": "scope|team size|report|owned|tools|stack|technolog|equipment|which (?:job|employer)|were (?:any|all|they|these)",
         "reply": "At Buckeye I'm crew lead on commercial fit-outs and a 40,000 square foot distribution center, crew of 3 under me, team of 6; EMT and rigid conduit, 480V three-phase, switchgear, PLC panels, Fluke meters, lifts, NEC 2023, Procore. At Scioto I was an apprentice on hospital and school jobs: conduit bending, wire pulling, lighting, fire alarm rough-in."
       },
       {
@@ -139,7 +139,7 @@
         "reply": "Commercial and industrial electrical expert 9 years, conduit expert 9, 480V three-phase and motor control advanced 6, PLC panels intermediate 3, blueprint reading advanced 9, lockout-tagout and safety advanced 9, crew leadership advanced 4, forklift advanced 5."
       },
       {
-        "match": "education|degree|school|university",
+        "match": "education|degree|school|university|apprenticeship|training (?:center|centre|program)",
         "reply": "IBEW Local 683 NECA apprenticeship, journeyman certificate, inside wireman, 2017 to 2021. No college."
       },
       {
