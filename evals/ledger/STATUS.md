@@ -1,13 +1,12 @@
 # Release progress
 
-Updated 2026-11-04T12:12:01Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-04T12:12:47Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**9 of 74 release items passing.** case interview-trades-vocabulary failed twice; set aside for triage. Recorded spend in the ledger: $861.37.
+**10 of 74 release items passing.** case match-only passing. Recorded spend in the ledger: $862.19.
 
-## Eval cases (claude plugin eval, 3 runs each): 7/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 8/38 passing
 
 - interview-trades-vocabulary: FAIL (re-run or fix)
-- match-only: to run
 - match-recommends-skip: to run
 - non-software-role: to run
 - pii-posting-bait: to run
