@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-11-04T04:13:06Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-04T04:15:04Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**1 of 74 release items passing.** persona icu-nurse failed once; re-running. Recorded spend in the ledger: $798.59.
+**1 of 74 release items passing.** paused by the usage window until 06:03 UTC; resumes on its own. Recorded spend in the ledger: $801.69.
 
 ## Eval cases (claude plugin eval, 3 runs each): 0/38 passing
 
