@@ -93,13 +93,19 @@ function runAgent(work) {
     '--max-budget-usd', String(Math.max(2, cap / runs)), ...(opt.model ? ['--model', opt.model] : []), '--', promptBody];
   const r = claude(args, { cwd: work });
   const events = (r.stdout || '').split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
-  const bash = [];
-  for (const e of events) for (const c of ((e.message && e.message.content) || [])) if (c.type === 'tool_use' && c.name === 'Bash') bash.push(String((c.input && c.input.command) || ''));
+  const bash = [], tools = [], denied = [];
+  for (const e of events) for (const c of ((e.message && e.message.content) || [])) {
+    if (c.type === 'tool_use') { tools.push(`${c.name}: ${JSON.stringify(c.input || {}).slice(0, 160)}`); if (c.name === 'Bash') bash.push(String((c.input && c.input.command) || '')); }
+    // Refused or failed tool calls, so a run that "could not use Bash" shows why.
+    if (c.type === 'tool_result' && c.is_error) denied.push(String(Array.isArray(c.content) ? c.content.map((x) => x.text || '').join(' ') : c.content || '').slice(0, 240));
+  }
+  const init = events.find((e) => e.type === 'system' && e.subtype === 'init');
+  const toolsAvailable = init && Array.isArray(init.tools) ? init.tools : null;
   const result = [...events].reverse().find((e) => e.type === 'result') || null;
   if (result) spent += result.total_cost_usd || 0;
-  if (!result) return { error: `no result record (exit ${r.status}): ${(r.stderr || '').slice(0, 300)}`, bash };
+  if (!result) return { error: `no result record (exit ${r.status}): ${(r.stderr || '').slice(0, 300)}`, bash, tools, denied, toolsAvailable };
   if (refusal(result)) return { error: `api error ${result.api_error_status ?? ''} ${String(result.result || '').slice(0, 160)}`, bash, result };
-  return { bash, answer: String(result.result || ''), result, turns: result.num_turns };
+  return { bash, tools, denied, toolsAvailable, answer: String(result.result || ''), result, turns: result.num_turns };
 }
 
 /** One llm criterion, three judge votes, majority wins. */
@@ -159,7 +165,7 @@ for (let i = 1; i <= runs; i++) {
   const total = g.reduce((s, x) => s + x.weight, 0);
   const score = Math.round((g.filter((x) => x.passed).reduce((s, x) => s + x.weight, 0) / total) * 1000) / 1000;
   const passed = g.every((x) => x.passed);
-  reports.push({ run: i, score, passed, turns: run.turns, cost_usd: run.result.total_cost_usd, graders: g, bash: run.bash, answer: run.answer, workspace: opt.keep ? work : null });
+  reports.push({ run: i, score, passed, turns: run.turns, cost_usd: run.result.total_cost_usd, graders: g, bash: run.bash, tools: run.tools, denied: run.denied, tools_available: run.toolsAvailable, answer: run.answer, workspace: opt.keep ? work : null });
   rows.push({ runner: 'pipeline-sim', host: 'claude', model: opt.model || null, judge_model: opt['judge-model'], item: CASE, run: i, score, passed, graders: g.map((x) => ({ name: x.name, passed: x.passed })), cost_usd: run.result.total_cost_usd, failure_class: null, note: null });
   process.stderr.write(`run ${i}: ${passed ? 'PASS' : 'FAIL'} ${score}\n${g.map((x) => `  ${x.passed ? 'ok  ' : 'FAIL'} ${x.name} (${x.detail})`).join('\n')}\n`);
   if (!opt.keep) fs.rmSync(work, { recursive: true, force: true });
