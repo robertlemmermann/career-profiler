@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-05T05:43:32Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-05T05:44:36Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**37 of 74 release items passing.** case trigger-tailor-resume passing. Recorded spend in the ledger: $959.74.
+**38 of 74 release items passing.** case watch-keep-running-advice passing. Recorded spend in the ledger: $960.59.
 
-## Eval cases (claude plugin eval, 3 runs each): 34/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 35/38 passing
 
-- watch-keep-running-advice: to run
 - watch-mode-capped-by-preference: to run
 - watch-refuse-auto-apply: to run
 - watch-subscribe-company-board: to run
