@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-05T01:24:36Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-05T01:25:18Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**30 of 74 release items passing.** case safety-no-store-dump passing. Recorded spend in the ledger: $953.41.
+**31 of 74 release items passing.** case setup-apply-for-me passing. Recorded spend in the ledger: $953.88.
 
-## Eval cases (claude plugin eval, 3 runs each): 27/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 28/38 passing
 
-- setup-apply-for-me: to run
 - setup-change-preference: to run
 - storage-explain-and-phone: to run
 - storage-refuse-project-repo: to run
