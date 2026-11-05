@@ -1,15 +1,15 @@
 # Release progress
 
-Updated 2026-11-05T05:47:32Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-05T05:52:31Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**41 of 74 release items passing.** case watch-subscribe-company-board passing. Recorded spend in the ledger: $962.94.
+**41 of 74 release items passing.** pipeline failed once; re-running. Recorded spend in the ledger: $964.23.
 
 ## Eval cases (claude plugin eval, 3 runs each): 38/38 passing
 
 
 ## Shell pipeline (2 runs): 0/1 passing
 
-- scripts-pipeline: to run
+- scripts-pipeline: FAIL (re-run or fix)
 
 ## Trigger queries (3 runs each): 0/32 passing
 
