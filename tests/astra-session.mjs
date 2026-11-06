@@ -50,7 +50,7 @@ function catalog(s) {
 }
 export function prepare(kind, item, run) {
   if (!['case', 'trigger', 'interview', 'pipeline'].includes(kind)) throw Error('invalid kind');
-  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'cp-astra-'));
+  const work = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'cp-astra-')));
   fs.cpSync(path.join(ROOT, 'skills/career-profiler'), path.join(work, 'skill'), { recursive: true });
   const s = { schema: 'cp-astra-evidence/1', id: path.basename(work), at: new Date().toISOString(), host: HOST, model: MODEL, effort: EFFORT, kind, item, run: Number(run), subject: subject(kind, item), workspace: work, agent_id: null, reads: [], transcript: [], snapshots: [], used: [], status: 'pending', grade: null, cost_usd: null };
   const bridge = path.join(ROOT, 'tests/astra-session.mjs');
@@ -139,7 +139,7 @@ function status() {
   console.log(JSON.stringify(rows.map((s) => ({ id: s.id, kind: s.kind, item: s.item, run: s.run, status: s.status, current: s.subject === subject(s.kind, s.item), agent_id: s.agent_id, turns: s.transcript.filter((t) => t.role === 'agent').length, failures: s.checks?.filter((c) => !c.ok).map((c) => c.name), grade: s.grade })), null, 2));
 }
 const [cmd, ...args] = process.argv.slice(2);
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (cmd === 'prepare') prepare(...args);
   else if (cmd === 'read') readSkill(...args);
   else if (cmd === 'reply') reply(...args);

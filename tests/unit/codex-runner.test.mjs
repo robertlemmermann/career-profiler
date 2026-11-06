@@ -22,7 +22,10 @@ test('child environment excludes unrelated secrets and resume targets an exact s
   assert.ok(!redact('Bearer secret-value api_key=secret').includes('secret'));
 });
 test('queue recovers a reply saved before CLI failure, restores lost workspace and skips passes', { skip: process.platform === 'win32' }, () => {
-  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'cp-codex-test-'));
+  const storage = fs.mkdtempSync(path.join(os.tmpdir(), 'cp-codex-test-'));
+  fs.mkdirSync(path.join(storage, 'work'));
+  const temp = path.join(storage, 'alias');
+  fs.symlinkSync(path.join(storage, 'work'), temp, 'dir'); // macOS also aliases /var to /private/var
   try {
     for (const dir of ['tests', 'skills', 'evals']) fs.cpSync(path.join(root, dir), path.join(temp, dir), { recursive: true, filter: (f) => !f.includes(`${path.sep}ledger${path.sep}`) && !f.endsWith(`${path.sep}ledger`) });
     const bin = path.join(temp, 'bin'); fs.mkdirSync(bin);
@@ -63,7 +66,7 @@ emit({type:'turn.completed',usage:{input_tokens:10,output_tokens:5}});
     const state = JSON.parse(fs.readFileSync(statePath)); assert.equal(state.status, 'paused-quota');
     const evidence = path.join(dir, state.current.id + '.json');
     const saved = JSON.parse(fs.readFileSync(evidence));
-    assert.equal(saved.transcript.filter(t=>t.role==='agent').length, 1);
+    assert.equal(saved.transcript.filter(t=>t.role==='agent').length, 1, r.stdout + r.stderr + fs.readFileSync(path.join(dir, 'logs', saved.id + '-agent.jsonl'), 'utf8')); 
     fs.rmSync(saved.workspace, { recursive: true, force: true });
     state.next_retry_at = null; fs.writeFileSync(statePath, JSON.stringify(state));
     fs.writeFileSync(path.join(temp, 'lost-session'), 'yes');
@@ -88,5 +91,5 @@ emit({type:'turn.completed',usage:{input_tokens:10,output_tokens:5}});
     // The same transport record cannot count as a Work-host result.
     assert.equal(recovered.host, 'codex-cli');
     for (const f of fs.readdirSync(dir).filter(f=>f.startsWith('cp-astra-'))) fs.rmSync(JSON.parse(fs.readFileSync(path.join(dir,f))).workspace,{recursive:true,force:true});
-  } finally { fs.rmSync(temp, { recursive: true, force: true }); }
+  } finally { fs.rmSync(storage, { recursive: true, force: true }); }
 });

@@ -117,7 +117,7 @@ export function report(release, quiet = false) {
   if (release && result.passing !== result.total) process.exitCode = 1;
   return result;
 }
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'packet') packet(...args);
   else if (cmd === 'record') record(...args);
