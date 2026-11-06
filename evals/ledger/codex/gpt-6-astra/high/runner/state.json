@@ -1,0 +1,18 @@
+{
+  "cli_version": "codex-cli 0.167.0-alpha.4",
+  "schema": "cp-codex-runner/1",
+  "model": "gpt-6-astra",
+  "effort": "high",
+  "pid": 2,
+  "status": "blocked-infrastructure",
+  "current": {
+    "id": "cp-astra-Trs5IM",
+    "kind": "case",
+    "item": "resume-without-posting",
+    "run": 1,
+    "turn": 1
+  },
+  "error": "WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir \"/tmp\" (codex_home: AbsolutePathBuf(\"/tmp/cp-codex-home-qbh64eeo\"))\n2026-11-06T06:23:39.143821Z ERROR codex_core::session: Failed to create session: failed to load AGENTS.md instructions for environment `local`: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nError: thread/start: thread/start failed: error creating thread: failed to load AGENTS.md instructions for environment `local`: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted (code -32603)\n",
+  "updated_at": "2026-11-06T06:23:43.289Z",
+  "next_retry_at": null
+}
