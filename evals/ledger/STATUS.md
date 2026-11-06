@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-06T02:13:12Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-06T02:14:11Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**19 of 74 release items passing.** case resume-declined-gap-not-reasked failed once; re-running. Recorded spend in the ledger: $1056.83.
+**20 of 74 release items passing.** case resume-declined-gap-not-reasked passing. Recorded spend in the ledger: $1057.75.
 
-## Eval cases (claude plugin eval, 3 runs each): 16/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 17/38 passing
 
-- resume-declined-gap-not-reasked: FAIL (re-run or fix)
 - resume-expired-credential: to run
 - resume-no-cover-letter-flag: to run
 - resume-no-fabrication: to run
