@@ -1,8 +1,8 @@
 # Release progress
 
-Updated 2026-11-06T01:30:20Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-06T01:31:41Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**17 of 74 release items passing.** case profile-import-unconfirmed failed once; re-running. Recorded spend in the ledger: $1052.77.
+**17 of 74 release items passing.** case profile-import-unconfirmed failed twice; set aside for triage. Recorded spend in the ledger: $1053.61.
 
 ## Eval cases (claude plugin eval, 3 runs each): 14/38 passing
 
