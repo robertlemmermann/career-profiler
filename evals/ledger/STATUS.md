@@ -1,12 +1,11 @@
 # Release progress
 
-Updated 2026-11-06T02:53:22Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
+Updated 2026-11-06T02:54:36Z by `node tests/ledger-status.mjs`. An item counts when its newest graded run passed every run and what it tested (the skill, its runner, its own case, query set or persona) is unchanged since.
 
-**21 of 74 release items passing.** case resume-expired-credential passing. Recorded spend in the ledger: $1058.92.
+**22 of 74 release items passing.** case resume-no-cover-letter-flag passing. Recorded spend in the ledger: $1059.81.
 
-## Eval cases (claude plugin eval, 3 runs each): 18/38 passing
+## Eval cases (claude plugin eval, 3 runs each): 19/38 passing
 
-- resume-no-cover-letter-flag: to run
 - resume-no-fabrication: to run
 - resume-no-overclaim: to run
 - resume-trades-electrician: to run
