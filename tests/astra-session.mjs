@@ -13,9 +13,7 @@ import { gradeInterview } from './lib/interview-grade.mjs';
 import { checkpoint, restoreCheckpoint } from './lib/astra-checkpoint.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const EVIDENCE = path.join(ROOT, 'evals/ledger/astra');
-const MODEL = 'gpt-6-astra';
-const HOST = 'chatgpt-work-fresh-thread';
+import { DIR as EVIDENCE, MODEL, HOST, EFFORT, BRIDGE_ENV } from './lib/eval-profile.mjs';
 const read = (f) => fs.readFileSync(f, 'utf8');
 const json = (f) => JSON.parse(read(f));
 const hash = (x) => createHash('sha256').update(x).digest('hex');
@@ -24,7 +22,8 @@ const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =
 const body = (s) => s.replace(/^---\r?\n[\s\S]*?\r?\n---\s*/, '');
 
 export function subject(kind, item) {
-  const paths = ['skills/career-profiler', 'tests/astra-session.mjs', 'tests/lib/interview-candidate.mjs', 'tests/lib/interview-grade.mjs', 'tests/lib/astra-checkpoint.mjs'];
+  const paths = ['skills/career-profiler', 'tests/astra-session.mjs', 'tests/lib/interview-candidate.mjs', 'tests/lib/interview-grade.mjs', 'tests/lib/astra-checkpoint.mjs', 'tests/lib/eval-profile.mjs'];
+  if (HOST === 'codex-cli') paths.push('tests/lib/codex-runner.mjs', 'tests/run-gpt-evals.mjs', 'tests/astra-evidence.mjs');
   paths.push(kind === 'case' ? `evals/${item}` : kind === 'trigger' ? 'evals/trigger-set.json' : kind === 'interview' ? `tests/live/personas/${item}.json` : 'evals/scripts-pipeline');
   const files = paths.flatMap((p) => fs.statSync(path.join(ROOT, p)).isDirectory() ? walk(path.join(ROOT, p)) : [path.join(ROOT, p)]).filter((p) => !p.endsWith('/references/release.md')).sort();
   return hash(files.map((f) => `${path.relative(ROOT, f)}\0${hash(read(f))}`).join('\n'));
@@ -49,11 +48,11 @@ function catalog(s) {
   const fm = /^---\n([\s\S]*?)\n---/.exec(source)[1];
   return `Available optional skill: career-profiler\n${fm.match(/description: >-?\n([\s\S]*?)(?=\n\S)/)[1].trim()}\nTo consult it, use the read bridge below. Select skills by relevance to the user's task.`;
 }
-function prepare(kind, item, run) {
+export function prepare(kind, item, run) {
   if (!['case', 'trigger', 'interview', 'pipeline'].includes(kind)) throw Error('invalid kind');
-  const work = fs.mkdtempSync(path.join(os.tmpdir(), 'cp-astra-'));
+  const work = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'cp-astra-')));
   fs.cpSync(path.join(ROOT, 'skills/career-profiler'), path.join(work, 'skill'), { recursive: true });
-  const s = { schema: 'cp-astra-evidence/1', id: path.basename(work), at: new Date().toISOString(), host: HOST, model: MODEL, effort: 'high', kind, item, run: Number(run), subject: subject(kind, item), workspace: work, agent_id: null, reads: [], transcript: [], snapshots: [], used: [], status: 'pending', grade: null, cost_usd: null };
+  const s = { schema: 'cp-astra-evidence/1', id: path.basename(work), at: new Date().toISOString(), host: HOST, model: MODEL, effort: EFFORT, kind, item, run: Number(run), subject: subject(kind, item), workspace: work, agent_id: null, reads: [], transcript: [], snapshots: [], used: [], status: 'pending', grade: null, cost_usd: null };
   const bridge = path.join(ROOT, 'tests/astra-session.mjs');
   let request;
   if (kind === 'interview') {
@@ -69,14 +68,16 @@ function prepare(kind, item, run) {
   } else if (kind === 'case') request = body(read(path.join(ROOT, 'evals', item, 'prompt.md')));
   else request = json(path.join(ROOT, 'evals/trigger-set.json')).queries.find((q) => q.id === item)?.query;
   if (!request) throw Error('missing request');
-  const infrastructure = `Workspace: ${work}. Use only this workspace and the supplied read/reply bridge. Do not browse other directories or inspect the bridge implementation.\nSkill reads: node ${bridge} read ${work} SKILL.md (or a relative references/ or assets/ path). This logs the consulted document. Use the bridge for skill-document reads.\n${kind === 'case' || kind === 'trigger' ? 'The task environment supports document reads only: do not execute career-profiler scripts or create user artifacts. Shell tools may be used solely to call the read/reply bridge and write the response transport file.' : 'Run actual skill commands in this workspace. Do not invent user replies.'}\nWrite your exact user-facing response to ${work}/reply.txt, then call: node ${bridge} reply ${work} ${work}/reply.txt. ${kind === 'interview' ? 'The reply bridge is the user inbox: it returns the next user message. Continue answering those messages until it says complete. It stores your messages unchanged. Do not read any other session or persona files.' : 'Return the same response as your final message after submitting it.'}`;
+  const infrastructure = `Workspace: ${work}. Use only this workspace and the supplied read/reply bridge. Do not browse other directories or inspect the bridge implementation.\nSkill reads: ${BRIDGE_ENV}node ${bridge} read ${work} SKILL.md (or a relative references/ or assets/ path). This logs the consulted document. Use the bridge for skill-document reads.\n${kind === 'case' || kind === 'trigger' ? 'The task environment supports document reads only: do not execute career-profiler scripts or create user artifacts. Shell tools may be used solely to call the read/reply bridge and write the response transport file.' : 'Run actual skill commands in this workspace. Do not invent user replies.'}\nWrite your exact user-facing response to ${work}/reply.txt, then call: ${BRIDGE_ENV}node ${bridge} reply ${work} ${work}/reply.txt. ${kind === 'interview' ? HOST === 'codex-cli' ? 'Submit exactly one reply and stop this invocation. The coordinator will deliver the next candidate message in the same session. Do not answer that next message yet. Do not read other session or persona files.' : 'The reply bridge is the user inbox: it returns the next user message. Continue answering those messages until it says complete. It stores your messages unchanged. Do not read any other session or persona files.' : 'Return the same response as your final message after submitting it.'}`;
   s.initial_prompt = `${infrastructure}\n\n${catalog(s)}\n\nUser request:\n${request}`;
   s.transcript.push({ role: 'user', text: request, turn: 0 });
   fs.writeFileSync(path.join(work, 'request.md'), s.initial_prompt);
   if (kind === 'pipeline' || kind === 'interview') instrument(work);
   save(s);
   checkpoint(work, checkpointPath(work));
-  console.log(JSON.stringify({ workspace: work, evidence: statePath(work), request: path.join(work, 'request.md') }));
+  const result = { workspace: work, evidence: statePath(work), request: path.join(work, 'request.md') };
+  if (HOST !== 'codex-cli') console.log(JSON.stringify(result));
+  return result;
 }
 function reply(work, file) {
   const s = load(work);
@@ -110,9 +111,9 @@ function reply(work, file) {
   }
   save(s); checkpoint(work, checkpointPath(work)); console.log(JSON.stringify({ complete: true }));
 }
-function restore(work) {
+export function restore(work) {
   const s = load(work);
-  if (s.status !== 'pending') throw Error('only pending sessions can resume');
+  if (s.status !== 'pending' && HOST !== 'codex-cli') throw Error('only pending sessions can resume');
   if (subject(s.kind, s.item) !== s.subject) throw Error('inputs changed: keep old evidence and start a fresh run');
   if (fs.existsSync(work)) throw Error('workspace exists; do not overwrite live work');
   if (!fs.existsSync(checkpointPath(work))) throw Error('no full checkpoint exists');
@@ -138,7 +139,7 @@ function status() {
   console.log(JSON.stringify(rows.map((s) => ({ id: s.id, kind: s.kind, item: s.item, run: s.run, status: s.status, current: s.subject === subject(s.kind, s.item), agent_id: s.agent_id, turns: s.transcript.filter((t) => t.role === 'agent').length, failures: s.checks?.filter((c) => !c.ok).map((c) => c.name), grade: s.grade })), null, 2));
 }
 const [cmd, ...args] = process.argv.slice(2);
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (cmd === 'prepare') prepare(...args);
   else if (cmd === 'read') readSkill(...args);
   else if (cmd === 'reply') reply(...args);

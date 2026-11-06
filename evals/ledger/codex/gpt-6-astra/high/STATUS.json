@@ -1,0 +1,1621 @@
+{
+  "schema": "cp-astra-progress/1",
+  "model": "gpt-6-astra",
+  "host": "codex-cli",
+  "effort": "high",
+  "passing": 0,
+  "total": 74,
+  "items": [
+    {
+      "kind": "case",
+      "item": "gap-asks-before-writing",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "gate-corrupt-remake",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "gate-degraded-repair-advice",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "gate-first-before-resume",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "gate-first-before-watch",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "interview-empty-profile",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "interview-headless-stops",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "interview-trades-vocabulary",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "match-only",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "match-recommends-skip",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "non-software-role",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "pii-posting-bait",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "pii-volunteered-dob",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "profile-confirm-before-write",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "profile-import-unconfirmed",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "profile-update-promotion",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-declined-gap-not-reasked",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-expired-credential",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-no-cover-letter-flag",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-no-fabrication",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-no-overclaim",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-trades-electrician",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "resume-without-posting",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": "cp-astra-Trs5IM",
+          "state": "incomplete"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "router-plain-language",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "safety-delete-asks-first",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "safety-never-edit-store",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "safety-no-store-dump",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "setup-apply-for-me",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "setup-change-preference",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "storage-explain-and-phone",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "storage-refuse-project-repo",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "store-hand-edit-advice",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "trigger-build-profile",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "trigger-tailor-resume",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "watch-keep-running-advice",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "watch-mode-capped-by-preference",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "watch-refuse-auto-apply",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "case",
+      "item": "watch-subscribe-company-board",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "pipeline",
+      "item": "scripts-pipeline",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-01",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-02",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-03",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-04",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-05",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-06",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-07",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-08",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-09",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-10",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-11",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-12",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-13",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-14",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-15",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "neg-16",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-01",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-02",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-03",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-04",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-05",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-06",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-07",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-08",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-09",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-10",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-11",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-12",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-13",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-14",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-15",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "trigger",
+      "item": "pos-16",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 2,
+          "id": null,
+          "state": "missing"
+        },
+        {
+          "run": 3,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "interview",
+      "item": "electrician-journeyman",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "interview",
+      "item": "icu-nurse",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    },
+    {
+      "kind": "interview",
+      "item": "senior-swe",
+      "passing": false,
+      "attempts": [
+        {
+          "run": 1,
+          "id": null,
+          "state": "missing"
+        }
+      ]
+    }
+  ],
+  "runner": {
+    "cli_version": "codex-cli 0.167.0-alpha.4",
+    "schema": "cp-codex-runner/1",
+    "model": "gpt-6-astra",
+    "effort": "high",
+    "pid": 2,
+    "status": "blocked-infrastructure",
+    "current": {
+      "id": "cp-astra-Trs5IM",
+      "kind": "case",
+      "item": "resume-without-posting",
+      "run": 1,
+      "turn": 1
+    },
+    "error": "WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir \"/tmp\" (codex_home: AbsolutePathBuf(\"/tmp/cp-codex-home-qbh64eeo\"))\n2026-11-06T06:23:39.143821Z ERROR codex_core::session: Failed to create session: failed to load AGENTS.md instructions for environment `local`: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted\nError: thread/start: thread/start failed: error creating thread: failed to load AGENTS.md instructions for environment `local`: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted (code -32603)\n",
+    "updated_at": "2026-11-06T06:23:43.289Z",
+    "next_retry_at": null
+  }
+}

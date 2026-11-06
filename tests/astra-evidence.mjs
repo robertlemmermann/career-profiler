@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 import { subject } from './astra-session.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DIR = path.join(ROOT, 'evals/ledger/astra');
+import { DIR, MODEL, HOST, EFFORT } from './lib/eval-profile.mjs';
 const read = (f) => fs.readFileSync(f, 'utf8');
 const json = (f) => JSON.parse(read(f));
 const hash = (s) => createHash('sha256').update(s).digest('hex');
@@ -26,7 +26,7 @@ export function rubrics(s) {
   }
   return [];
 }
-function expectedChecks(s) {
+export function expectedChecks(s) {
   const answer = response(s);
   if (s.kind === 'trigger') {
     const q = json(path.join(ROOT, 'evals/trigger-set.json')).queries.find((q) => q.id === s.item);
@@ -49,7 +49,7 @@ function expectedChecks(s) {
     return { name: g.name, passed };
   });
 }
-function packet(work) {
+export function packet(work) {
   const s = json(stateFile(work));
   if (s.status !== 'completed') throw Error('session incomplete');
   if (!['case', 'pipeline'].includes(s.kind)) throw Error('no model judge needed');
@@ -57,12 +57,14 @@ function packet(work) {
   const dir = path.join(DIR, 'grading', s.id);
   fs.mkdirSync(dir, { recursive: true });
   write(path.join(dir, 'packet.json'), p);
-  console.log(JSON.stringify({ packet: path.join(dir, 'packet.json'), output: path.join(dir, 'judgment.json'), deterministic: expectedChecks(s) }));
+  const result = { packet: path.join(dir, 'packet.json'), output: path.join(dir, 'judgment.json'), deterministic: expectedChecks(s) };
+  if (HOST !== 'codex-cli') console.log(JSON.stringify(result));
+  return result;
 }
-function record(packetFile, resultFile, agent) {
+export function record(packetFile, resultFile, agent) {
   const p = json(packetFile), result = json(resultFile);
   const f = path.join(DIR, `${p.evidence_id}.json`), s = json(f);
-  if (!agent || agent === s.agent_id) throw Error('an independent judge is required');
+  if (!agent || (s.agent_sessions || [s.agent_id]).includes(agent)) throw Error('an independent judge is required');
   if (p.subject !== s.subject || p.response_sha256 !== hash(response(s))) throw Error('packet does not match evidence');
   const current = rubrics(s).filter((g) => g.type === 'llm');
   if (JSON.stringify(p.criteria) !== JSON.stringify(current)) throw Error('rubrics changed');
@@ -73,13 +75,14 @@ function record(packetFile, resultFile, agent) {
     if (!c || typeof c.passed !== 'boolean' || typeof c.reason !== 'string' || !c.reason.trim()) throw Error(`invalid judgment: ${g.name}`);
   }
   if ((s.judgments || []).some((j) => j.agent_id === agent)) throw Error('judge already recorded');
-  s.judgments = [...(s.judgments || []), { at: new Date().toISOString(), agent_id: agent, model: 'gpt-6-astra', packet: p, checks: result.checks }];
+  s.judgments = [...(s.judgments || []), { at: new Date().toISOString(), agent_id: agent, model: MODEL, packet: p, checks: result.checks }];
   write(f, s);
   console.log(JSON.stringify({ id: s.id, checks: expectedChecks(s), judgment: result.checks }));
 }
 export function verdict(s) {
-  if (s.host !== 'chatgpt-work-fresh-thread' || s.model !== 'gpt-6-astra' || s.effort !== 'high' || !s.agent_id) return 'incomplete';
+  if (s.host !== HOST || s.model !== MODEL || s.effort !== EFFORT || !s.agent_id) return 'incomplete';
   if (s.status !== 'completed') return 'incomplete';
+  if (HOST === 'codex-cli' && ((s.cli_turns || []).length !== s.transcript.filter((t) => t.role === 'agent').length || !(s.cli_turns || []).every((t) => (s.agent_sessions || [s.agent_id]).includes(t.session) && t.completed_at && t.cli_version))) return 'incomplete';
   if (s.subject !== subject(s.kind, s.item)) return 'stale';
   if (!response(s).trim()) return 'incomplete';
   const checks = expectedChecks(s);
@@ -88,14 +91,14 @@ export function verdict(s) {
   if (checks.some((c) => !c.passed)) return 'fail';
   const llm = rubrics(s).filter((g) => g.type === 'llm');
   if (llm.length) {
-    const js = (s.judgments || []).filter((j) => j.agent_id !== s.agent_id && j.model === 'gpt-6-astra' && j.packet.subject === s.subject && j.packet.response_sha256 === hash(response(s)) && JSON.stringify(j.packet.criteria) === JSON.stringify(llm));
+    const js = (s.judgments || []).filter((j) => !(s.agent_sessions || [s.agent_id]).includes(j.agent_id) && j.model === MODEL && j.packet.subject === s.subject && j.packet.response_sha256 === hash(response(s)) && JSON.stringify(j.packet.criteria) === JSON.stringify(llm));
     const count = s.kind === 'pipeline' ? 3 : 1;
     if (new Set(js.map((j) => j.agent_id)).size < count) return 'ungraded';
     for (const g of llm) if (js.slice(-count).filter((j) => j.checks.find((c) => c.name === g.name)?.passed === true).length <= count / 2) return 'fail';
   }
   return 'pass';
 }
-function report(release) {
+export function report(release, quiet = false) {
   const rows = fs.existsSync(DIR) ? fs.readdirSync(DIR).filter((f) => f.endsWith('.json')).map((f) => json(path.join(DIR, f))).filter((s) => s.schema === 'cp-astra-evidence/1') : [];
   const cases = fs.readdirSync(path.join(ROOT, 'evals'), { withFileTypes: true }).filter((e) => e.isDirectory() && !['ledger', 'scripts-pipeline'].includes(e.name)).map((e) => e.name);
   const queries = json(path.join(ROOT, 'evals/trigger-set.json')).queries.map((q) => q.id);
@@ -109,11 +112,12 @@ function report(release) {
     });
     return { kind, item, passing: attempts.every((r) => r.state === 'pass'), attempts };
   }));
-  const result = { schema: 'cp-astra-progress/1', model: 'gpt-6-astra', host: 'chatgpt-work-fresh-thread', passing: items.filter((i) => i.passing).length, total: items.length, items };
-  console.log(JSON.stringify(result, null, 2));
+  const result = { schema: 'cp-astra-progress/1', model: MODEL, host: HOST, effort: EFFORT, passing: items.filter((i) => i.passing).length, total: items.length, items };
+  if (!quiet) console.log(JSON.stringify(result, null, 2));
   if (release && result.passing !== result.total) process.exitCode = 1;
+  return result;
 }
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (cmd === 'packet') packet(...args);
   else if (cmd === 'record') record(...args);
