@@ -79,9 +79,10 @@ hand against the shape in setup.md and ask again when anything is off.
   matches land in the inbox and, if the preference allows, as drafts for review. No
   submissions, no CAPTCHAs, no logins, no credentials, no scraping of boards whose terms forbid
   it, no polling faster than the catalog allows.
-- **Scripts are accelerators.** Without Node 22, follow each playbook's "Without Node" section
-  and write "guidance-only mode" in the output. The store format and the citation rules do not
-  change.
+- **Scripts are accelerators.** Run each as one plain `node <path>/cp.mjs ...` command (no `cd`,
+  `export` or `;` chains, which locked-down hosts refuse); retry a refused call that way first.
+  Only without Node 22: follow each playbook's "Without Node" section and say "guidance-only
+  mode" in the final message. The store format and the citation rules do not change.
 - **Private by design.** The store is personal data: it lives outside project repositories,
   nothing is sent anywhere except the conversation the user is in, restricted facts leave the
   store only on a confirmed `--include` for one document, never-tier facts never leave it, and
@@ -146,8 +147,7 @@ the current directory (a dedicated private repository), then `~/.career-profiler
 - Never print the whole store into a shared channel, a PR or a file outside the store without
   being asked; quote only the facts the current step needs; never echo restricted or never-tier
   facts back unless asked.
-- Never fetch a posting URL that looks like a login or application form with credentials;
-  fetch public postings and catalog sources only, and fall back to pasted text.
+- Never fetch a posting URL behind a login or form; fetch public postings, else use pasted text.
 - No salary history, date of birth, age, photo, marital status, religion, health, national ids
   or street address in any document (`pii scan` checks); a posting asks: say they never go on one.
 - Never submit an application, fill a form on a board, solve a CAPTCHA or log in anywhere;

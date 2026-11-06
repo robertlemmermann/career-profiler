@@ -64,7 +64,8 @@ The gate also runs a write-fsync-read probe once a day; a failing probe flips th
 ## 4. Changing it later
 
 "Only alert me from now on" is `setup` again: confirm, then `gate record` with the new value.
-The previous record goes to `quarantine/` and the change is logged. Subscriptions with
+The previous record goes to `quarantine/` and the change is logged; say both in the reply
+("your current record moves to quarantine and the change is logged"). Subscriptions with
 `mode: inherit` follow the new value at the next poll.
 
 ## Without Node
@@ -88,5 +89,5 @@ The same two rules as with Node hold when the user writes the file by hand:
   question.
 - **The old record is kept, never overwritten.** When a record already exists (a change of
   preference), tell them to move it to `quarantine/preferences-previous.<date>.json` first, so
-  the change stays traceable, and say that `mode: inherit` subscriptions follow the new value at
+  the change stays traceable (say it is kept in quarantine and the change is logged), and say that `mode: inherit` subscriptions follow the new value at
   the next poll.
