@@ -228,6 +228,11 @@ plain-language routing) and one shell case (`scripts-pipeline`, run by `claude p
 runner appends to the results ledger in [`evals/ledger/`](evals/ledger/README.md); the release
 rule is in [release](skills/career-profiler/references/release.md).
 
+**Live result:** the full pass passed 73 of 74 release items: 38 of 38 cases, 32 of 32 trigger
+queries and 3 of 3 simulated interviews (a nurse, an electrician and an engineer). The shell
+pipeline passed one of its two runs. See the [changelog](CHANGELOG.md) for what the runs found and
+fixed.
+
 ## 📜 License
 
 Apache-2.0. Built with the same conventions as

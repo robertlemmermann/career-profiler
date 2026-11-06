@@ -63,23 +63,36 @@ referenced with 0.1.0, and the common denominator built (`plans` repository,
 
 ### Live evaluation
 
-Every case, query and persona has a passing, current run in `evals/ledger/ledger.jsonl`
-(`evals/ledger/STATUS.md`); the agent model is pinned (Opus 5.5 after the earlier pin ran out of
-credits), the judge is Sonnet 5.5. A case passes only when all its runs pass every grader.
+The full live pass on commit `0e7dc9a` (2026-11-04 to 2026-11-05) passed **73 of 74** release
+items; rows are in `evals/ledger/ledger.jsonl`. Agent model pinned to Opus 5.5 (the earlier pin ran
+out of credits), judge Sonnet 5.5. An item passes only when its newest run passes every grader in
+every run.
 
 | Suite | Result |
 |---|---|
 | `claude plugin eval` cases | 38 of 38, 3 runs each |
-| Shell pipeline (`tests/live/pipeline-sim.mjs`) | 2 of 2 runs |
-| Trigger set | 32 of 32 queries, 3 runs each (train 1.0, validation 1.0) |
-| Simulated interviews (deterministic candidate) | see STATUS.md |
+| Trigger set | 32 of 32 queries, 3 runs each |
+| Simulated interviews (deterministic candidate: nurse, electrician, engineer) | 3 of 3 |
+| Shell pipeline (`tests/live/pipeline-sim.mjs`) | not passing: run 2 passed, run 1 made no script calls (see below) |
 
-Failures found by the live runs and fixed in the skill: a valid preference record was rejected
-without Node; facts were written as soon as the user stated them ("saved; tell me if anything is
-off"); a one-line "remove that job" deleted the role; a subscription could be set above the
-recorded preference; a title change offered only an overwrite; an unattended run asked
-questions; polling did not say what leaves the machine; volunteered personal data got a lecture.
-Each failing row is classified by a `triage` row (`tests/ledger-triage.mjs`).
+Accepted as the release result. The pipeline's run 1 opened with a compound `cd; export; node`
+line that the locked-down test host refused, and the agent then fell back to guidance-only mode;
+a diagnostic re-run (tool log kept) recovered and passed 2 of 2. The skill now says to run each
+script as one plain `node` command and retry a refused call that way (`b199182`, with two wording
+fixes for intermittent misses); after that change 22 of 74 items were re-run and passed before the
+run was stopped, so it is only partly re-verified.
+
+Defects the live runs found and fixed in the skill: a valid preference record was rejected
+without Node; facts were written before the user's yes; a one-line "remove that job" deleted the
+role; a subscription could exceed the recorded preference; a title change offered only an
+overwrite; an unattended run asked questions; polling did not say what leaves the machine;
+volunteered personal data got a lecture, was repeated in later turns and summaries, or (a back
+condition) was missed by the health detector; a restricted field's source quote ("US citizen")
+reached the default export; a posting that demanded date of birth or a photo got no reason for
+leaving them out; the trades interview lost its trade topics after the credential-first rule;
+questions were asked twice in a turn; a range was collapsed to one number. Every failing row is
+classified by a `triage` row (`tests/ledger-triage.mjs`): 2,097 result rows, 597 triage rows
+(skill 50, grader 184, fixture 44, host-flake 319), about $1,061 recorded spend.
 
 ### Changed
 
