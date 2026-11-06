@@ -1,0 +1,290 @@
+{
+  "schema": "career-question-bank/1",
+  "note": "Questions the interview playbook asks, keyed by the gap codes `interview coverage` emits. Placeholders: {name}, {employer}, {title}, {skill}, {count}. Probes are follow-ups to pull for specifics (numbers, scope, outcomes). Domain probes are chosen from the role's title and industry; `general` always applies.",
+  "questions": {
+    "identity.name": {
+      "priority": 100,
+      "question": "What is your full name as you want it on a resume?"
+    },
+    "identity.email": {
+      "priority": 95,
+      "question": "Which email address should employers use?"
+    },
+    "identity.phone": {
+      "priority": 60,
+      "question": "Which phone number should go on the resume (or none)?"
+    },
+    "identity.location": {
+      "priority": 85,
+      "question": "Where are you based (city and region or country)? Are you open to relocation?"
+    },
+    "identity.links": {
+      "priority": 50,
+      "question": "Any links to include: LinkedIn, portfolio, GitHub, personal site, licence lookup?"
+    },
+    "identity.headline": {
+      "priority": 40,
+      "question": "In one line, how would you describe what you do professionally (for example \"Senior software engineer, frontend platforms\" or \"ICU registered nurse\")?"
+    },
+    "identity.work_authorization": {
+      "priority": 30,
+      "question": "Is there anything about work authorisation or visas that employers need to know? (Skip if not relevant.)"
+    },
+    "targets.roles": {
+      "priority": 90,
+      "question": "What roles or job titles are you aiming for next? Include adjacent titles you would consider."
+    },
+    "targets.seniority": {
+      "priority": 55,
+      "question": "What level are you targeting: same level as now, a step up (lead, manager), or flexible?"
+    },
+    "targets.locations": {
+      "priority": 45,
+      "question": "Where do you want to work: remote, hybrid, on-site, which cities or countries?"
+    },
+    "targets.industries": {
+      "priority": 35,
+      "question": "Any industries you prefer or want to avoid?"
+    },
+    "summary.pitch": {
+      "priority": 30,
+      "question": "If a recruiter had ten seconds, what are the two or three things you most want them to know about you?",
+      "probes": [
+        "What are you known for among colleagues?",
+        "Which of your results are you proudest of?"
+      ]
+    },
+    "experience.none": {
+      "priority": 98,
+      "question": "Let's walk through your work history, most recent first. For your current or latest role: employer, your exact title, start month and year, end (or present), location, and whether it is full-time, contract or something else."
+    },
+    "experience.next": {
+      "priority": 80,
+      "question": "What came before {title} at {employer}? Employer, exact title, start and end month and year, location, and employment type. Say \"that's all\" when we reach the beginning you want on a resume."
+    },
+    "experience.scope": {
+      "priority": 75,
+      "question": "At {employer} as {title}: what was the scope? Team size, who you reported to, what you owned, budget or caseload or territory if any, and the main tools, systems or stack you used.",
+      "probes": [
+        "How many people were on the team, and did anyone report to you?",
+        "What were you responsible for that nobody else was?"
+      ]
+    },
+    "experience.stack": {
+      "priority": 60,
+      "question": "Which tools, technologies, systems, equipment or methods did you use day to day at {employer}? List as many as apply."
+    },
+    "experience.achievements.few": {
+      "priority": 85,
+      "question": "Tell me about {count} more things you accomplished at {employer} as {title}. For each: what was the situation, what did you do, and what changed as a result? Numbers help: percentages, money, time saved, volume, people, quality or safety measures.",
+      "probes": [
+        "What would have happened if you had not done it?",
+        "How did you or your manager measure success?",
+        "Who else was involved, and what was specifically your part?"
+      ]
+    },
+    "experience.metrics.none": {
+      "priority": 70,
+      "question": "None of the achievements at {employer} have a number yet. Can you quantify any of them: how much faster, cheaper, bigger, more reliable, how many people or customers, what rating or score? Estimates are fine if you say they are estimates."
+    },
+    "achievement.weak": {
+      "priority": 50,
+      "question": "\"{text}\" reads as a duty rather than a result. What was the outcome, and how big was it?",
+      "probes": [
+        "What was the before and after?",
+        "Did anyone outside your team notice?"
+      ]
+    },
+    "skills.few": {
+      "priority": 78,
+      "question": "Let's build your skills inventory. List the skills, tools, technologies, certifications-in-use, methods and soft skills you would want a hiring manager to see, roughly grouped (for example technical, tools, domain, leadership, languages)."
+    },
+    "skills.level.missing": {
+      "priority": 40,
+      "question": "For {skill}: how would you rate yourself (beginner, intermediate, advanced, expert), how many years have you used it, and when did you last use it?"
+    },
+    "skills.evidence.none": {
+      "priority": 35,
+      "question": "You listed {skill} as a skill, but no role or project mentions it. Where did you use it, and for what?"
+    },
+    "education.none": {
+      "priority": 65,
+      "question": "Education: institution, degree or program, field, start and end year, and honours or relevant coursework if you want them shown. If none applies, say so."
+    },
+    "certifications.none": {
+      "priority": 55,
+      "question": "Any certifications, licences or registrations (with issuer, year and expiry if relevant)? If none, say so."
+    },
+    "projects.none": {
+      "priority": 30,
+      "question": "Any projects worth showing that are not covered by a job: side projects, open source, research, a business, a community effort? If none, say so."
+    },
+    "languages.none": {
+      "priority": 20,
+      "question": "Which languages do you speak, and at what level? If only one, say so."
+    },
+    "volunteering.none": {
+      "priority": 15,
+      "question": "Any volunteering, board or community roles you would want on a resume? If none, say so."
+    },
+    "awards.none": {
+      "priority": 15,
+      "question": "Any awards, recognition, promotions-as-recognition or publications and talks? If none, say so."
+    },
+    "documents.none": {
+      "priority": 92,
+      "question": "Do you have an existing resume, CV, LinkedIn export or portfolio I can read first? Paste it or give me the path. I will extract candidate facts and confirm each one with you before saving anything."
+    }
+  },
+  "domain_probes": {
+    "general": [
+      "Who benefited from this, and how would they describe the change?",
+      "What did it cost or save in time, money or effort?"
+    ],
+    "engineering": [
+      "What were the scale and performance numbers (users, requests, latency, uptime, data volume)?",
+      "What did you own end to end versus contribute to?",
+      "Which architecture or design decisions were yours?",
+      "How was quality measured (test coverage, incidents, lead time, deployment frequency)?"
+    ],
+    "leadership": [
+      "How many people did you lead, hire or mentor, and what happened to them?",
+      "Which decisions did you make without escalating?",
+      "How did the team's output or health change under you?"
+    ],
+    "healthcare": [
+      "What was the unit, patient population, acuity and nurse-to-patient ratio?",
+      "Which protocols, equipment or systems did you use (for example EHR, ventilators, infusion pumps)?",
+      "Any measurable outcomes: patient satisfaction scores, infection rates, falls, readmissions, audit results?",
+      "Did you precept, train or lead others?"
+    ],
+    "sales": [
+      "What was the quota and your attainment per year?",
+      "Average deal size, cycle length, territory or book of business?",
+      "Which accounts did you win or grow, and by how much?"
+    ],
+    "operations": [
+      "What volume did you handle (orders, shipments, units, tickets)?",
+      "Which process changes did you introduce, and what did they improve?",
+      "Safety, quality or cost numbers?"
+    ],
+    "finance": [
+      "What size of budget, portfolio or book did you own?",
+      "Which reports, models or closes were yours?",
+      "Any audit findings, savings or accuracy improvements?"
+    ],
+    "education": [
+      "How many students, what levels, what outcomes (scores, pass rates, growth)?",
+      "Which curricula or programs did you design?"
+    ],
+    "trades": [
+      "What types of jobs, sites or equipment did you work on?",
+      "Any safety record, certifications or inspections passed?",
+      "Did you supervise apprentices or crews?"
+    ],
+    "creative": [
+      "What audience size, engagement or revenue did the work reach?",
+      "Which clients or brands?"
+    ]
+  },
+  "domain_keywords": {
+    "engineering": [
+      "engineer",
+      "developer",
+      "software",
+      "devops",
+      "sre",
+      "data",
+      "architect",
+      "programmer",
+      "qa",
+      "frontend",
+      "backend",
+      "full stack",
+      "platform",
+      "cloud"
+    ],
+    "leadership": [
+      "lead",
+      "manager",
+      "head",
+      "director",
+      "supervisor",
+      "chief",
+      "vp",
+      "principal"
+    ],
+    "healthcare": [
+      "nurse",
+      "rn",
+      "clinical",
+      "medical",
+      "physician",
+      "therapist",
+      "pharmac",
+      "patient",
+      "hospital",
+      "health",
+      "dental",
+      "paramedic"
+    ],
+    "sales": [
+      "sales",
+      "account",
+      "business development",
+      "revenue",
+      "quota"
+    ],
+    "operations": [
+      "operations",
+      "logistics",
+      "warehouse",
+      "supply",
+      "production",
+      "plant",
+      "manufactur",
+      "fulfil"
+    ],
+    "finance": [
+      "finance",
+      "accountant",
+      "accounting",
+      "controller",
+      "analyst",
+      "audit",
+      "treasury",
+      "banking"
+    ],
+    "education": [
+      "teacher",
+      "educator",
+      "instructor",
+      "professor",
+      "tutor",
+      "school",
+      "curriculum"
+    ],
+    "trades": [
+      "electrician",
+      "plumber",
+      "hvac",
+      "welder",
+      "carpenter",
+      "mechanic",
+      "technician",
+      "driver",
+      "operator",
+      "construction"
+    ],
+    "creative": [
+      "designer",
+      "writer",
+      "editor",
+      "marketing",
+      "content",
+      "video",
+      "producer",
+      "artist"
+    ]
+  }
+}

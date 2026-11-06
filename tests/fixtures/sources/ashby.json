@@ -1,0 +1,3 @@
+{ "jobs": [
+  { "id": "7f0d9c2e-1111-4111-8111-000000000001", "title": "Frontend Engineer II", "location": "Remote", "jobUrl": "https://jobs.ashbyhq.com/northstar/7f0d9c2e-1111-4111-8111-000000000001", "descriptionPlain": "Northstar builds dashboards.\nRequirements\n- 3+ years of React and TypeScript\n- Testing with Jest and Playwright\n- Accessibility (WCAG)\nNice to have\n- Next.js", "isListed": true }
+] }

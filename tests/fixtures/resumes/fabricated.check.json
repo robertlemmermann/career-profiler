@@ -1,0 +1,365 @@
+{
+  "schema": "career-resume-check/1",
+  "kind": "resume",
+  "checked_at": "2026-10-29T05:55:54.727Z",
+  "generated_by": "career-profiler 0.2.0",
+  "document_sha256": "88f6c9c27746a67d95bb75d53bbfef3e4f5a9b72a7eaa903da87857420488fcd",
+  "profile_sequence": 15,
+  "job": {
+    "title": "Lead Software Engineer, Frontend",
+    "company": "Acme Ledger",
+    "text_sha256": "af276fa18bba276f041dc853ad82a9e59db6f1483c04ff40e0cb4488a654ffad"
+  },
+  "verdict": "FAIL",
+  "counts": {
+    "fail": 18,
+    "finding": 9,
+    "words": 156,
+    "cited_facts": 10,
+    "pii_blocks": 0,
+    "pii_reviews": 1
+  },
+  "include": [],
+  "findings": [
+    {
+      "severity": "fail",
+      "code": "contact-mismatch",
+      "line": 2,
+      "message": "phone number is not the profile phone"
+    },
+    {
+      "severity": "fail",
+      "code": "number-unsupported",
+      "line": 6,
+      "message": "the number 12 is not in the cited facts (summary, exp-01); numbers come from the store, not from memory"
+    },
+    {
+      "severity": "fail",
+      "code": "unsupported-term",
+      "line": 6,
+      "message": "\"Kubernetes\" (matched \"Kubernetes\") has no evidence in the profile and is a job keyword; remove it or add the fact after asking the user"
+    },
+    {
+      "severity": "fail",
+      "code": "skill-unsupported",
+      "line": 10,
+      "message": "\"Angular\" is not in the cited facts (skill-react, skill-next-js)"
+    },
+    {
+      "severity": "fail",
+      "code": "skill-unsupported",
+      "line": 11,
+      "message": "\"Kubernetes\" is not in the cited facts (skill-aws)"
+    },
+    {
+      "severity": "fail",
+      "code": "skill-unsupported",
+      "line": 11,
+      "message": "\"Terraform\" is not in the cited facts (skill-aws)"
+    },
+    {
+      "severity": "fail",
+      "code": "unsupported-term",
+      "line": 11,
+      "message": "\"Kubernetes\" (matched \"Kubernetes\") has no evidence in the profile and is a job keyword; remove it or add the fact after asking the user"
+    },
+    {
+      "severity": "fail",
+      "code": "unsupported-term",
+      "line": 11,
+      "message": "\"Terraform\" (matched \"Terraform\") has no evidence in the profile; remove it or add the fact after asking the user"
+    },
+    {
+      "severity": "fail",
+      "code": "unconfirmed-fact",
+      "line": 12,
+      "message": "cited id \"skill-python\" is not confirmed; confirm it with the user first (\"fact confirm skill-python\")"
+    },
+    {
+      "severity": "fail",
+      "code": "unsupported-term",
+      "line": 12,
+      "message": "\"Python\" (matched \"Python\") has no evidence in the profile; remove it or add the fact after asking the user"
+    },
+    {
+      "severity": "fail",
+      "code": "title-mismatch",
+      "line": 16,
+      "message": "header title differs from \"Senior Software Engineer\" recorded for exp-01 (titles are facts; do not inflate them)"
+    },
+    {
+      "severity": "fail",
+      "code": "date-mismatch",
+      "line": 17,
+      "message": "start date does not match exp-01 (2022-03)"
+    },
+    {
+      "severity": "fail",
+      "code": "number-unsupported",
+      "line": 18,
+      "message": "the number 0.9 is not in the cited facts (ach-01-01); numbers come from the store, not from memory"
+    },
+    {
+      "severity": "fail",
+      "code": "misplaced-citation",
+      "line": 19,
+      "message": "ach-02-01 belongs to exp-02, not to exp-01; achievements stay under the role where they happened"
+    },
+    {
+      "severity": "fail",
+      "code": "uncited",
+      "line": 20,
+      "message": "claim without a fact citation: \"- Ran the company's Kubernetes migration across 40 services.\""
+    },
+    {
+      "severity": "fail",
+      "code": "unknown-fact",
+      "line": 21,
+      "message": "cited id \"exp-99\" does not exist in the profile"
+    },
+    {
+      "severity": "fail",
+      "code": "uncited",
+      "line": 21,
+      "message": "claim without a fact citation: \"- Managed a budget of $3M for the platform group.\""
+    },
+    {
+      "severity": "fail",
+      "code": "institution-mismatch",
+      "line": 29,
+      "message": "line does not name \"University of Washington\" (edu-01)"
+    },
+    {
+      "severity": "finding",
+      "code": "pii-review",
+      "line": 2,
+      "message": "a phone number that is not the chosen contact phone (extra-phone, +1***********99); keep only if the user wants it in this market"
+    },
+    {
+      "severity": "finding",
+      "code": "too-short",
+      "line": null,
+      "message": "156 words; a resume this short reads as unfinished"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "required keyword \"CI/CD\" is supported (ach-01-04, ach-02-02, skill-ci-cd) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "required keyword \"Accessibility\" is supported (proj-01) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "required keyword \"Testing\" is supported (ach-01-04) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "required keyword \"TypeScript\" is supported (exp-01, ach-01-01, skill-typescript) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "required keyword \"Performance Optimization\" is supported (ach-01-01, skill-performance-optimization) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "preferred keyword \"GraphQL\" is supported (exp-01, skill-graphql) but never appears; mirror the posting's wording"
+    },
+    {
+      "severity": "finding",
+      "code": "keyword-unused",
+      "line": null,
+      "message": "preferred keyword \"AWS\" is supported (exp-01, cert-01, skill-aws) but never appears; mirror the posting's wording"
+    }
+  ],
+  "coverage": {
+    "must": {
+      "total": 9,
+      "supported": 8,
+      "used": 3
+    },
+    "nice": {
+      "total": 6,
+      "supported": 4,
+      "used": 3
+    },
+    "rows": [
+      {
+        "term": "React",
+        "kind": "must",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "ach-01-01",
+          "ach-01-02",
+          "exp-02",
+          "skill-react",
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Technical Leadership",
+        "kind": "must",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "ach-01-03",
+          "skill-technical-leadership"
+        ]
+      },
+      {
+        "term": "CI/CD",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "ach-01-04",
+          "ach-02-02",
+          "skill-ci-cd"
+        ]
+      },
+      {
+        "term": "Accessibility",
+        "kind": "must",
+        "status": "partial",
+        "used": false,
+        "evidence": [
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Testing",
+        "kind": "must",
+        "status": "partial",
+        "used": false,
+        "evidence": [
+          "ach-01-04"
+        ]
+      },
+      {
+        "term": "Communication",
+        "kind": "must",
+        "status": "missing",
+        "used": false,
+        "evidence": []
+      },
+      {
+        "term": "TypeScript",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "ach-01-01",
+          "skill-typescript",
+          "proj-01"
+        ]
+      },
+      {
+        "term": "Bachelor's degree",
+        "kind": "must",
+        "status": "partial",
+        "used": true,
+        "evidence": [
+          "edu-01"
+        ]
+      },
+      {
+        "term": "Performance Optimization",
+        "kind": "must",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "ach-01-01",
+          "skill-performance-optimization"
+        ]
+      },
+      {
+        "term": "Accounting",
+        "kind": "nice",
+        "status": "missing",
+        "used": false,
+        "evidence": []
+      },
+      {
+        "term": "GraphQL",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "skill-graphql"
+        ]
+      },
+      {
+        "term": "JavaScript",
+        "kind": "nice",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "exp-02",
+          "ach-02-01",
+          "skill-javascript",
+          "skill-next-js",
+          "skill-node-js"
+        ]
+      },
+      {
+        "term": "Next.js",
+        "kind": "nice",
+        "status": "strong",
+        "used": true,
+        "evidence": [
+          "exp-01",
+          "skill-next-js"
+        ]
+      },
+      {
+        "term": "AWS",
+        "kind": "nice",
+        "status": "strong",
+        "used": false,
+        "evidence": [
+          "exp-01",
+          "cert-01",
+          "skill-aws"
+        ]
+      },
+      {
+        "term": "Kubernetes",
+        "kind": "nice",
+        "status": "missing",
+        "used": true,
+        "evidence": []
+      }
+    ]
+  },
+  "cited_ids": [
+    "ach-01-01",
+    "ach-02-01",
+    "ach-02-02",
+    "edu-01",
+    "exp-01",
+    "exp-02",
+    "skill-aws",
+    "skill-next-js",
+    "skill-python",
+    "skill-react"
+  ],
+  "document": "/home/user/career-profiler/tests/fixtures/resumes/fabricated.md"
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "cp-astra-evidence/1",
+  "id": "cp-astra-uLq78y",
+  "at": "2026-11-02T01:51:55.371Z",
+  "host": "chatgpt-work-fresh-thread",
+  "model": "gpt-6-astra",
+  "effort": "high",
+  "kind": "case",
+  "item": "resume-without-posting",
+  "run": 3,
+  "subject": "82a2cce8298be6df87a52933d789f633c5b631125294d4bb537b209ecf8a14e4",
+  "workspace": "/tmp/cp-astra-uLq78y",
+  "agent_id": null,
+  "reads": [],
+  "transcript": [
+    {
+      "role": "user",
+      "text": "No shell is available, so use the career-profiler skill the guidance-only way.\n\nMy automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:\n\n```json\n{\"schema\":\"career-preferences/1\",\"automation\":\"draft\",\"submit\":\"never\",\"statement\":\"Draft things for me to review; never send anything on my behalf.\",\"recorded_at\":\"2026-10-20T09:00:00.000Z\",\"skill_version\":\"0.2.0\",\"store_version\":2,\"hash\":\"d824c0ad061453a50eb17d317b88290e54d007346304063553d5bf823b75edab\"}\n```\n\nWrite me a resume. I am a registered nurse with six years in adult ICU, CCRN certified, and I\nprecept new graduates. I want to start applying next week.\n",
+      "turn": 0
+    }
+  ],
+  "snapshots": [],
+  "used": [],
+  "status": "pending",
+  "grade": null,
+  "cost_usd": null,
+  "initial_prompt": "Workspace: /tmp/cp-astra-uLq78y. Use only this workspace and the supplied read/reply bridge. Do not browse other directories or inspect the bridge implementation.\nSkill reads: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs read /tmp/cp-astra-uLq78y SKILL.md (or a relative references/ or assets/ path). This logs the consulted document. Use the bridge for skill-document reads.\nThe task environment supports document reads only: do not execute career-profiler scripts or create user artifacts. Shell tools may be used solely to call the read/reply bridge and write the response transport file.\nWrite your exact user-facing response to /tmp/cp-astra-uLq78y/reply.txt, then call: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs reply /tmp/cp-astra-uLq78y /tmp/cp-astra-uLq78y/reply.txt. Return the same response as your final message after submitting it.\n\nAvailable optional skill: career-profiler\nCareer fact store, tailored job applications and job-board watching. Use when someone\n  wants to build or update a career profile by interview (work history, achievements with\n  numbers, skills, education, certifications), import facts from an old resume or LinkedIn\n  export, write a resume, CV or cover letter tailored to one specific job posting (pasted,\n  attached or linked), check how well they match a posting before applying, prove that a\n  resume contains no claim the profile does not support, watch a company careers page,\n  applicant-tracking board, feed or job-alert emails for matching postings with drafts\n  ready for review, or set how much of that is automated (alerts only, drafts, never\n  submitting). Works for any profession or role type, not only software. Not for interview\n  coaching, salary negotiation, generic resume templates without a profile and a posting,\n  or submitting applications on anyone's behalf.\nTo consult it, use the read bridge below. Select skills by relevance to the user's task.\n\nUser request:\nNo shell is available, so use the career-profiler skill the guidance-only way.\n\nMy automation preference is already recorded (the gate is satisfied); here is my `preferences.json`:\n\n```json\n{\"schema\":\"career-preferences/1\",\"automation\":\"draft\",\"submit\":\"never\",\"statement\":\"Draft things for me to review; never send anything on my behalf.\",\"recorded_at\":\"2026-10-20T09:00:00.000Z\",\"skill_version\":\"0.2.0\",\"store_version\":2,\"hash\":\"d824c0ad061453a50eb17d317b88290e54d007346304063553d5bf823b75edab\"}\n```\n\nWrite me a resume. I am a registered nurse with six years in adult ICU, CCRN certified, and I\nprecept new graduates. I want to start applying next week.\n"
+}

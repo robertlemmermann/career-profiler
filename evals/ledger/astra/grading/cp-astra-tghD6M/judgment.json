@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "name": "asks-for-posting",
+      "passed": true,
+      "reason": "The answer explicitly asks the user to paste, attach, or link one job posting they want to apply to and states that the posting is required for a resume."
+    },
+    {
+      "name": "no-invented-resume",
+      "passed": true,
+      "reason": "The answer does not deliver a resume or invent employment history, dates, unit names, ratios, or numbers. It repeats only the supplied six years in adult ICU, CCRN certification, and new-graduate precepting facts."
+    }
+  ]
+}

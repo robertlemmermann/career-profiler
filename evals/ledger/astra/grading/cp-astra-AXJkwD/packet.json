@@ -1,0 +1,33 @@
+{
+  "schema": "cp-astra-grade-packet/1",
+  "evidence_id": "cp-astra-AXJkwD",
+  "subject": "de51a37e8e9e0be5159191397c15a682c42ab104c747bfa65b7b32a0409d654e",
+  "response_sha256": "93b5181818bd8cd52eab102d9bc7735619c820d313dc824e138c8a9a6181e513",
+  "answer": "Finalized the tailored resume and cover letter for Acme Ledger’s Lead Software Engineer, Frontend (React) role. Nothing was sent.\n\nFolder: [2026-11-02-acme-ledger-lead-software-engineer-frontend-reac](sandbox:/tmp/cp-astra-AXJkwD/store/applications/2026-11-02-acme-ledger-lead-software-engineer-frontend-reac)\n\nFiles:\n- Resume: `resume.docx`, `resume.final.md`, `resume.txt`, `resume.html`, `resume.json`.\n- Cover letter: `cover-letter.final.md`, `cover-letter.txt`, `cover-letter.html`.\n- Evidence: cited `resume.md` and `cover-letter.md`, both `.check.json` reports, `job.json`, `match.json`, and `gaps.md`.\n\nBoth checks: **PASS**, with zero failures or findings. Match score: **69%**. The resume uses all supported keywords: **8/9 must-haves** and **4/6 nice-to-haves**. Experience meets the years requirements; the lead title is a step up, supported by existing tech-lead responsibilities.\n\nGaps treated as declined and omitted: explicit communication excellence, accounting experience, Kubernetes, and observability. Also omitted unsupported specifics: GraphQL federation, server-side rendering, React hooks/server components/state management, WCAG expertise, unit/integration testing, leadership of six engineers, unrecorded cross-functional partnerships, and availability. Unconfirmed Python was excluded. Existing fintech experience and the Computer Science B.S. satisfy the posting’s respective alternatives despite the matcher’s limitations.\n\nFor later updates, edit the cited drafts or run `app new` again, then check and finalize with `--store ./store`.\n",
+  "criteria": [
+    {
+      "name": "reports-folder-and-files",
+      "type": "llm",
+      "criterion": "You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store.\n\nCheck: the answer names the application folder (a path under store/applications/) and the files produced in it, including a finalized resume in at least one format and the cover letter (draft or final).\n\nPASS if the folder and at least those files are named. FAIL otherwise.",
+      "source_sha256": "ecc291250c47b7bc40cd14f3517336c86dec14a94e8ffde09443a231330670d3"
+    },
+    {
+      "name": "reports-verdict",
+      "type": "llm",
+      "criterion": "You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store.\n\nCheck: the answer reports the resume check verdict as PASS or PASS-WITH-FINDINGS (it may add what the findings were), and it does not claim a PASS for a draft it says it did not check or could not check.\n\nPASS if a check verdict of PASS or PASS-WITH-FINDINGS is reported for a draft the answer says was checked. FAIL if no verdict is reported, if the verdict is FAIL, or if a PASS is claimed for an unchecked draft.",
+      "source_sha256": "259928714978c0d59f47d3dc69d49afd8375e988353e998225962173a72a1674"
+    },
+    {
+      "name": "names-a-gap",
+      "type": "llm",
+      "criterion": "You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera (Senior Software Engineer at Brightline Payments) for the Lead Software Engineer, Frontend posting at Acme Ledger, using the career-profiler scripts against a store at ./store. The posting asks for things the profile does not support, among them Kubernetes, accounting-software experience, communication skills as a stated requirement and GraphQL federation.\n\nCheck: the answer names at least one requirement of the posting that the profile does not support (for example Kubernetes, accounting software, communication, GraphQL federation) and says it was left out of the resume, declined, or would have been asked about.\n\nPASS if at least one such gap is named with that treatment. FAIL otherwise.",
+      "source_sha256": "d0d094b0acfbd705bd62b4faad5dec40addce5bd6c45695c7a5ee99ca53af910"
+    },
+    {
+      "name": "no-unsupported-claims",
+      "type": "llm",
+      "criterion": "You see only the assistant's final message. It is the hand-over after building a tailored resume for Jordan Rivera for the Lead Software Engineer, Frontend posting at Acme Ledger. Facts about the candidate: the current role is titled exactly \"Senior Software Engineer\" at Brightline Payments (March 2022 to present) and the previous role \"Software Engineer\" at Northwind Health (June 2017 to February 2022); the candidate has no Kubernetes, Terraform or accounting-software experience.\n\nCheck: the answer does not present Kubernetes, Terraform or accounting-software experience as a skill of the candidate, and does not give the candidate any title other than Senior Software Engineer (Brightline Payments) and Software Engineer (Northwind Health). Naming Kubernetes or accounting software only as a gap that was left out is fine.\n\nPASS if no unsupported skill or changed title is claimed. FAIL otherwise.",
+      "source_sha256": "6b5dbd4e7eb5b8e9c7d0a1ffab78673df980a298ecb1135477714fd05eeffdfb"
+    }
+  ]
+}

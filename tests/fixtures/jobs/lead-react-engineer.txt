@@ -1,0 +1,34 @@
+Lead Software Engineer, Frontend (React)
+Acme Ledger · San Francisco, CA or Remote (US)
+
+About Acme Ledger
+Acme Ledger builds accounting automation for mid-market companies. Our web app is used by 40,000 finance teams every month, and we are rebuilding its front end for the next decade.
+
+About the role
+You will lead a team of 6 frontend engineers, set the technical direction for our React platform, and partner with product and design to ship features our customers love. This is a hands-on lead role: you will still write code most days.
+
+What you'll do
+- Lead the architecture and delivery of our React and TypeScript front end
+- Mentor and grow engineers, run code reviews and design reviews
+- Own performance, accessibility and reliability of the web application
+- Partner with backend engineers on GraphQL APIs and with product on the roadmap
+- Drive engineering practices: testing, CI/CD, observability
+
+What you'll need
+- 7+ years of professional software engineering experience, with 4+ years of React
+- Experience leading a team or acting as tech lead for a product area
+- Deep knowledge of TypeScript, modern React (hooks, server components) and state management
+- Strong understanding of web performance and accessibility (WCAG)
+- Experience with automated testing (unit, integration, end-to-end) and CI/CD pipelines
+- Excellent written and verbal communication skills
+- Bachelor's degree in Computer Science or equivalent experience
+
+Nice to have
+- Experience with Next.js and server-side rendering
+- Familiarity with Kubernetes and AWS
+- Experience in fintech or accounting software
+- Exposure to GraphQL federation
+
+Benefits
+Competitive salary, equity, 401(k) match, remote-first culture, learning budget.
+Acme Ledger is an equal opportunity employer.

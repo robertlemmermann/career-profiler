@@ -1,0 +1,44 @@
+{
+  "schema": "cp-astra-evidence/1",
+  "id": "cp-astra-W3jxmR",
+  "at": "2026-11-03T01:41:42.126Z",
+  "host": "chatgpt-work-fresh-thread",
+  "model": "gpt-6-astra",
+  "effort": "high",
+  "kind": "trigger",
+  "item": "pos-01",
+  "run": 2,
+  "subject": "cf4e59ab1b1b7cec177ccdb489ce78ae75ef6adf531a781f4fc87874af2a8c9a",
+  "workspace": "/tmp/cp-astra-W3jxmR",
+  "agent_id": "/root/trigger_pos01_2",
+  "reads": [
+    {
+      "path": "SKILL.md",
+      "sha256": "924787ec52110e498929df417b76c6042bff798cc74d19c39272340cc4d62743",
+      "at": "2026-11-03T01:42:18.648Z"
+    },
+    {
+      "path": "references/setup.md",
+      "sha256": "303e3993001fdd8a936a6950f3ad77b4d24db28605aeaf592e8f87361c512907",
+      "at": "2026-11-03T01:42:31.524Z"
+    }
+  ],
+  "transcript": [
+    {
+      "role": "user",
+      "text": "I want to build a proper career profile I can generate resumes from later. Interview me about my jobs, what I achieved and my skills, and save it somewhere I can keep updating.",
+      "turn": 0
+    },
+    {
+      "role": "agent",
+      "text": "I’m using the career-profiler skill to build an updateable profile from your jobs, achievements, and skills. This session is in guidance-only mode: I can guide the process, but can’t save a persistent profile here.\n\nFirst, choose an automation preference:\n\n- **off** — Build your profile and generate tailored applications only when you ask. Recommended for your current goal.\n- **alert** — Watch subscribed job sources and flag matches; draft only when asked.\n- **draft** — Watch sources and draft resumes and cover letters for matching jobs for your review.\n- **prepare** — Also prepare answers to screening questions for you to use.\n\nEvery option excludes submitting applications, logging into job boards, solving CAPTCHAs, or sending your data to boards. Which option do you want? You can change it later.\n\nThe [career-profiler SKILL.md](sandbox:/tmp/cp-astra-W3jxmR/SKILL.md) requires “Before anything else” checking this preference; without a verified preference, it allows only setup. That’s why this choice comes before the career interview.\n",
+      "turn": 1
+    }
+  ],
+  "snapshots": [],
+  "used": [],
+  "status": "completed",
+  "grade": null,
+  "cost_usd": null,
+  "initial_prompt": "Workspace: /tmp/cp-astra-W3jxmR. Use only this workspace and the supplied read/reply bridge. Do not browse other directories or inspect the bridge implementation.\nSkill reads: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs read /tmp/cp-astra-W3jxmR SKILL.md (or a relative references/ or assets/ path). This logs the consulted document. Use the bridge for skill-document reads.\nThe task environment supports document reads only: do not execute career-profiler scripts or create user artifacts. Shell tools may be used solely to call the read/reply bridge and write the response transport file.\nWrite your exact user-facing response to /tmp/cp-astra-W3jxmR/reply.txt, then call: node /workspace/scratch/38cb2de3984c/career-profiler/tests/astra-session.mjs reply /tmp/cp-astra-W3jxmR /tmp/cp-astra-W3jxmR/reply.txt. Return the same response as your final message after submitting it.\n\nAvailable optional skill: career-profiler\nCareer fact store, tailored job applications and job-board watching. Use when someone\n  wants to build or update a career profile by interview (work history, achievements with\n  numbers, skills, education, certifications), import facts from an old resume or LinkedIn\n  export, write a resume, CV or cover letter tailored to one specific job posting (pasted,\n  attached or linked), check how well they match a posting before applying, prove that a\n  resume contains no claim the profile does not support, watch a company careers page,\n  applicant-tracking board, feed or job-alert emails for matching postings with drafts\n  ready for review, or set how much of that is automated (alerts only, drafts, never\n  submitting). Works for any profession or role type, not only software. Not for interview\n  coaching, salary negotiation, generic resume templates without a profile and a posting,\n  or submitting applications on anyone's behalf.\nTo consult it, use the read bridge below. Select skills by relevance to the user's task.\n\nUser request:\nI want to build a proper career profile I can generate resumes from later. Interview me about my jobs, what I achieved and my skills, and save it somewhere I can keep updating."
+}

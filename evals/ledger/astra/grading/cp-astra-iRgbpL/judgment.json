@@ -1,0 +1,14 @@
+{
+  "checks": [
+    {
+      "name": "asks-for-posting",
+      "passed": true,
+      "reason": "The answer explicitly asks: 'Please send one job posting as pasted text, an attachment, or a public link,' and states that the target is needed before drafting the resume."
+    },
+    {
+      "name": "no-invented-resume",
+      "passed": true,
+      "reason": "The answer delivers no resume and invents no employment details, dates, unit names, ratios, or numbers. It only references the provided adult ICU experience, CCRN certification, and new-graduate precepting while offering profile preparation."
+    }
+  ]
+}
